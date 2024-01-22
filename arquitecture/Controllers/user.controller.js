@@ -142,13 +142,17 @@ export const recoverPassword = async (req,res)=>{
         }
         const code=generateRandomCode()
         user.code=code
+
+        const {token, expiresIn} = getToken({email})
+
         await user.save()
 
         const template = getTemplate(user.name, code, "recover")
         await sendEmail(email, 'Verification', template, "Verification code")
         return res.json({
             success: true,
-            msg: "Codigo Enviado Correctamente"
+            msg: "Codigo Enviado Correctamente",
+            token
         })
 
     } catch (error) {
@@ -162,7 +166,19 @@ export const recoverPassword = async (req,res)=>{
 
 export const verifyCode= async (req,res)=>{
     try {
-        const { email, code } = req.body
+        const { token, code } = req.body
+
+        const data = getTokenData(token)
+        
+        if(data === null){
+            return res.json({
+                success: false,
+                msg: 'Error al obtener data'
+            })
+        }
+
+        const {email} = data.uid
+
         const user = await User.findOne({email})
         if(user === null){
             return res.json({
@@ -196,7 +212,19 @@ export const verifyCode= async (req,res)=>{
 
 export const changePassword= async (req,res)=>{
     try {
-        const { email, password } = req.body
+        const { token, password } = req.body
+
+        const data = getTokenData(token)
+        
+        if(data === null){
+            return res.json({
+                success: false,
+                msg: 'Error al obtener data'
+            })
+        }
+
+        const {email} = data.uid
+
         const user = await User.findOne({email})
         if(user === null){
             return res.json({
