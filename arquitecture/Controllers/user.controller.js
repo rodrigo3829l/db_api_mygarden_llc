@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 import {getToken, getTokenData} from "../../helpers/middlewares/JWT.config.js"
 import {sendEmail, getTemplate } from "../../helpers/config/mail.config.js"
 import {uploadImage} from "../../helpers/utils/cloudinary.js"
+import {generateRandomCode} from "../../helpers/config/code.confi.js"
 
 
 export const signUp = async  (req, res) =>{
@@ -64,9 +65,9 @@ export const signUp = async  (req, res) =>{
 
         const {token, expiresIn} = getToken({email, userName, password, code})
 
-        const template = getTemplate(name, token)
+        const template = getTemplate(name, token, "confirm")
 
-        await sendEmail(email, 'Confirm acount', template)
+        await sendEmail(email, 'Confirm acount', template, "Confirm your acount")
 
         await user.save();
 
@@ -74,7 +75,7 @@ export const signUp = async  (req, res) =>{
             success: true,
             msg: "Registro correcto"
         })
-
+        
     } catch (error) {  
         console.log(error)
         return res.json({
@@ -129,3 +130,92 @@ export const confirm = async (req, res) =>{
     }
 }
 
+export const recoverPassword = async (req,res)=>{
+    try {
+        const { email } = req.body
+        const user = await User.findOne({email})
+        if(user === null){
+            return res.json({
+                success: false,
+                msg: 'El correo no existe'
+            })
+        }
+        const code=generateRandomCode()
+        user.code=code
+        await user.save()
+
+        const template = getTemplate(user.name, code, "recover")
+        await sendEmail(email, 'Verification', template, "Verification code")
+        return res.json({
+            success: true,
+            msg: "Codigo Enviado Correctamente"
+        })
+
+    } catch (error) {
+        console.log(error)
+        return res.json({
+            success: false,
+            msg: 'Error de recuperacion de contraseña'
+        })   
+    }
+}
+
+export const verifyCode= async (req,res)=>{
+    try {
+        const { email, code } = req.body
+        const user = await User.findOne({email})
+        if(user === null){
+            return res.json({
+                success: false,
+                msg: 'El correo no existe'
+            })
+        }
+
+        if (user.code !== code){
+            return res.json({
+                success: false,
+                msg: 'Codigo Incorrecto',
+            })
+        }
+
+        return res.json({
+            success: true,
+            msg: 'Codigo correcto'
+        })
+
+    } catch (error) {
+        console.log(error)
+        return res.json({
+            success: false,
+            msg: 'Error al Verificar Codigo'
+        })   
+    }
+}
+
+
+
+export const changePassword= async (req,res)=>{
+    try {
+        const { email, password } = req.body
+        const user = await User.findOne({email})
+        if(user === null){
+            return res.json({
+                success: false,
+                msg: 'El correo no existe'
+            })
+        }
+
+        user.password = password
+        await user.save()
+        return res.json({
+            success: true,
+            msg: 'Contraseña cambiada con exito'
+        })  
+    } catch (error) {
+        console.log(error)
+        return res.json({
+            success: false,
+            msg: 'Error al Cambiar contraseña'
+        })   
+    }
+}

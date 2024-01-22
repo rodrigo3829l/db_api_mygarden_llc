@@ -14,13 +14,13 @@ const userSchema = new Schema({
         public_id: String,
         secure_url: String
     },
-    direccion: [{
+    direccion: {
         estado: String,
         numCasa: Number,
         postalCode: Number,
         ciudad: String,
         calle: String
-    }],
+    },
     userName: {type: String, required: true, unique: true},
     email: {type: String, required: true, unique: true},
     password: {type: String, required: true},
@@ -31,7 +31,7 @@ const userSchema = new Schema({
 });
 
 
-
+//antes de guaradar incriptar la contraseña
 userSchema.pre("save", async function( next ){
     const user = this;
 
