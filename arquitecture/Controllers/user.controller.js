@@ -1,6 +1,6 @@
 import { User } from "../models/Users.js"
 import { v4 as uuidv4 } from "uuid";
-import {getToken, getTokenData} from "../../helpers/middlewares/JWT.config.js"
+import {getToken, getTokenData, generateRefreshToken} from "../../helpers/middlewares/JWT.config.js"
 import {sendEmail, getTemplate } from "../../helpers/config/mail.config.js"
 import {uploadImage} from "../../helpers/utils/cloudinary.js"
 import {generateRandomCode} from "../../helpers/config/code.confi.js"
@@ -218,4 +218,42 @@ export const changePassword= async (req,res)=>{
             msg: 'Error al Cambiar contraseña'
         })   
     }
+}
+
+export const login = async (req, res) => {
+    try {
+        const { userName, password } = req.body;
+
+        let user = await User.findOne({ userName });
+
+        if (!user) return res.status(403).json({error: 'No existe el usuario'})
+
+        const respuestaPassword  = await user.comparePassword(password);
+        if(!respuestaPassword) return res.status(403).json({error: 'Contraseña incorrecta'})
+
+        //generar el jwt token
+        const {token, expiresIn} = getToken(user.id);  
+        generateRefreshToken(user.id, res)
+        console.log('login')
+        console.log({token, expiresIn})
+        return res.json({token, expiresIn})
+
+    } catch (error) {
+        console.log(error)
+        return res.json({
+            success: false,
+            msg: 'Error al hacer el logeo'
+        }) 
+    }
+}
+
+
+export const logout = (req, res) => {    
+    res.clearCookie('refreshToken', {        
+                path: '/',        
+                httpOnly: true,        
+                secure: true,        
+                // // sameSite: 'none'    
+            })    
+            res.json({ok: 'logout'})
 }
