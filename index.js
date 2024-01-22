@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import express  from "express";
 import "./helpers/DataBase/conectdb.js";
+import userRoutes from './routes/user.route.js';
 
 
 console.log("Hola bd => ", process.env.URI_MONGO);
@@ -11,6 +12,7 @@ app.use(express.json())
 app.use(express.urlencoded(
     {extended: false}
 ))
+app.use('/api/user', userRoutes);
 
 
 
