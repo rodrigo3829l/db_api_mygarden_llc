@@ -24,6 +24,14 @@ export const getTokenData = (token) => {
     return data
 }
 
+const TokenVerificationErrors = {
+    ["invalid signature"]: "La firma del jwt no es valida",
+    ["jwt expired"]: "jwt expirado",
+    ["invalid token"]: "Token no valido",
+    ["No Bearer"]: "Utiliza el formato Bearer",
+    ["jwt malformed"]: "JWT formato no valido"
+};
+
 export const generateRefreshToken = (uid, res) => {
     const expiresIn = 60 * 60 * 24 * 30; 
     try {
@@ -38,11 +46,48 @@ export const generateRefreshToken = (uid, res) => {
         console.log(error)
     }
 } 
+export const requireRefreshToken = (req, res, next) => {
+    try {
+        const cookieString = req.headers.cookie;
 
-export const TokenVerificationErrors = {
-    ["invalid signature"]: "La firma del jwt no es valida",
-    ["jwt expired"]: "jwt expirado",
-    ["invalid token"]: "Token no valido",
-    ["No Bearer"]: "Utiliza el formato Bearer",
-    ["jwt malformed"]: "JWT formato no valido"
+        // Divide la cadena en partes usando el signo igual como delimitador
+        const cookieParts = cookieString.split('=');
+
+        // Toma el segundo elemento del array resultante
+        const refreshToken = cookieParts[1];
+
+        const refreshTokenCookie  = refreshToken;
+        if(!refreshTokenCookie)throw new Error("No existe el token")
+
+        const {uid} = jwt.verify(refreshTokenCookie, process.env.JWT_REFRESH)
+        req.uid = uid;
+        next();
+    } catch (error) {
+        console.log('error en el require refresh token')
+        console.log(error);
+        res.status(401).json({error: TokenVerificationErrors[error.message]})
+    }
+}
+
+
+
+export const requireToken = (req, res, next) => {
+    try {
+        let token = req.headers?.authorization ;
+        if(!token) 
+            throw new Error('No Bearer');
+
+        token = token.split(" ")[1];
+
+        const {uid} = jwt.verify(token, process.env.JWT_SECRET)
+        console.log("uid de require token => " + uid)
+        req.uid = uid;
+
+        next();
+    } catch (error) {
+        console.log(error);
+        return res
+        .status(401)
+        .send({error: TokenVerificationErrors[error.message ]})
+    }
 };

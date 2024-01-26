@@ -21,18 +21,24 @@ export const signUp = async  (req, res) =>{
             password,
         } = req.body
 
-        let user = await User.findOne({
-            $or: [
-              { userName: userName },
-              { email: email }
-            ]
-          });
+        let user = await User.findOne({ email});
           
 
         if(user !== null){
             return res.json({
                 success: false,
-                msg: 'Email ya existe',
+                msg: 'Este email ya existe',
+                email,
+                userName
+            })
+        }
+
+        user = await User.findOne({ userName});
+          
+        if(user !== null){
+            return res.json({
+                success: false,
+                msg: 'Este usuario ya existe',
                 email,
                 userName
             })
@@ -112,7 +118,7 @@ export const confirm = async (req, res) =>{
         }
 
         if(code !== user.code){
-            return res.redirect('http://localhost:5173/#/messages/errorConfirm')
+            return res.redirect('http://localhost:5173/notverified')
         }
 
         user.verified = 'VERIFIED'
@@ -120,7 +126,7 @@ export const confirm = async (req, res) =>{
 
         await user.save()
 
-        return res.redirect('http://localhost:5173/#/messages/successConfirm')
+        return res.redirect('http://localhost:5173/successverified')
     } catch (error) {
         console.log(error)
         return res.json({
@@ -178,7 +184,7 @@ export const verifyCode= async (req,res)=>{
         }
 
         const {email} = data.uid
-
+        console.log(email)
         const user = await User.findOne({email})
         if(user === null){
             return res.json({
@@ -250,15 +256,18 @@ export const changePassword= async (req,res)=>{
 
 export const login = async (req, res) => {
     try {
-        const { userName, password } = req.body;
+        const { email, password } = req.body;
 
-        let user = await User.findOne({ userName });
-
-        if (!user) return res.status(403).json({error: 'No existe el usuario'})
-
+        let user = await User.findOne({ email });
+        if (!user) return res.status(403).json({error: 'Invalid email'})
         const respuestaPassword  = await user.comparePassword(password);
-        if(!respuestaPassword) return res.status(403).json({error: 'Contraseña incorrecta'})
-
+        if(!respuestaPassword) return res.status(403).json({error: 'Invalid password'})
+        if(user.verified === "UNVERIFIED") return res.status(403).json({error: 'This account is not verified please verify it'})
+        if(user.status === "DISCONECTED") {
+            user.status = "CONECTED"
+            await user.save()
+        }
+        
         //generar el jwt token
         const {token, expiresIn} = getToken(user.id);  
         generateRefreshToken(user.id, res)
@@ -284,4 +293,31 @@ export const logout = (req, res) => {
                 // // sameSite: 'none'    
             })    
             res.json({ok: 'logout'})
+}
+
+
+export const refreshToken  = (req, res) => {
+    try {
+        const {token, expiresIn} = getToken(req.uid);  
+        console.log('refresh')
+        console.log({token, expiresIn})
+        return res.json({token, expiresIn})
+    } catch (error) {
+        console.log('error en la funcion refresh token')
+        console.log(error);
+        return res.status(500).json({error: 'Error de servidor'})
+    }
+};
+
+
+
+//Esta es la ruta protected
+export const infoUser = async (req, res) => {
+    try {
+        const user = await User.findById(req.uid).lean()
+        return res.json({_id: user._id, userName: user.userName, email: user.email, tipo: user.rol})
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({error: 'Error de servidor'})
+    }
 }
