@@ -80,7 +80,7 @@ export const getTemplate = (name, code, action) => {
             <p>To confirm your account, please click on the following link:</p>
             
             <!-- Link to confirm the account -->
-            <a href="https://db-api-mygarden-llc.vercel.app/api/user/confirm/${code}" target="_blank">Confirm Account</a>
+            <a href="https://db-api-mygarden.onrender.com/api/user/confirm/${code}" target="_blank">Confirm Account</a>
         </div>
     </body>
     </html>
