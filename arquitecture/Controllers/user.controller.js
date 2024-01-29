@@ -135,7 +135,8 @@ export const confirm = async (req, res) =>{
         }
 
         if(code !== user.code){
-            return res.redirect('http://localhost:5173/notverified')
+            return res.redirect('mygardenllcservices.com/notverified')
+            // return res.redirect('http://localhost:5173/notverified')
         }
 
         user.verified = 'VERIFIED'
@@ -143,7 +144,8 @@ export const confirm = async (req, res) =>{
 
         await user.save()
 
-        return res.redirect('http://localhost:5173/successverified')
+        return res.redirect('mygardenllcservices.com/successverified')
+        // return res.redirect('http://localhost:5173/successverified')
     } catch (error) {
         console.log(error)
         return res.json({
