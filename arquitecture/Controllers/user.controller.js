@@ -1,5 +1,6 @@
 import { User } from "../models/Users.js"
 import { v4 as uuidv4 } from "uuid";
+import fs from 'fs-extra';
 import {getToken, getTokenData, generateRefreshToken} from "../../helpers/middlewares/JWT.config.js"
 import {sendEmail, getTemplate } from "../../helpers/config/mail.config.js"
 import {uploadImage} from "../../helpers/utils/cloudinary.js"
@@ -19,6 +20,7 @@ export const signUp = async  (req, res) =>{
             userName,
             email,
             password,
+            imagen
         } = req.body
 
         let user = await User.findOne({ email});
@@ -27,9 +29,8 @@ export const signUp = async  (req, res) =>{
         if(user !== null){
             return res.json({
                 success: false,
-                msg: 'Este email ya existe',
-                email,
-                userName
+                msg: 'This email is already rooted in our garden. 🌱✉️ Please try another email seed. 💌🌼',
+
             })
         }
 
@@ -38,9 +39,16 @@ export const signUp = async  (req, res) =>{
         if(user !== null){
             return res.json({
                 success: false,
-                msg: 'Este usuario ya existe',
-                email,
-                userName
+                msg: 'This gardener is already tending our garden beds. 🌿👩‍🌾 Please choose a different garden nickname. 🌼🏷️',
+            })
+        }
+
+        user = await User.findOne({ cellPhone});
+          
+        if(user !== null){
+            return res.json({
+                success: false,
+                msg: 'Sorry, but this phone number has already taken root in our garden. 🌱📞 Choose a different path for your garden contact. 🌺🚫',
             })
         }
 
@@ -60,14 +68,22 @@ export const signUp = async  (req, res) =>{
             code,
             rol : "client"
         })
-        if(req.files?.img){
-            const {public_id, secure_url} = await uploadImage(req.files.img.tempFilePath)
-            user.img ={
-                public_id,
-                secure_url  
-            }
-            fs.unlink(req.files.img.tempFilePath)
-        }
+
+        console.log(req.files)
+
+
+        // if(imagen){
+        //     let img = new Image()
+        //     img.src = imagen
+
+        //     const {public_id, secure_url} = await uploadImage(img.tempFilePath)
+        //     console.log("Se subio la imagen")
+        //     user.imagen ={
+        //         public_id,
+        //         secure_url  
+        //     }
+        //     fs.unlink(req.files.imagen.tempFilePath)
+        // }
 
         const {token, expiresIn} = getToken({email, userName, password, code})
 
@@ -83,6 +99,7 @@ export const signUp = async  (req, res) =>{
         })
         
     } catch (error) {  
+        console.log("Error en el  registro")
         console.log(error)
         return res.json({
             success: false,
@@ -262,6 +279,7 @@ export const login = async (req, res) => {
         if (!user) return res.status(403).json({error: 'Invalid email'})
         const respuestaPassword  = await user.comparePassword(password);
         if(!respuestaPassword) return res.status(403).json({error: 'Invalid password'})
+
         if(user.verified === "UNVERIFIED") return res.status(403).json({error: 'This account is not verified please verify it'})
         if(user.status === "DISCONECTED") {
             user.status = "CONECTED"
@@ -272,8 +290,18 @@ export const login = async (req, res) => {
         const {token, expiresIn} = getToken(user.id);  
         generateRefreshToken(user.id, res)
         console.log('login')
-        console.log({token, expiresIn})
-        return res.json({token, expiresIn})
+        console.log({
+            token, 
+            expiresIn, 
+            name : `${user.name} ${user.apellidoP} ${user.apellidoM}` ,
+            email : user.email
+        })
+        return res.json({
+            token, 
+            expiresIn, 
+            name : `${user.name} ${user.apellidoP} ${user.apellidoM}` ,
+            email : user.email
+        })
 
     } catch (error) {
         console.log(error)

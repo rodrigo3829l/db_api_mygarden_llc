@@ -48,26 +48,29 @@ export const generateRefreshToken = (uid, res) => {
 } 
 export const requireRefreshToken = (req, res, next) => {
     try {
+        console.log(req.headers.cookie);
         const cookieString = req.headers.cookie;
 
-        // Divide la cadena en partes usando el signo igual como delimitador
-        const cookieParts = cookieString.split('=');
+        // Buscar y extraer la parte después de "refreshToken="
+        const match = cookieString.match(/refreshToken=([^;]*)/);
 
-        // Toma el segundo elemento del array resultante
-        const refreshToken = cookieParts[1];
+        if (!match || match.length < 2) {
+            throw new Error("No se encontró refreshToken en las cookies");
+        }
 
-        const refreshTokenCookie  = refreshToken;
-        if(!refreshTokenCookie)throw new Error("No existe el token")
+        const refreshTokenCookie = match[1];
+        console.log(refreshTokenCookie);
 
-        const {uid} = jwt.verify(refreshTokenCookie, process.env.JWT_REFRESH)
+        const { uid } = jwt.verify(refreshTokenCookie, process.env.JWT_REFRESH);
         req.uid = uid;
         next();
     } catch (error) {
-        console.log('error en el require refresh token')
+        console.log('Error en require refresh token');
         console.log(error);
-        res.status(401).json({error: TokenVerificationErrors[error.message]})
+        res.status(401).json({ error: TokenVerificationErrors[error.message] });
     }
 }
+
 
 
 
@@ -91,3 +94,4 @@ export const requireToken = (req, res, next) => {
         .send({error: TokenVerificationErrors[error.message ]})
     }
 };
+
