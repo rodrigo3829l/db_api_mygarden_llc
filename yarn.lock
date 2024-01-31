@@ -424,6 +424,11 @@
   dependencies:
     "function-bind" "^1.1.2"
 
+"helmet@^7.1.0":
+  "integrity" "sha512-g+HZqgfbpXdCkme/Cd/mZkV0aV3BZZZSugecH03kl38m/Kmdx8jKjBikpDj2cr+Iynv4KpYEviojNdTJActJAg=="
+  "resolved" "https://registry.npmjs.org/helmet/-/helmet-7.1.0.tgz"
+  "version" "7.1.0"
+
 "http-errors@2.0.0":
   "integrity" "sha512-FtwrG/euBzaEjYeRqOgly7G0qviiXoJWnvEH2Z1plBdXgbyjv34pHTSb9zoeHMyDy33+DWy5Wt9Wo+TURtOYSQ=="
   "resolved" "https://registry.npmjs.org/http-errors/-/http-errors-2.0.0.tgz"

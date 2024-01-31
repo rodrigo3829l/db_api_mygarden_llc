@@ -135,7 +135,7 @@ export const confirm = async (req, res) =>{
         }
 
         if(code !== user.code){
-            return res.redirect('mygardenllcservices.com/notverified')
+            return res.redirect('http://localhost:5000/notverified')
             // return res.redirect('http://localhost:5173/notverified')
         }
 
@@ -144,7 +144,7 @@ export const confirm = async (req, res) =>{
 
         await user.save()
 
-        return res.redirect('mygardenllcservices.com/successverified')
+        return res.redirect('http://localhost:5000/successverified')
         // return res.redirect('http://localhost:5173/successverified')
     } catch (error) {
         console.log(error)
