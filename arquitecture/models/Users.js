@@ -28,6 +28,8 @@ const userSchema = new Schema({
     code: {type: String, required: true},
     rol: {type: String, required: true},
     verified: {type: String, required: true, default: 'UNVERIFIED'},
+    intentos: {type: Number, default : 0},
+    lastIntent: {type: Number, default: null},
 });
 
 

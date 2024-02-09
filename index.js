@@ -33,7 +33,7 @@ app.use(express.urlencoded(
 app.use('/api/user', userRoutes);
 app.use(cookieParser());
 
-app.use(helmet());
+// app.use(helmet());
 
 // Configuración personalizada de Helmet
 // app.use(

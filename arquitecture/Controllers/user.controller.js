@@ -135,7 +135,7 @@ export const confirm = async (req, res) =>{
         }
 
         if(code !== user.code){
-            return res.redirect('http://localhost:5000/notverified')
+            return res.redirect('http://localhost:5173/notverified')
             // return res.redirect('http://localhost:5173/notverified')
         }
 
@@ -144,7 +144,7 @@ export const confirm = async (req, res) =>{
 
         await user.save()
 
-        return res.redirect('http://localhost:5000/successverified')
+        return res.redirect('http://localhost:5173/successverified')
         // return res.redirect('http://localhost:5173/successverified')
     } catch (error) {
         console.log(error)
@@ -279,15 +279,40 @@ export const login = async (req, res) => {
 
         let user = await User.findOne({ email });
         if (!user) return res.status(403).json({error: 'Invalid email'})
+
+        if (user.lastIntent) {
+            const difference = new Date() - user.lastIntent;
+            const differenceInSeconds = Math.abs(difference) / 1000; // Convertir a segundos
+        
+            if (differenceInSeconds < 60) { // Si la diferencia es menor a 60 segundos
+                const remainingSeconds = Math.ceil(60 - differenceInSeconds); // Calcular segundos restantes
+                return res.status(403).json({ error: `Too many attempts, please try again in ${remainingSeconds} seconds` });
+            } else {
+                user.intentos = 0;
+                user.lastIntent = null;
+                await user.save();
+            }
+        }        
+
         const respuestaPassword  = await user.comparePassword(password);
-        if(!respuestaPassword) return res.status(403).json({error: 'Invalid password'})
+        if(!respuestaPassword) {
+            user.intentos ++
+            if(user.intentos >= 3){
+                user.lastIntent = new Date()
+            }
+            await user.save()
+            return res.status(403).json({error: 'Invalid password'})
+        }
 
         if(user.verified === "UNVERIFIED") return res.status(403).json({error: 'This account is not verified please verify it'})
         if(user.status === "DISCONECTED") {
             user.status = "CONECTED"
             await user.save()
         }
-        
+
+        user.intentos = 0
+        user.lastIntent = null
+        await user.save()
         //generar el jwt token
         const {token, expiresIn} = getToken(user.id);  
         generateRefreshToken(user.id, res)
