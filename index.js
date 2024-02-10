@@ -4,6 +4,7 @@ import "./helpers/DataBase/conectdb.js";
 import userRoutes from './routes/user.route.js';
 import cors from 'cors'
 import cookieParser from 'cookie-parser';
+import bodyParser from 'body-parser';
 
 import helmet from 'helmet';
 
@@ -32,6 +33,9 @@ app.use(express.urlencoded(
 ))
 app.use('/api/user', userRoutes);
 app.use(cookieParser());
+
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
 // app.use(helmet());
 
