@@ -22,7 +22,7 @@ export const signUp = async  (req, res) =>{
             password,
             imagen
         } = req.body
-
+        console.log(req.body)
         let user = await User.findOne({ email});
           
 
