@@ -69,8 +69,6 @@ export const signUp = async  (req, res) =>{
             rol : "client"
         })
 
-        console.log(req.files)
-
 
         // if(imagen){
         //     let img = new Image()
@@ -85,7 +83,7 @@ export const signUp = async  (req, res) =>{
         //     fs.unlink(req.files.imagen.tempFilePath)
         // }
 
-        const {token, expiresIn} = getToken({email, userName, password, code})
+        const {token, expiresIn} = getToken({email, code})
 
         const template = getTemplate(name, token, "confirm")
 
@@ -121,7 +119,6 @@ export const confirm = async (req, res) =>{
                 msg: 'Error al obtener data'
             })
         }
-        console.log(data.uid)
 
         const {email, code} = data.uid
 
@@ -134,18 +131,33 @@ export const confirm = async (req, res) =>{
             })
         }
 
+        // Calcula la diferencia de tiempo en minutos
+        const diffInMinutes = (new Date() - user.creation) / 1000 / 60;
+        console.log(diffInMinutes)
+        if(diffInMinutes > 3){
+
+            const code = uuidv4()
+            const {token, expiresIn} = getToken({email, code})
+
+            const template = getTemplate(user.name, token, "confirm")
+
+            await sendEmail(email, 'Confirm acount', template, "Confirm your acount")
+            user.creation = new Date()
+            user.code = code
+            await user.save();
+            return res.redirect('http://localhost:5173/resendemail')
+        }
+
         if(code !== user.code){
-            return res.redirect('https://mygardenllcservices.com/notverified')
-            // return res.redirect('http://localhost:5173/notverified')
+            // return res.redirect('https://mygardenllcservices.com/notverified')
+            return res.redirect('http://localhost:5173/notverified')
         }
 
         user.verified = 'VERIFIED'
-        user.status = 'CONECTED'
-
         await user.save()
 
-        return res.redirect('https://mygardenllcservices.com/successverified')
-        // return res.redirect('http://localhost:5173/successverified')
+        // return res.redirect('https://mygardenllcservices.com/successverified')
+        return res.redirect('http://localhost:5173/successverified')
     } catch (error) {
         console.log(error)
         return res.json({
@@ -154,6 +166,7 @@ export const confirm = async (req, res) =>{
         })
     }
 }
+
 
 export const recoverPassword = async (req,res)=>{
     try {
@@ -233,6 +246,51 @@ export const verifyCode= async (req,res)=>{
     }
 }
 
+export const resendcode= async (req,res)=>{
+    try {
+        const { token } = req.body
+
+        const data = getTokenData(token)
+        
+        if(data === null){
+            return res.json({
+                success: false,
+                msg: 'Error al obtener data'
+            })
+        }
+
+        const {email} = data.uid
+        const user = await User.findOne({email})
+        if(user === null){
+            return res.json({
+                success: false,
+                msg: 'El correo no existe'
+            })
+        }
+
+        const code=generateRandomCode()
+        user.code=code
+
+        await user.save()
+
+        const template = getTemplate(user.name, code, "recover")
+        await sendEmail(email, 'Verification', template, "Verification code")
+        
+        return res.json({
+            success: true,
+            msg: 'Codigo enviado correctamente'
+        })
+
+    } catch (error) {
+        console.log(error)
+        return res.json({
+            success: false,
+            msg: 'Error al Verificar Codigo'
+        })   
+    }
+}
+
+
 
 
 export const changePassword= async (req,res)=>{
@@ -257,7 +315,7 @@ export const changePassword= async (req,res)=>{
                 msg: 'El correo no existe'
             })
         }
-
+        user.lastPassword = new Date()
         user.password = password
         await user.save()
         return res.json({
@@ -276,9 +334,13 @@ export const changePassword= async (req,res)=>{
 export const login = async (req, res) => {
     try {
         const { email, password } = req.body;
-
         let user = await User.findOne({ email });
-        if (!user) return res.status(403).json({error: 'Invalid email'})
+
+        if (!user){
+            return res.status(403).json({error: 'Invalid email'})
+        }
+
+        if(user.intentsFailBlocked >= 5)return res.status(403).json({ error: 'This count are blocked, please reactivated with code in email' });
 
         if (user.lastIntent) {
             const difference = new Date() - user.lastIntent;
@@ -297,22 +359,32 @@ export const login = async (req, res) => {
         const respuestaPassword  = await user.comparePassword(password);
         if(!respuestaPassword) {
             user.intentos ++
+            user.intentsFailBlocked ++
             if(user.intentos >= 3){
                 user.lastIntent = new Date()
+                const template = getTemplate(user.name, null, 'warning' )
+                await sendEmail(email, 'Access warning', template, "Access warning")
+            }
+            if(user.intentsFailBlocked >= 5){
+                user.status = 'BLOCKED'
+                const code = uuidv4()
+                user.code = code
+                const {token} = getToken({email, code})
+                const template = getTemplate(user.name, token, 'reactivated' )
+                await sendEmail(email, 'Reactiated your acount', template, "Reactivated your acount")
+                await user.save()
             }
             await user.save()
             return res.status(403).json({error: 'Invalid password'})
         }
 
         if(user.verified === "UNVERIFIED") return res.status(403).json({error: 'This account is not verified please verify it'})
-        if(user.status === "DISCONECTED") {
-            user.status = "CONECTED"
+        if(user.rol !== "client") return res.status(403).json({error: 'You do not have client permissions to access the page'})
+        if(user.userStatus === "DISABLED") {
+            user.userStatus = "ENABLED"
             await user.save()
         }
 
-        user.intentos = 0
-        user.lastIntent = null
-        await user.save()
         //generar el jwt token
         const {token, expiresIn} = getToken(user.id);  
         generateRefreshToken(user.id, res)
@@ -323,6 +395,11 @@ export const login = async (req, res) => {
             name : `${user.name} ${user.apellidoP} ${user.apellidoM}` ,
             email : user.email
         })
+        user.intentos = 0
+        user.intentsFailBlocked = 0
+        user.lastIntent = null
+        user.lastLogin = new Date()
+        await user.save()
         return res.json({
             token, 
             expiresIn, 
@@ -339,6 +416,50 @@ export const login = async (req, res) => {
     }
 }
 
+export const recoverCount = async (req, res) =>{
+    try {
+        const { token } = req.params
+
+        const data = getTokenData(token)
+        if(data === null){
+            return res.json({
+                success: false,
+                msg: 'Error al obtener data'
+            })
+        }
+
+        const {email, code} = data.uid
+
+        const user = await User.findOne({email})
+
+        if(user === null){
+            return res.json({
+                success: false,
+                msg: 'El usuario no existe'
+            })
+        }
+
+        if(code !== user.code){
+            // return res.redirect('https://mygardenllcservices.com/notverified')
+            return res.redirect('http://localhost:5173/notverified')
+        }
+
+        user.status = 'CONECTED'
+        user.intentsFailBlocked = 0
+        user.intentos = 0
+        user.lastIntent = null
+        await user.save()
+
+        // return res.redirect('https://mygardenllcservices.com/recover')
+        return res.redirect('http://localhost:5173/recover')
+    } catch (error) {
+        console.log(error)
+        return res.json({
+            success: false,
+            msg: 'Error al confirmar usuario'
+        })
+    }
+}
 
 export const logout = (req, res) => {    
     res.clearCookie('refreshToken', {        

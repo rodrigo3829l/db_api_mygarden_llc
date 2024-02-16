@@ -24,12 +24,17 @@ const userSchema = new Schema({
     userName: {type: String, required: true, unique: true},
     email: {type: String, required: true, unique: true},
     password: {type: String, required: true},
-    status: {type: String, required: true, default: 'DISCONECTED'},
+    status: {type: String, required: true, default: 'DISBLOCKED'},
+    userStatus: {type: String, required: true, default: 'ENABLED'},
     code: {type: String, required: true},
     rol: {type: String, required: true},
     verified: {type: String, required: true, default: 'UNVERIFIED'},
     intentos: {type: Number, default : 0},
     lastIntent: {type: Number, default: null},
+    creation: {type: Date, default: new Date()},
+    lastLogin: Date,
+    intentsFailBlocked: {type: Number, default : 0},
+    lastPassword: {type: Date, default: new Date()},
 });
 
 
@@ -47,7 +52,7 @@ userSchema.pre("save", async function( next ){
         throw new Error('Fallo el hash de contraseña');
     }
 })
-
+4
 userSchema.methods.comparePassword = async function (candidatePassword){
     return await bcryptjs.compare( candidatePassword, this.password)
 }

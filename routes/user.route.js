@@ -10,7 +10,9 @@ import {
     login, 
     logout,
     infoUser,
-    refreshToken
+    refreshToken,
+    recoverCount,
+    resendcode
  } from '../arquitecture/Controllers/user.controller.js';
 
 const router = express.Router();
@@ -19,11 +21,14 @@ router.post('/signup', fileUpload({useTempFiles: true, tempFileDir: './uploads'}
 router.get('/confirm/:token', [], confirm)
 
 router.post('/recover',[],recoverPassword)
+router.post('/resend',[],resendcode)
 router.post('/verify',[],verifyCode)
 router.post('/change',[],changePassword)
 
 router.post('/login', [], login)
 router.get('/logout', [], logout)
+
+router.get('/reactivate/:token', [], recoverCount)
 
 
 
