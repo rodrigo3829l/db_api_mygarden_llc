@@ -10,7 +10,7 @@ import helmet from 'helmet';
 
 
 const app = express();
-console.log("Hola bd => ", process.env.URI_MONGO);
+console.log("Hola db => ", process.env.URI_MONGO);
 
 const whiteList = [process.env.ORIGIN1, process.env.ORIGIN2 , process.env.ORIGIN3]
 

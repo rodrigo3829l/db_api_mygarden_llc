@@ -98,7 +98,9 @@ export const getTemplate = (name, code, action) => {
             <p>We're thrilled to have you join us on this green journey! To put down roots and start blooming together, all you need to do is confirm your account.</p>
             
             <!-- Link to confirm the account -->
-            <a href="http://localhost:5000/api/user/confirm/${code}" target="_blank">Confirm Account</a>
+            <a href="https://db-api-mygarden.onrender.com/api/user/confirm/${code}" target="_blank">Confirm Account</a>
+            <!-- Confirmation Message -->
+            <p>If you have not registered ignore this email.</p>
         </div>
     </body>
     
@@ -172,7 +174,7 @@ export const getTemplate = (name, code, action) => {
         <p>It seems like your garden gate got locked after too many attempts to enter. No worries, though! Let's get you back in so you can continue tending to your beautiful garden. Just click the button below to unlock the gate and reactivate your account:</p>
         
         <!-- Button to reactivate the account -->
-        <a href="http://localhost:5000/api/user/reactivate/${code}" target="_blank">Unlock & Reactivate Account</a>
+        <a href="https://db-api-mygarden.onrender.com/api/user/reactivate/${code}" target="_blank">Unlock & Reactivate Account</a>
     </div>
 </body>
         `
@@ -258,6 +260,7 @@ export const getTemplate = (name, code, action) => {
             <div class="verification-code">${code}</div>
             
             <p>Enter this code on the password reset page to bloom a fresh, secure password for your garden's gate.</p>
+            <p>If you have not tried to recover the password, ignore this message.</p>
         </div>
 </body>
     
@@ -341,7 +344,7 @@ export const getTemplate = (name, code, action) => {
         <p>It seems someone is attempting to access your account.</p>
         
         <!-- Verification Code -->
-        <div class="verification-code">If this wasn't you, please disregard</div>
+        <div class="verification-code">If it was you, please disregard</div>
         
         <!-- Additional Information -->
         <p>This is a security warning. If it was indeed you, ${name}, please consider resetting your password to prevent the account from being blocked.</p>

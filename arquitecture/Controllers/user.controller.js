@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 import fs from 'fs-extra';
 import {getToken, getTokenData, generateRefreshToken} from "../../helpers/middlewares/JWT.config.js"
 import {sendEmail, getTemplate } from "../../helpers/config/mail.config.js"
-import {uploadImage} from "../../helpers/utils/cloudinary.js"
+// import {uploadImage} from "../../helpers/utils/cloudinary.js"
 import {generateRandomCode} from "../../helpers/config/code.confi.js"
 
 
@@ -134,8 +134,7 @@ export const confirm = async (req, res) =>{
         // Calcula la diferencia de tiempo en minutos
         const diffInMinutes = (new Date() - user.creation) / 1000 / 60;
         console.log(diffInMinutes)
-        if(diffInMinutes > 3){
-
+        if(diffInMinutes > 9){
             const code = uuidv4()
             const {token, expiresIn} = getToken({email, code})
 
@@ -145,19 +144,20 @@ export const confirm = async (req, res) =>{
             user.creation = new Date()
             user.code = code
             await user.save();
-            return res.redirect('http://localhost:5173/resendemail')
+            return res.redirect('https://mygardenllcservices.com/resendemail')
+            // return res.redirect('http://localhost:5173/resendemail')
         }
 
         if(code !== user.code){
-            // return res.redirect('https://mygardenllcservices.com/notverified')
-            return res.redirect('http://localhost:5173/notverified')
+            return res.redirect('https://mygardenllcservices.com/notverified')
+            // return res.redirect('http://localhost:5173/notverified')
         }
 
         user.verified = 'VERIFIED'
         await user.save()
 
-        // return res.redirect('https://mygardenllcservices.com/successverified')
-        return res.redirect('http://localhost:5173/successverified')
+        return res.redirect('https://mygardenllcservices.com/successverified')
+        // return res.redirect('http://localhost:5173/successverified')
     } catch (error) {
         console.log(error)
         return res.json({
@@ -171,13 +171,16 @@ export const confirm = async (req, res) =>{
 export const recoverPassword = async (req,res)=>{
     try {
         const { email } = req.body
+
         const user = await User.findOne({email})
+
         if(user === null){
             return res.json({
                 success: false,
                 msg: 'El correo no existe'
             })
         }
+
         const code=generateRandomCode()
         user.code=code
 
@@ -186,7 +189,9 @@ export const recoverPassword = async (req,res)=>{
         await user.save()
 
         const template = getTemplate(user.name, code, "recover")
+
         await sendEmail(email, 'Verification', template, "Verification code")
+
         return res.json({
             success: true,
             msg: "Codigo Enviado Correctamente",
@@ -216,8 +221,9 @@ export const verifyCode= async (req,res)=>{
         }
 
         const {email} = data.uid
-        console.log(email)
+
         const user = await User.findOne({email})
+
         if(user === null){
             return res.json({
                 success: false,
@@ -440,18 +446,18 @@ export const recoverCount = async (req, res) =>{
         }
 
         if(code !== user.code){
-            // return res.redirect('https://mygardenllcservices.com/notverified')
-            return res.redirect('http://localhost:5173/notverified')
+            return res.redirect('https://mygardenllcservices.com/notverified')
+            // return res.redirect('http://localhost:5173/notverified')
         }
 
-        user.status = 'CONECTED'
+        user.status = 'DISBLOCKED'
         user.intentsFailBlocked = 0
         user.intentos = 0
         user.lastIntent = null
         await user.save()
 
-        // return res.redirect('https://mygardenllcservices.com/recover')
-        return res.redirect('http://localhost:5173/recover')
+        return res.redirect('https://mygardenllcservices.com/recover')
+        // return res.redirect('http://localhost:5173/recover')
     } catch (error) {
         console.log(error)
         return res.json({
