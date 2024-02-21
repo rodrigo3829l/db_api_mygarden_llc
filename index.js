@@ -36,7 +36,7 @@ app.use(middleware.handle(i18next));//se configuro
   
 // console.log("Hola db => ", process.env.URI_MONGO);
 // console.log("Commit de seguridad")
-// console.log("el Data")
+console.log("Ultimo commit 21/02/2024 a las 08:05")
 // console.log(i18next.services.resourceStore.data);
 // console.log("el init")
 // console.log(i18next.init());
