@@ -29,7 +29,7 @@ export const signUp = async  (req, res) =>{
         if(user !== null){
             return res.json({
                 success: false,
-                msg: 'This email is already rooted in our garden. 🌱✉️ Please try another email seed. 💌🌼',
+                msg: req.t('user.signUp.email_already_rooted')
 
             })
         }
@@ -39,7 +39,7 @@ export const signUp = async  (req, res) =>{
         if(user !== null){
             return res.json({
                 success: false,
-                msg: 'This gardener is already tending our garden beds. 🌿👩‍🌾 Please choose a different garden nickname. 🌼🏷️',
+                msg: req.t('user.signUp.user_name_already_use')
             })
         }
 
@@ -48,7 +48,7 @@ export const signUp = async  (req, res) =>{
         if(user !== null){
             return res.json({
                 success: false,
-                msg: 'Sorry, but this phone number has already taken root in our garden. 🌱📞 Choose a different path for your garden contact. 🌺🚫',
+                msg: req.t('user.signUp.cellphone_already_use')
             })
         }
 
@@ -85,15 +85,28 @@ export const signUp = async  (req, res) =>{
 
         const {token, expiresIn} = getToken({email, code})
 
-        const template = getTemplate(name, token, "confirm")
+        const template = getTemplate(
+            req.t('email.confirm.titleOne'), 
+            req.t('email.confirm.titleTwo'), 
+            req.t('email.confirm.prOne'),
+            req.t('email.confirm.prTwo'),
+            name, 
+            token, 
+            "confirm", 
+            req.t('email.confirm.textAction'))
 
-        await sendEmail(email, 'Confirm acount', template, "Confirm your acount")
+        await sendEmail(
+            email, 
+            req.t('email.confirm.tittle'), 
+            template, 
+            req.t('email.confirm.tittle'),
+            )
 
         await user.save();
 
         return res.json({
             success: true,
-            msg: "Registro correcto"
+            msg: req.t('user.signUp.signup_correct')
         })
         
     } catch (error) {  
@@ -116,7 +129,6 @@ export const confirm = async (req, res) =>{
         if(data === null){
             return res.json({
                 success: false,
-                msg: 'Error al obtener data'
             })
         }
 
@@ -127,7 +139,6 @@ export const confirm = async (req, res) =>{
         if(user === null){
             return res.json({
                 success: false,
-                msg: 'El usuario no existe'
             })
         }
 
@@ -138,26 +149,53 @@ export const confirm = async (req, res) =>{
             const code = uuidv4()
             const {token, expiresIn} = getToken({email, code})
 
-            const template = getTemplate(user.name, token, "confirm")
+            const template = getTemplate(
+                req.t('email.confirm.titleOne'), 
+                req.t('email.confirm.titleTwo'), 
+                req.t('email.confirm.prOne'),
+                req.t('email.confirm.prTwo'),
+                user.name, 
+                token, 
+                "confirm", 
+                req.t('email.confirm.textAction')
+            )
+    
+            await sendEmail(
+                email, 
+                req.t('email.confirm.tittle'), 
+                template, 
+                req.t('email.confirm.tittle'),
+            )
 
-            await sendEmail(email, 'Confirm acount', template, "Confirm your acount")
+            // const template = getTemplate(
+            //     user.name, 
+            //     token, 
+            //     "confirm"
+            // )
+
+            // await sendEmail(
+            //     email, 
+            //     'Confirm acount', 
+            //     template, 
+            //     "Confirm your acount"
+            // )
             user.creation = new Date()
             user.code = code
             await user.save();
+            // return res.redirect('https://mygardenllcservices.com/resendemail')
             return res.redirect('https://mygardenllcservices.com/resendemail')
-            // return res.redirect('http://localhost:5173/resendemail')
         }
 
         if(code !== user.code){
+            // return res.redirect('https://mygardenllcservices.com/notverified')
             return res.redirect('https://mygardenllcservices.com/notverified')
-            // return res.redirect('http://localhost:5173/notverified')
         }
 
         user.verified = 'VERIFIED'
         await user.save()
 
+        // return res.redirect('https://mygardenllcservices.com/successverified')
         return res.redirect('https://mygardenllcservices.com/successverified')
-        // return res.redirect('http://localhost:5173/successverified')
     } catch (error) {
         console.log(error)
         return res.json({
@@ -177,7 +215,6 @@ export const recoverPassword = async (req,res)=>{
         if(user === null){
             return res.json({
                 success: false,
-                msg: 'El correo no existe'
             })
         }
 
@@ -188,13 +225,38 @@ export const recoverPassword = async (req,res)=>{
 
         await user.save()
 
-        const template = getTemplate(user.name, code, "recover")
+        const template = getTemplate(
+            req.t('email.recover.titleOne'), 
+            req.t('email.recover.titleTwo'), 
+            req.t('email.recover.prOne'),
+            req.t('email.recover.prTwo'),
+            user.name, 
+            code, 
+            "recover", 
+            req.t('email.recover.textAction')
+        )
 
-        await sendEmail(email, 'Verification', template, "Verification code")
+        await sendEmail(
+            email, 
+            req.t('email.recover.tittle'), 
+            template, 
+            req.t('email.recover.tittle'),
+        )
+
+        // const template = getTemplate(
+        //     user.name, 
+        //     code, 
+        //     "recover"
+        //     )
+
+        // await sendEmail(
+        //     email, 
+        //     'Verification', 
+        //     template, 
+        //     "Verification code")
 
         return res.json({
             success: true,
-            msg: "Codigo Enviado Correctamente",
             token
         })
 
@@ -216,7 +278,6 @@ export const verifyCode= async (req,res)=>{
         if(data === null){
             return res.json({
                 success: false,
-                msg: 'Error al obtener data'
             })
         }
 
@@ -227,20 +288,17 @@ export const verifyCode= async (req,res)=>{
         if(user === null){
             return res.json({
                 success: false,
-                msg: 'El correo no existe'
             })
         }
 
         if (user.code !== code){
             return res.json({
                 success: false,
-                msg: 'Codigo Incorrecto',
             })
         }
 
         return res.json({
             success: true,
-            msg: 'Codigo correcto'
         })
 
     } catch (error) {
@@ -252,7 +310,7 @@ export const verifyCode= async (req,res)=>{
     }
 }
 
-export const resendcode= async (req,res)=>{
+export const resendcode = async (req,res)=>{
     try {
         const { token } = req.body
 
@@ -279,8 +337,34 @@ export const resendcode= async (req,res)=>{
 
         await user.save()
 
-        const template = getTemplate(user.name, code, "recover")
-        await sendEmail(email, 'Verification', template, "Verification code")
+        const template = getTemplate(
+            req.t('email.recover.titleOne'), 
+            req.t('email.recover.titleTwo'), 
+            req.t('email.recover.prOne'),
+            req.t('email.recover.prTwo'),
+            user.name, 
+            code, 
+            "recover", 
+            req.t('email.recover.textAction')
+        )
+
+        await sendEmail(
+            email, 
+            req.t('email.recover.tittle'), 
+            template, 
+            req.t('email.recover.tittle'),
+        )
+
+        // const template = getTemplate(
+        //     user.name, 
+        //     code, 
+        //     "recover")
+        // await sendEmail(
+        //     email, 
+        //     'Verification', 
+        //     template, 
+        //     "Verification code"
+        //     )
         
         return res.json({
             success: true,
@@ -343,10 +427,10 @@ export const login = async (req, res) => {
         let user = await User.findOne({ email });
 
         if (!user){
-            return res.status(403).json({error: 'Invalid email'})
+            return res.status(403).json({error: req.t('user.login.invalid_email')})
         }
 
-        if(user.intentsFailBlocked >= 5)return res.status(403).json({ error: 'This count are blocked, please reactivated with code in email' });
+        if(user.intentsFailBlocked >= 5)return res.status(403).json({ error: req.t('user.login.blocked_account') });
 
         if (user.lastIntent) {
             const difference = new Date() - user.lastIntent;
@@ -354,7 +438,7 @@ export const login = async (req, res) => {
         
             if (differenceInSeconds < 60) { // Si la diferencia es menor a 60 segundos
                 const remainingSeconds = Math.ceil(60 - differenceInSeconds); // Calcular segundos restantes
-                return res.status(403).json({ error: `Too many attempts, please try again in ${remainingSeconds} seconds` });
+                return res.status(403).json({ error: `${req.t('user.login.many_attempts')} ${remainingSeconds} ${req.t('user.login.seconds')}` });
             } else {
                 user.intentos = 0;
                 user.lastIntent = null;
@@ -368,24 +452,82 @@ export const login = async (req, res) => {
             user.intentsFailBlocked ++
             if(user.intentos >= 3){
                 user.lastIntent = new Date()
-                const template = getTemplate(user.name, null, 'warning' )
-                await sendEmail(email, 'Access warning', template, "Access warning")
+
+                const template = getTemplate(
+                    req.t('email.warning.titleOne'), 
+                    req.t('email.warning.titleTwo'), 
+                    req.t('email.warning.prOne'),
+                    req.t('email.warning.prTwo'),
+                    user.name, 
+                    null, 
+                    "warning", 
+                    req.t('email.warning.textAction')
+                )
+        
+                await sendEmail(
+                    email, 
+                    req.t('email.warning.tittle'), 
+                    template, 
+                    req.t('email.warning.tittle'),
+                )
+
+                // const template = getTemplate(
+                //     user.name, 
+                //     null, 
+                //     'warning' 
+                //     )
+                // await sendEmail(
+                //     email, 
+                //     'Access warning', 
+                //     template, 
+                //     "Access warning"
+                //     )
             }
             if(user.intentsFailBlocked >= 5){
                 user.status = 'BLOCKED'
                 const code = uuidv4()
                 user.code = code
                 const {token} = getToken({email, code})
-                const template = getTemplate(user.name, token, 'reactivated' )
-                await sendEmail(email, 'Reactiated your acount', template, "Reactivated your acount")
+
+                const template = getTemplate(
+                    req.t('email.reactivated.titleOne'), 
+                    req.t('email.reactivated.titleTwo'), 
+                    req.t('email.reactivated.prOne'),
+                    req.t('email.reactivated.prTwo'),
+                    user.name, 
+                    token, 
+                    "reactivated", 
+                    req.t('email.reactivated.textAction')
+                )
+        
+                await sendEmail(
+                    email, 
+                    req.t('email.reactivated.tittle'), 
+                    template, 
+                    req.t('email.reactivated.tittle'),
+                )
+
+                // const template = getTemplate(
+                //     user.name, 
+                //     token, 
+                //     'reactivated' )
+                // await sendEmail(
+                //     email, 
+                //     'Reactiated your acount', 
+                //     template, 
+                //     "Reactivated your acount"
+                //     )
+
+
+
                 await user.save()
             }
             await user.save()
-            return res.status(403).json({error: 'Invalid password'})
+            return res.status(403).json({error: req.t('user.login.invalid_password')})
         }
 
-        if(user.verified === "UNVERIFIED") return res.status(403).json({error: 'This account is not verified please verify it'})
-        if(user.rol !== "client") return res.status(403).json({error: 'You do not have client permissions to access the page'})
+        if(user.verified === "UNVERIFIED") return res.status(403).json({error: req.t('user.login.not_verified')})
+        if(user.rol !== "client") return res.status(403).json({error: req.t('user.login.dont_client')})
         if(user.userStatus === "DISABLED") {
             user.userStatus = "ENABLED"
             await user.save()
@@ -446,8 +588,8 @@ export const recoverCount = async (req, res) =>{
         }
 
         if(code !== user.code){
+            // return res.redirect('https://mygardenllcservices.com/notverified')
             return res.redirect('https://mygardenllcservices.com/notverified')
-            // return res.redirect('http://localhost:5173/notverified')
         }
 
         user.status = 'DISBLOCKED'
@@ -456,8 +598,8 @@ export const recoverCount = async (req, res) =>{
         user.lastIntent = null
         await user.save()
 
+        // return res.redirect('https://mygardenllcservices.com/recover')
         return res.redirect('https://mygardenllcservices.com/recover')
-        // return res.redirect('http://localhost:5173/recover')
     } catch (error) {
         console.log(error)
         return res.json({

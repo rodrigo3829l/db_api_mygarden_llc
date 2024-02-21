@@ -1,0 +1,53 @@
+{
+    "user": {
+        "signUp": {
+            "email_already_rooted": "Este correo electrónico ya está arraigado en nuestro jardín. 🌱✉️ Por favor, prueba con otro correo electrónico. 💌🌼",
+            "user_name_already_use": "Este jardinero ya está cuidando nuestras camas de jardín. 🌿👩‍🌾 Por favor, elige un apodo de jardín diferente. 🌼🏷️",
+            "cellphone_already_use": "Lo siento, pero este número de teléfono ya ha echado raíces en nuestro jardín. 🌱📞 Elige un camino diferente para el contacto de tu jardín. 🌺🚫",
+            "signup_correct": "Por favor, revisa tu bandeja de entrada; te hemos enviado un código de verificación. ¡Feliz cultivo! 🪴📬"
+        },
+        "login": {
+            "invalid_email": "Correo electrónico inválido",
+            "invalid_password": "Contraseña inválida",
+            "many_attempts": "Demasiados intentos, por favor inténtalo de nuevo en:",
+            "seconds": "segundos",
+            "dont_client": "No tienes permisos de cliente para acceder a la página",
+            "not_verified": "Esta cuenta no está verificada, por favor verifícala",
+            "blocked_account": "Esta cuenta está bloqueada, por favor reactivada con el código en el correo electrónico"
+        }
+    },
+    "email": {
+        "confirm": {
+            "tittle": "Confirmar cuenta",
+            "titleOne": "¡Bienvenido!",
+            "titleTwo": "a nuestra comunidad de jardinería",
+            "prOne": "¡Estamos encantados de que te unas a nosotros en este viaje verde! Para echar raíces y empezar a florecer juntos, todo lo que necesitas hacer es confirmar tu cuenta.",
+            "prTwo": "Si no te has registrado, ignora este correo electrónico.",
+            "textAction": "Confirmar cuenta"
+        },
+        "reactivated": {
+            "tittle": "Reactivar tu cuenta",
+            "titleOne": "¡Oh no!",
+            "titleTwo": "¡Jardinero!",
+            "prOne": "Parece que la puerta de tu jardín se bloqueó después de demasiados intentos de entrar. ¡Pero no te preocupes! Vamos a ayudarte a volver para que puedas seguir cuidando tu hermoso jardín. Simplemente haz clic en el botón de abajo para desbloquear la puerta y reactivar tu cuenta:",
+            "prTwo": "Considera tomar medidas de seguridad",
+            "textAction": "Desbloquear y Reactivar Cuenta"
+        },
+        "recover": {
+            "tittle": "Codigo de verificación",
+            "titleOne": "Semilla de Cambio",
+            "titleTwo": "",
+            "prOne": "Parece que estás plantando una nueva semilla para la seguridad de tu cuenta. Aquí está el código especial para brotar una nueva contraseña:",
+            "prTwo": "Ingresa este código en la página de restablecimiento de contraseña para hacer brotar una contraseña fresca y segura para la puerta de tu jardín.",
+            "textAction": ""
+        },
+        "warning": {
+            "tittle": "Advertencia de acceso",
+            "titleOne": "¡Oh no!",
+            "titleTwo": "¡hay un problema!",
+            "prOne": "Parece que alguien está intentando acceder a tu cuenta",
+            "prTwo": "Esta es una advertencia de seguridad. Si realmente fuiste tú, Rodrig, considera restablecer tu contraseña para evitar que la cuenta sea bloqueada.",
+            "textAction": "Si fuiste tú, por favor ignora este mensaje"
+        }
+    }
+}

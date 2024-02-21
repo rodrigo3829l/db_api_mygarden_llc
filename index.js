@@ -6,12 +6,40 @@ import cors from 'cors'
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
 
+import i18next from 'i18next' ; //Se modifico
+import middleware from 'i18next-http-middleware' ; //se modifico
+import FsBackend from 'i18next-fs-backend' ; // se modifico
+
 import helmet from 'helmet';
+
+//Se configuro
+i18next
+  .use(FsBackend)
+  .use(middleware.LanguageDetector)
+  .init({
+    fallbackLng: 'en',
+    backend: {
+      loadPath: './locales/{{lng}}.json',
+    },  
+    detection: {
+      order: ['header', 'querystring'],
+      caches: ['cookie'],
+    },
+  });
 
 
 const app = express();
-console.log("Hola db => ", process.env.URI_MONGO);
-console.log("Commit de seguridad")
+
+app.use(middleware.handle(i18next));//se configuro
+
+  
+  
+// console.log("Hola db => ", process.env.URI_MONGO);
+// console.log("Commit de seguridad")
+// console.log("el Data")
+// console.log(i18next.services.resourceStore.data);
+// console.log("el init")
+// console.log(i18next.init());
 
 const whiteList = [process.env.ORIGIN1, process.env.ORIGIN2 , process.env.ORIGIN3]
 
@@ -23,16 +51,23 @@ app.use(
             }
             return callback("Error de corse origin: " + origin + " no autorizado")
         },
-        credentials: true,
+        credentials: true,  
     })
 )
 
+app.use((req, res, next) => {
+    console.log(req.headers['accept-language']);
+    next();
+  });
 // app.use(cookieParser())
 app.use(express.json())
 app.use(express.urlencoded(
     {extended: false}
 ))
 app.use('/api/user', userRoutes);
+app.get('/api/language', (req, res) => {
+    res.status(200).send();
+  });
 app.use(cookieParser());
 
 app.use(bodyParser.json({ limit: '50mb' }));

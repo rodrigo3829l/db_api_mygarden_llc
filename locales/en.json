@@ -1,0 +1,54 @@
+{
+    "user" : {
+        "signUp" : {
+            "email_already_rooted": "This email is already rooted in our garden. 🌱✉️ Please try another email seed. 💌🌼", 
+            "user_name_already_use" : "This gardener is already tending our garden beds. 🌿👩‍🌾 Please choose a different garden nickname. 🌼🏷️",
+            "cellphone_already_use" : "Sorry, but this phone number has already taken root in our garden. 🌱📞 Choose a different path for your garden contact. 🌺🚫",
+            "signup_correct" : "Kindly check your inbox; we've sent you a verification code. Happy cultivating! 🪴📬"
+        },
+        "login" : {
+            "invalid_email" : "Invalid email",
+            "invalid_password" : "Invalid password",
+            "many_attempts" : "Too many attempts, please try again in:",
+            "seconds" : "seconds",
+            "dont_client" : "You do not have client permissions to access the page",
+            "not_verified" : "This account is not verified please verify it",
+            "blocked_account" : "This count are blocked, please reactivated with code in email"
+            
+        }
+    },
+    "email" : {
+        "confirm" : {
+            "tittle": "Confirm acount",
+            "titleOne" : "Welcome" ,
+            "titleTwo" : "to our gardening community!",
+            "prOne" : "We're thrilled to have you join us on this green journey! To put down roots and start blooming together, all you need to do is confirm your account.",
+            "prTwo" : "If you have not registered ignore this email.",
+            "textAction" : "Confirm acount" 
+        },
+        "reactivated" : {
+            "tittle": "Reactiated your acount",
+            "titleOne" : "Oh no",
+            "titleTwo" : "Gardener!",
+            "prOne" : "It seems like your garden gate got locked after too many attempts to enter. No worries, though! Let's get you back in so you can continue tending to your beautiful garden. Just click the button below to unlock the gate and reactivate your account:" ,
+            "prTwo" : "Consider taking safety measures",
+            "textAction" : "Unlock & Reactivate Account"
+        },
+        "recover" : {
+            "tittle": "Verification code",
+            "titleOne" : "Seed of Change" ,
+            "titleTwo" : " ",
+            "prOne" : "Looks like you're planting a new seed for your account security! Here's the special code to sprout a new password:",
+            "prTwo" : "Enter this code on the password reset page to bloom a fresh, secure password for your garden's gate." ,
+            "textAction" : " "
+        },
+        "warning" : {
+            "tittle": "Access warning",
+            "titleOne" : "Oh no" ,
+            "titleTwo" : "there's a problem!",
+            "prOne" : "It seems someone is attempting to access your accoun",
+            "prTwo" : "This is a security warning. If it was indeed you, Rodrig, please consider resetting your password to prevent the account from being blocked.",
+            "textAction" : "If it was you, please disregard" 
+        }
+    }
+}
