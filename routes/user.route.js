@@ -12,7 +12,8 @@ import {
     infoUser,
     refreshToken,
     recoverCount,
-    resendcode
+    resendcode,
+    addEmpolyed
  } from '../arquitecture/Controllers/user.controller.js';
 
 const router = express.Router();
@@ -27,7 +28,7 @@ router.post('/change',[],changePassword)
 
 router.post('/login', [], login)
 router.get('/logout', [], logout)
-
+ 
 router.get('/reactivate/:token', [], recoverCount)
 
 
@@ -36,5 +37,8 @@ router.get('/reactivate/:token', [], recoverCount)
 router.get('/protected', requireToken, infoUser)
 //refresca el token, pues este se cadica cada 15 min
 router.get("/refresh", requireRefreshToken ,refreshToken, )
+
+
+router.post('/addemployed', [], addEmpolyed)
 
 export default router;

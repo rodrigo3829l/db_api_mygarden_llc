@@ -13,6 +13,7 @@ export const getToken = (uid) =>{
 
 export const getTokenData = (token) => {
     let data = null
+
     jwt.verify( token, process.env.JWT_SECRET, (err, decoded) =>{
         if(err){
             console.log("Error al ontener la data del token")
@@ -59,7 +60,7 @@ export const requireRefreshToken = (req, res, next) => {
         }
 
         const refreshTokenCookie = match[1];
-        console.log(refreshTokenCookie);
+        // console.log(refreshTokenCookie);
 
         const { uid } = jwt.verify(refreshTokenCookie, process.env.JWT_REFRESH);
         req.uid = uid;
@@ -83,7 +84,7 @@ export const requireToken = (req, res, next) => {
         token = token.split(" ")[1];
 
         const {uid} = jwt.verify(token, process.env.JWT_SECRET)
-        console.log("uid de require token => " + uid)
+        // console.log("uid de require token => " + uid)
         req.uid = uid;
 
         next();

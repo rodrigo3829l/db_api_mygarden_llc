@@ -1,54 +1,152 @@
 {
-    "user" : {
-        "signUp" : {
-            "email_already_rooted": "This email is already rooted in our garden. 🌱✉️ Please try another email seed. 💌🌼", 
-            "user_name_already_use" : "This gardener is already tending our garden beds. 🌿👩‍🌾 Please choose a different garden nickname. 🌼🏷️",
-            "cellphone_already_use" : "Sorry, but this phone number has already taken root in our garden. 🌱📞 Choose a different path for your garden contact. 🌺🚫",
-            "signup_correct" : "Kindly check your inbox; we've sent you a verification code. Happy cultivating! 🪴📬"
+    "user": {
+        "signUp": {
+            "email_already_rooted": "This email is already rooted in our garden. 🌱✉️ Please try another email seed. 💌🌼",
+            "user_name_already_use": "This gardener is already tending our garden beds. 🌿👩‍🌾 Please choose a different garden nickname. 🌼🏷️",
+            "cellphone_already_use": "Sorry, but this phone number has already taken root in our garden. 🌱📞 Choose a different path for your garden contact. 🌺🚫",
+            "signup_correct": "Kindly check your inbox; we've sent you a verification code. Happy cultivating! 🪴📬"
         },
-        "login" : {
-            "invalid_email" : "Invalid email",
-            "invalid_password" : "Invalid password",
-            "many_attempts" : "Too many attempts, please try again in:",
-            "seconds" : "seconds",
-            "dont_client" : "You do not have client permissions to access the page",
-            "not_verified" : "This account is not verified please verify it",
-            "blocked_account" : "This count are blocked, please reactivated with code in email"
-            
+        "login": {
+            "invalid_email": "Invalid email",
+            "invalid_password": "Invalid password",
+            "many_attempts": "Too many attempts, please try again in:",
+            "seconds": "seconds",
+            "dont_client": "You do not have client permissions to access the page",
+            "not_verified": "This account is not verified please verify it",
+            "blocked_account": "This count are blocked, please reactivated with code in email"
         }
     },
-    "email" : {
-        "confirm" : {
+    "email": {
+        "confirm": {
             "tittle": "Confirm acount",
-            "titleOne" : "Welcome" ,
-            "titleTwo" : "to our gardening community!",
-            "prOne" : "We're thrilled to have you join us on this green journey! To put down roots and start blooming together, all you need to do is confirm your account.",
-            "prTwo" : "If you have not registered ignore this email.",
-            "textAction" : "Confirm acount" 
+            "titleOne": "Welcome",
+            "titleTwo": "to our gardening community!",
+            "prOne": "We're thrilled to have you join us on this green journey! To put down roots and start blooming together, all you need to do is confirm your account.",
+            "prTwo": "If you have not registered ignore this email.",
+            "textAction": "Confirm acount"
         },
-        "reactivated" : {
+        "reactivated": {
             "tittle": "Reactiated your acount",
-            "titleOne" : "Oh no",
-            "titleTwo" : "Gardener!",
-            "prOne" : "It seems like your garden gate got locked after too many attempts to enter. No worries, though! Let's get you back in so you can continue tending to your beautiful garden. Just click the button below to unlock the gate and reactivate your account:" ,
-            "prTwo" : "Consider taking safety measures",
-            "textAction" : "Unlock & Reactivate Account"
+            "titleOne": "Oh no",
+            "titleTwo": "Gardener!",
+            "prOne": "It seems like your garden gate got locked after too many attempts to enter. No worries, though! Let's get you back in so you can continue tending to your beautiful garden. Just click the button below to unlock the gate and reactivate your account:",
+            "prTwo": "Consider taking safety measures",
+            "textAction": "Unlock & Reactivate Account"
         },
-        "recover" : {
+        "recover": {
             "tittle": "Verification code",
-            "titleOne" : "Seed of Change" ,
-            "titleTwo" : " ",
-            "prOne" : "Looks like you're planting a new seed for your account security! Here's the special code to sprout a new password:",
-            "prTwo" : "Enter this code on the password reset page to bloom a fresh, secure password for your garden's gate." ,
-            "textAction" : " "
+            "titleOne": "Seed of Change",
+            "titleTwo": " ",
+            "prOne": "Looks like you're planting a new seed for your account security! Here's the special code to sprout a new password:",
+            "prTwo": "Enter this code on the password reset page to bloom a fresh, secure password for your garden's gate.",
+            "textAction": " "
         },
-        "warning" : {
+        "warning": {
             "tittle": "Access warning",
-            "titleOne" : "Oh no" ,
-            "titleTwo" : "there's a problem!",
-            "prOne" : "It seems someone is attempting to access your accoun",
-            "prTwo" : "This is a security warning. If it was indeed you, Rodrig, please consider resetting your password to prevent the account from being blocked.",
-            "textAction" : "If it was you, please disregard" 
+            "titleOne": "Oh no",
+            "titleTwo": "there's a problem!",
+            "prOne": "It seems someone is attempting to access your accoun",
+            "prTwo": "This is a security warning. If it was indeed you, Rodrig, please consider resetting your password to prevent the account from being blocked.",
+            "textAction": "If it was you, please disregard"
+        }
+    },
+    "comment": {
+        "addComment": {
+            "notSchedule": "The scheduled service does not exist",
+            "notService": "The service does not exist",
+            "success": "Comment successfully registered, thank you for your comment"
+        }
+    },
+    "dates": {
+        "addDate": {
+            "existDate": "The date already exists",
+            "success": "Date added"
+        },
+        "removeDate": {
+            "notDate": "The date does not exist",
+            "success": "The date was removed successfully"
+        }
+    },
+    "pays": {
+        "payService": {
+            "notUser": "The user does not exist",
+            "notService": "The chosen service does not exist",
+            "onlyPorcentaje": "Only half of the service cost or the total is accepted",
+            "success": "Payment made successfully"
+        }
+    },
+    "products": {
+        "addProduct": {
+            "existService": "This product already exists",
+            "success": "The product was added successfully"
+        },
+        "updateProduct": {
+            "notProduct": "The product was not found",
+            "success": "Product updated successfully"
+        },
+        "usabillity": {
+            "notFound": "Product not found",
+            "success": "The product's usability status has been updated"
+        }
+    },
+    "schedule": {
+        "bookService": {
+            "notUser": "The user does not exist",
+            "notService": "The service does not exist",
+            "success": "Thank you very much for trusting My Garden LLC, we will visit you on the agreed date and in case of any incident we will contact you",
+            "email": {
+                "titleOne": "Hello",
+                "titleTwo": "It's a pleasure",
+                "textAction": "We're excited to know you've booked with us at My Garden!",
+                "prTwo": "If any error has occurred or you need to modify something, contact us immediately. We want to ensure your experience with us is exceptional. <br> Thank you for trusting us for your gardening services!",
+                "prOne": "We're delighted to take care of your green oasis and make it even more beautiful. Your appointment for the quote is scheduled, and we'll be with you soon to discuss the details.",
+                "tittle": "Confirm Schedule",
+                "tittleAdmin": "A service has been booked"
+            }
+        },
+        "quoteService": {
+            "notService": "The service does not exist",
+            "success": "The service was scheduled successfully",
+            "email": {
+                "titleOne": "Hello",
+                "titleTwo": "Your service has been quoted",
+                "textAction": "The total for your service is",
+                "prTwo": "If you have any questions about the service price, don't hesitate to contact us through this email. <br> Thank you for trusting us for your gardening services!",
+                "prOne": "Your service has been quoted, check it out from the 'my services' section on the page",
+                "tittle": "Quoted Service"
+            }
+        }
+    },
+    "services": {
+        "addService": {
+            "notTypeService": "The service type does not exist",
+            "success": "Service registration successful"
+        },
+        "getServiceById": {
+            "notService": "No service found with that ID",
+            "success": "Service brought successfully"
+        },
+        "updateServiceById": {
+            "notService": "The service was not found",
+            "success": "Service updated successfully"
+        },
+        "setServiceUsability": {
+            "notService": "The service was not found",
+            "success": "The service's usability status has been updated"
+        }
+    },
+    "typeServices": {
+        "addTypeService": {
+            "existService": "This service already exists",
+            "success": "Service type registered successfully"
+        },
+        "updateTypeService": {
+            "existService": "No service type found with the provided ID",
+            "success": "Service type updated successfully"
+        },
+        "setServiceSuspendStatus": {
+            "existService": "Service type not found",
+            "success": "The suspension status of the service type has been updated"
         }
     }
 }

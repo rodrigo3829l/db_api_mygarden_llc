@@ -49,5 +49,104 @@
             "prTwo": "Esta es una advertencia de seguridad. Si realmente fuiste tú, Rodrig, considera restablecer tu contraseña para evitar que la cuenta sea bloqueada.",
             "textAction": "Si fuiste tú, por favor ignora este mensaje"
         }
+    },
+    "comment": {
+        "addComment": {
+            "notSchedule": "El servicio agendado no existe",
+            "notService": "El servicio no existe",
+            "success": "Comentario registrado con exito, gracias por su comentario"
+        }
+    },
+    "dates": {
+        "addDate": {
+            "existDate": "La fecha ya existe",
+            "success": "Fecha agregada"
+        },
+        "removeDate": {
+            "notDate": "La fecha no existe",
+            "success": "La fecha se eliminó correctamente"
+        }
+    },
+    "pays": {
+        "payService": {
+            "notUser": "No existe el usuario",
+            "notService": "No existe el servicio escogido",
+            "onlyPorcentaje": "Solo se acepta la mitad del costo del servicio o el total del mismo",
+            "success": "Pago realizado con éxito"
+        }
+    },
+    "products": {
+        "addProduct": {
+            "existService": "Este producto ya existe",
+            "success": "Se agrego correctamente el producto"
+        },
+        "updateProduct": {
+            "notProduct": "No se encontró el producto",
+            "success": "Producto actualizado correctamente"
+        },
+        "usabillity": {
+            "notFound": "Producto no encontrado",
+            "success": "El estado de usabilidad del producto ha sido actualizado"
+        }
+    },
+    "schedule": {
+        "bookService": {
+            "notUser": "No existe el usuario",
+            "notService": "No existe el servicio",
+            "success": "Muchas gracias por confiarn en My Garden LLC, te visitaremos en la fecha acordada y en caso de algo incidente nos ponemos en contacto contigo",
+            "email": {
+                "titleOne": "Hola",
+                "titleTwo": "Es un placer",
+                "textAction": "¡Nos emociona saber que has reservado con nosotros en My Garden!",
+                "prTwo": "Si ha ocurrido algún error o necesitas modificar algo, contáctanos de inmediato. Queremos asegurarnos de que tu experiencia con nosotros sea excepcional. <br> ¡Gracias por confiar en nosotros para tus servicios de jardinería!",
+                "prOne": "Estamos encantados de cuidar de tu oasis verde y hacer que luzca aún más hermoso. Tu cita para la cotización está agendada, y pronto estaremos contigo para discutir los detalles.",
+                "tittle": "Confirmar la agenda",
+                "tittleAdmin": "Se ha reservado un servicio"
+            }
+        },
+        "quoteService": {
+            "notService": "El servicio no existe",
+            "success": "El servicio se agendo correctamente",
+            "email": {
+                "titleOne": "Hola",
+                "titleTwo": "Tu servicio ha sido cotizado",
+                "textAction": "El total de tu servicio es",
+                "prTwo": "Si tienes una duda con el precio del servicio no dudes en contactarnos a traves de este correo.<br> ¡Gracias por confiar en nosotros para tus servicios de jardinería!",
+                "prOne": "Tu servicio ha sido cotizado, revisalo desde la seccion de 'mis servicios' en la pagina",
+                "tittle": "Servicio cotizado"
+            }
+        }
+    },
+    "services": {
+        "addService": {
+            "notTypeService": "No existe el tipo de servicio",
+            "success": "Registro del servicio con exito"
+        },
+        "getServiceById": {
+            "notService": "No existe un servicio con ese id",
+            "success": "Servicio traido con exito"
+        },
+        "updateServiceById": {
+            "notService": "No se encontró el servicio",
+            "success": "Servicio actualizado correctamente"
+        },
+        "setServiceUsability": {
+            "notService": "No se encontró el servicio",
+            "success": "El estado de usabilidad del servicio ha sido actualizado"
+        }
+    },
+    "typeServices": {
+        "addTypeService": {
+            "existService": "Este servicio ya existe",
+            "success": "Tipo de servicio registrado con éxito"
+        },
+        "updateTypeService": {
+            "existService": "No se encontró el tipo de servicio con el ID proporcionado",
+            "success": "Tipo de servicio actualizado con éxito"
+        },
+        "setServiceSuspendStatus": {
+            "existService": "Tipo de servicio no encontrado",
+            "success": "El estado de suspensión del tipo de servicio ha sido actualizado"
+        }
     }
 }

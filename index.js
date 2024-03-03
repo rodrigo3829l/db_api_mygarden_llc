@@ -1,7 +1,22 @@
 import 'dotenv/config';
 import express  from "express";
 import "./helpers/DataBase/conectdb.js";
+
+
 import userRoutes from './routes/user.route.js';
+import TypeServiceRouter from './routes/type.service.route.js'
+import ServicesRouter from './routes/services.route.js'
+import ScheduleServiceRouter from './routes/schedule.service.route.js'
+import DatesRouter from './routes/dates.router.js'
+import TypePayRouter from './routes/type.pay.router.js'
+import ProductsRouter from './routes/products.route.js'
+import PaysRouter from './routes/pays.router.js'
+import CommentRouter from './routes/comment.router.js'
+
+
+
+
+
 import cors from 'cors'
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
@@ -29,7 +44,7 @@ i18next
 
 
 const app = express();
-
+app.use(express.json())
 app.use(middleware.handle(i18next));//se configuro
 
   
@@ -41,7 +56,7 @@ console.log("Ultimo commit 21/02/2024 a las 08:05")
 // console.log("el init")
 // console.log(i18next.init());
 
-const whiteList = [process.env.ORIGIN1, process.env.ORIGIN2 , process.env.ORIGIN3]
+const whiteList = [process.env.ORIGIN1, process.env.ORIGIN2 , process.env.ORIGIN3, process.env.ORIGIN4, process.env.ORIGIN5]
 
 app.use(
     cors({
@@ -55,19 +70,31 @@ app.use(
     })
 )
 
-app.use((req, res, next) => {
-    console.log(req.headers['accept-language']);
-    next();
-  });
+// app.use((req, res, next) => {
+//     console.log(req.headers['accept-language']);
+//     next();
+//   });
 // app.use(cookieParser())
-app.use(express.json())
 app.use(express.urlencoded(
     {extended: false}
 ))
+
 app.use('/api/user', userRoutes);
-app.get('/api/language', (req, res) => {
-    res.status(200).send();
-  });
+app.use('/api/typeservice', TypeServiceRouter);
+app.use('/api/services', ServicesRouter);
+app.use('/api/schedule', ScheduleServiceRouter);
+app.use('/api/dates', DatesRouter);
+app.use('/api/typepay', TypePayRouter);
+app.use('/api/products', ProductsRouter);
+app.use('/api/pays', PaysRouter);
+app.use('/api/comment', CommentRouter);
+
+
+
+// app.get('/api/language', (req, res) => {
+//     res.status(200).send();
+//   });
+
 app.use(cookieParser());
 
 app.use(bodyParser.json({ limit: '50mb' }));
@@ -111,3 +138,4 @@ app.use(helmet());
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log('Run in port http://localhost:' + PORT));
+

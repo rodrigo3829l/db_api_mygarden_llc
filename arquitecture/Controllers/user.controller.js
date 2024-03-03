@@ -422,15 +422,16 @@ export const changePassword= async (req,res)=>{
 }
 
 export const login = async (req, res) => {
+    console.log(req.body)
     try {
-        const { email, password } = req.body;
+        const { email, password, rol } = req.body;
         let user = await User.findOne({ email });
 
         if (!user){
             return res.status(403).json({error: req.t('user.login.invalid_email')})
         }
 
-        if(user.intentsFailBlocked >= 5)return res.status(403).json({ error: req.t('user.login.blocked_account') });
+        if(user.status !== 'DISBLOCKED')return res.status(403).json({ error: req.t('user.login.blocked_account') });
 
         if (user.lastIntent) {
             const difference = new Date() - user.lastIntent;
@@ -470,18 +471,6 @@ export const login = async (req, res) => {
                     template, 
                     req.t('email.warning.tittle'),
                 )
-
-                // const template = getTemplate(
-                //     user.name, 
-                //     null, 
-                //     'warning' 
-                //     )
-                // await sendEmail(
-                //     email, 
-                //     'Access warning', 
-                //     template, 
-                //     "Access warning"
-                //     )
             }
             if(user.intentsFailBlocked >= 5){
                 user.status = 'BLOCKED'
@@ -527,7 +516,8 @@ export const login = async (req, res) => {
         }
 
         if(user.verified === "UNVERIFIED") return res.status(403).json({error: req.t('user.login.not_verified')})
-        if(user.rol !== "client") return res.status(403).json({error: req.t('user.login.dont_client')})
+        // if (rol !== user.rol) return res.status(403).json({error: req.t('user.login.dont_client')})
+        // if(user.rol !== "client") return res.status(403).json({error: req.t('user.login.dont_client')})
         if(user.userStatus === "DISABLED") {
             user.userStatus = "ENABLED"
             await user.save()
@@ -552,7 +542,8 @@ export const login = async (req, res) => {
             token, 
             expiresIn, 
             name : `${user.name} ${user.apellidoP} ${user.apellidoM}` ,
-            email : user.email
+            email : `${user.email}` ,
+            rol : user.rol
         })
 
     } catch (error) {
@@ -620,12 +611,21 @@ export const logout = (req, res) => {
 }
 
 
-export const refreshToken  = (req, res) => {
+export const refreshToken  = async (req, res) => {
     try {
         const {token, expiresIn} = getToken(req.uid);  
-        console.log('refresh')
-        console.log({token, expiresIn})
-        return res.json({token, expiresIn})
+        // console.log('refresh')
+        // console.log({token, expiresIn})
+        const {uid} = getTokenData (token)
+
+        const user = await User.findById(uid)
+        return res.json({
+            token, 
+            expiresIn,
+            name : `${user.name} ${user.apellidoP} ${user.apellidoM}` ,
+            email : user.email,
+            rol : user.rol
+        })
     } catch (error) {
         console.log('error en la funcion refresh token')
         console.log(error);
@@ -643,5 +643,72 @@ export const infoUser = async (req, res) => {
     } catch (error) {
         console.log(error);
         return res.status(500).json({error: 'Error de servidor'})
+    }
+}
+
+
+export const addEmpolyed = async  (req, res) =>{
+    try {
+        const {
+            name,
+            apellidoP,
+            apellidoM,
+            genero,
+            cellPhone,
+            email,
+            password,
+            direccion,
+            userName
+        } = req.body
+        console.log(req.body)
+
+        let user = await User.findOne({ email});
+          
+
+        if(user !== null){
+            return res.json({
+                success: false,
+                msg: "Este correo ya esta asociado a otro empleado"
+
+            })
+        }
+
+        user = await User.findOne({ cellPhone});
+          
+        if(user !== null){
+            return res.json({
+                success: false,
+                msg: "Este telefono ya esta asociado a otro empleado"
+            })
+        }
+
+        user = new User({
+            name,
+            apellidoP,
+            apellidoM,
+            genero,
+            cellPhone,
+            direccion,
+            email,
+            userName,
+            password,
+            rol : "employed",
+            verified : 'VERIFIED'
+        })
+
+        await user.save();
+
+        return res.json({
+            success: true,
+            msg: "Registro de empleado correcto"
+        })
+        
+    } catch (error) {  
+        console.log("Error en el  registro del empleado")
+        console.log(error)
+        return res.json({
+            success: false,
+            msg: 'Error al registrar empleado'
+        })
     }
 }

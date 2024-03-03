@@ -1,85 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome to the Garden!</title>
+    <title>Notificación de Servicio Agendado</title>
     <style>
         body {
             display: flex;
             align-items: center;
             justify-content: center;
             height: 100vh;
-            background-color: #e9f7ef;
+            background-color: #f5f5f5;
             margin: 0;
-            font-family: 'Courier New', Courier, monospace;
-            color: #34552c;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
         }
-        .text-center {
+        .container {
             text-align: center;
             width: 90%;
             max-width: 600px;
-            padding: 20px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
             background-color: #ffffff;
-            border-radius: 8px;
         }
-        img {
+        .logo {
             border-radius: 50%;
             max-width: 120px;
             border: 4px solid #81c784;
+            margin-bottom: 20px;
         }
-        h2 {
-            margin-top: 1em;
-            color: #388e3c;
-        }
-        p {
-            font-size: 1em;
-            line-height: 1.5;
-        }
-        a {
-            display: inline-block;
-            color: white;
-            background-color: #388e3c;
-            padding: 10px 20px;
+        .title {
             margin-top: 20px;
-            text-decoration: none;
-            border-radius: 5px;
-            font-weight: bold;
-            box-shadow: 0 2px 2px rgba(0,0,0,0.2);
-            transition: background-color 0.3s ease;
+            color: #388e3c;
+            font-size: 24px;
         }
-        a:hover {
-            background-color: #4caf50;
+        .message {
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 20px;
         }
         .verification-code {
-            font-size: 1.2em;
+            font-size: 18px;
             font-weight: bold;
             color: #28a745;
             padding: 10px;
             margin-top: 20px;
-            border: 1px dashed #28a745;
+            border: 2px dashed #28a745;
             display: inline-block;
             border-radius: 5px;
+        }
+        .footer {
+            font-size: 14px;
+            color: #777;
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
-    <div class="text-center">
-        <!-- Image -->
-        <img src="https://res.cloudinary.com/dui4i9f4e/image/upload/v1705842820/logos/aoi6pnl5zuzhwsbalygr.jpg" alt="Garden Logo">
+    <div class="container">
+        <!-- Logo -->
+        <img class="logo" src="https://res.cloudinary.com/dui4i9f4e/image/upload/v1705842820/logos/aoi6pnl5zuzhwsbalygr.jpg" alt="My Garden LLC Logo">
         
-        <!-- Welcome User -->
-        <h2>Oh no, ${name}, there's a problem!</h2>
+        <!-- Título -->
+        <div class="title">My Garden LLC</div>
         
-        <!-- Confirmation Message -->
-        <p>It seems someone is attempting to access your account.</p>
+        <!-- Mensaje -->
+        <div class="message">
+            <p>Hola Admin,</p>
+            <p>El usuario: <strong>User Name</strong>, ha reservado el servicio: <strong>Servicio</strong> para la siguiente fecha: <strong>Fecha</strong>.</p>
+            <p>Por favor confirmar que se hará la visita al cliente. En caso contrario, reagendarla.</p>
+        </div>
         
-        <!-- Verification Code -->
-        <div class="verification-code">If this wasn't you, please disregard</div>
-        
-        <!-- Additional Information -->
-        <p>This is a security warning. If it was indeed you, ${name}, please consider resetting your password to prevent the account from being blocked.</p>
+        <!-- Pie de página -->
+        <div class="footer">Este es un mensaje automático. Por favor no responder.</div>
     </div>
 </body>
 </html>
