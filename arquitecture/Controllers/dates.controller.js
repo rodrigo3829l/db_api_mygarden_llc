@@ -66,6 +66,8 @@ export const removeDate = async (req, res) => {
 
 export const getDates = async(req, res) =>{
     try {
+        const clientIP = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+        console.log(clientIP)
         const dates = await Dates.find()
         return res.json({
             success : true,

@@ -10,12 +10,13 @@ const userSchema = new Schema({
     fechaNacimiento: {type: String, },
     genero: String,
     cellPhone: Number,
+    lade: Number,
     img:{
         public_id: String,
         secure_url: String
     },
     direccion: {
-        estado: String,
+        neighborhood: String,
         numCasa: Number,
         postalCode: Number,
         ciudad: String,

@@ -47,9 +47,31 @@ export const generateRefreshToken = (uid, res) => {
         console.log(error)
     }
 } 
+
+
+export const requireToken = (req, res, next) => {
+    try {
+        let token = req.headers?.authorization ;
+        if(!token) 
+            throw new Error('No Bearer');
+
+        token = token.split(" ")[1];
+        // Extrae la informacion del token, en este caso el id
+        const {uid} = jwt.verify(token, process.env.JWT_SECRET)
+
+        req.uid = uid;
+
+        next();
+    } catch (error) {
+        console.log(error);
+        return res
+        .status(401)
+        .send({error: TokenVerificationErrors[error.message ]})
+    }
+};
+
 export const requireRefreshToken = (req, res, next) => {
     try {
-        console.log(req.headers.cookie);
         const cookieString = req.headers.cookie;
 
         // Buscar y extraer la parte después de "refreshToken="
@@ -60,7 +82,6 @@ export const requireRefreshToken = (req, res, next) => {
         }
 
         const refreshTokenCookie = match[1];
-        // console.log(refreshTokenCookie);
 
         const { uid } = jwt.verify(refreshTokenCookie, process.env.JWT_REFRESH);
         req.uid = uid;
@@ -75,24 +96,5 @@ export const requireRefreshToken = (req, res, next) => {
 
 
 
-export const requireToken = (req, res, next) => {
-    try {
-        let token = req.headers?.authorization ;
-        if(!token) 
-            throw new Error('No Bearer');
 
-        token = token.split(" ")[1];
-
-        const {uid} = jwt.verify(token, process.env.JWT_SECRET)
-        // console.log("uid de require token => " + uid)
-        req.uid = uid;
-
-        next();
-    } catch (error) {
-        console.log(error);
-        return res
-        .status(401)
-        .send({error: TokenVerificationErrors[error.message ]})
-    }
-};
 

@@ -531,7 +531,8 @@ export const login = async (req, res) => {
             token, 
             expiresIn, 
             name : `${user.name} ${user.apellidoP} ${user.apellidoM}` ,
-            email : user.email
+            email : user.email,
+            rol : user.rol
         })
         user.intentos = 0
         user.intentsFailBlocked = 0
@@ -614,11 +615,10 @@ export const logout = (req, res) => {
 export const refreshToken  = async (req, res) => {
     try {
         const {token, expiresIn} = getToken(req.uid);  
-        // console.log('refresh')
-        // console.log({token, expiresIn})
         const {uid} = getTokenData (token)
 
         const user = await User.findById(uid)
+
         return res.json({
             token, 
             expiresIn,
@@ -635,16 +635,34 @@ export const refreshToken  = async (req, res) => {
 
 
 
-//Esta es la ruta protected
+
+
+
 export const infoUser = async (req, res) => {
     try {
         const user = await User.findById(req.uid).lean()
-        return res.json({_id: user._id, userName: user.userName, email: user.email, tipo: user.rol})
+
+        return res.json({
+            _id: user._id, 
+            fullName : `${user.name} ${user.apellidoP} ${user.apellidoM}` , 
+            name : user.name,
+            apellidoP: user.apellidoP,
+            apellidoM : user.apellidoM,
+            email: user.email, 
+            phone: user.cellPhone,
+            username : user.userName,
+            fechaNacimiento : user.fechaNacimiento,
+            genero : user.genero,
+            cellPhone :  user.cellPhone
+        })
+
     } catch (error) {
         console.log(error);
         return res.status(500).json({error: 'Error de servidor'})
     }
 }
+
+
 
 
 export const addEmpolyed = async  (req, res) =>{
@@ -712,3 +730,45 @@ export const addEmpolyed = async  (req, res) =>{
         })
     }
 }
+
+export const updateUser = async (req, res) => {
+    try {
+        const updateData = req.body;
+        const updatedUser = await User.findByIdAndUpdate(
+            req.uid,
+            updateData,
+            { new: true, runValidators: true }
+        );          
+        if (!updatedUser) {
+            return res.json({
+                success : false,
+                msg : 'Usuario no encontrado'
+            })
+        }
+        return res.json({
+            success : true,
+            msg : 'Usuario Actualizado',
+            updatedUser : {
+                _id: updatedUser._id, 
+                fullName : `${updatedUser.name} ${updatedUser.apellidoP} ${updatedUser.apellidoM}` , 
+                name : updatedUser.name,
+                apellidoP: updatedUser.apellidoP,
+                apellidoM : updatedUser.apellidoM,
+                email: updatedUser.email, 
+                phone: updatedUser.cellPhone,
+                username : updatedUser.userName,
+                fechaNacimiento : updatedUser.fechaNacimiento,
+                genero : updatedUser.genero,
+                cellPhone :  updatedUser.cellPhone
+            }
+        })
+    } catch (error) {
+        console.log('Error al actualizar el usuario')
+        console.log(error);
+
+        return res.json({
+            success: false,
+            msg: 'Error al registrar empleado'
+        })
+    }
+};

@@ -13,7 +13,8 @@ import {
     refreshToken,
     recoverCount,
     resendcode,
-    addEmpolyed
+    addEmpolyed,
+    updateUser
  } from '../arquitecture/Controllers/user.controller.js';
 
 const router = express.Router();
@@ -31,14 +32,12 @@ router.get('/logout', [], logout)
  
 router.get('/reactivate/:token', [], recoverCount)
 
-
-
 //Muestra la informacion de un usuario en especifico
 router.get('/protected', requireToken, infoUser)
+router.put('/update', requireToken, updateUser)
+
 //refresca el token, pues este se cadica cada 15 min
 router.get("/refresh", requireRefreshToken ,refreshToken, )
-
-
 router.post('/addemployed', [], addEmpolyed)
 
 export default router;
