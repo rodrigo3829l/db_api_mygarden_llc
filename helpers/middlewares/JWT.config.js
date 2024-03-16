@@ -52,13 +52,15 @@ export const generateRefreshToken = (uid, res) => {
 export const requireToken = (req, res, next) => {
     try {
         let token = req.headers?.authorization ;
+        let rol = req.headers?.rol ;
         if(!token) 
             throw new Error('No Bearer');
-
         token = token.split(" ")[1];
         // Extrae la informacion del token, en este caso el id
         const {uid} = jwt.verify(token, process.env.JWT_SECRET)
-
+        if(rol !== uid.userRol){
+            return res.status(403).json({error: 'Credenciales incorrectas'})
+        }
         req.uid = uid;
 
         next();
@@ -84,6 +86,8 @@ export const requireRefreshToken = (req, res, next) => {
         const refreshTokenCookie = match[1];
 
         const { uid } = jwt.verify(refreshTokenCookie, process.env.JWT_REFRESH);
+        // console.log("Req.iud de require refresh token")
+        // console.log(uid)
         req.uid = uid;
         next();
     } catch (error) {

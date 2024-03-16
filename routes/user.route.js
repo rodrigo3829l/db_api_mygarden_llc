@@ -14,7 +14,8 @@ import {
     recoverCount,
     resendcode,
     addEmpolyed,
-    updateUser
+    updateUser,
+    recoverSms,
  } from '../arquitecture/Controllers/user.controller.js';
 
 const router = express.Router();
@@ -23,6 +24,7 @@ router.post('/signup', fileUpload({useTempFiles: true, tempFileDir: './uploads'}
 router.get('/confirm/:token', [], confirm)
 
 router.post('/recover',[],recoverPassword)
+router.post('/recoversms',[],recoverSms)
 router.post('/resend',[],resendcode)
 router.post('/verify',[],verifyCode)
 router.post('/change',[],changePassword)
@@ -32,12 +34,13 @@ router.get('/logout', [], logout)
  
 router.get('/reactivate/:token', [], recoverCount)
 
-//Muestra la informacion de un usuario en especifico
+//Muestra la informacion de un usuario en especifico pero le pide un token
 router.get('/protected', requireToken, infoUser)
 router.put('/update', requireToken, updateUser)
 
 //refresca el token, pues este se cadica cada 15 min
 router.get("/refresh", requireRefreshToken ,refreshToken, )
 router.post('/addemployed', [], addEmpolyed)
+
 
 export default router;

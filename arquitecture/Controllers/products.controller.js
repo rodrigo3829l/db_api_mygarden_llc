@@ -14,6 +14,7 @@ export const addProduct = async (req, res) => {
         if(existProduct) {
             return res.json({
                 success : false,
+                // corregir
                 msg : req.t('products.addProduct.existService')
             })
         }
@@ -47,7 +48,7 @@ export const updateProduct = async (req, res) => {
     try {
         const { id } = req.params; // Asume que el ID del producto se pasa como parámetro en la URL
         const updateData = req.body; // Todos los campos que se desean actualizar
-
+        // update = actualizar
         const updatedProduct = await Products.findByIdAndUpdate(id, updateData, { new: true, runValidators: true  });
 
         if (!updatedProduct) {

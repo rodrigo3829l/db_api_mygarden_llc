@@ -5,7 +5,7 @@ import {getToken, getTokenData, generateRefreshToken} from "../../helpers/middle
 import {sendEmail, getTemplate } from "../../helpers/config/mail.config.js"
 // import {uploadImage} from "../../helpers/utils/cloudinary.js"
 import {generateRandomCode} from "../../helpers/config/code.confi.js"
-
+import { sendSms } from "../../helpers/config/sms.config.js";
 
 export const signUp = async  (req, res) =>{
     try {
@@ -22,11 +22,10 @@ export const signUp = async  (req, res) =>{
             password,
             imagen
         } = req.body
-        console.log(req.body)
+                // esperar encontrar un usuario con el siguiente email
         let user = await User.findOne({ email});
-          
 
-        if(user !== null){
+        if(user){
             return res.json({
                 success: false,
                 msg: req.t('user.signUp.email_already_rooted')
@@ -34,9 +33,9 @@ export const signUp = async  (req, res) =>{
             })
         }
 
-        user = await User.findOne({ userName});
-          
-        if(user !== null){
+        user = await User.findOne({userName});
+        
+        if(user){
             return res.json({
                 success: false,
                 msg: req.t('user.signUp.user_name_already_use')
@@ -44,7 +43,7 @@ export const signUp = async  (req, res) =>{
         }
 
         user = await User.findOne({ cellPhone});
-          
+        
         if(user !== null){
             return res.json({
                 success: false,
@@ -66,7 +65,8 @@ export const signUp = async  (req, res) =>{
             email,
             password,
             code,
-            rol : "client"
+            rol : "client",
+            lade : 52
         })
 
 
@@ -136,7 +136,7 @@ export const confirm = async (req, res) =>{
 
         const user = await User.findOne({email})
 
-        if(user === null){
+        if(!user){
             return res.json({
                 success: false,
             })
@@ -212,7 +212,7 @@ export const recoverPassword = async (req,res)=>{
 
         const user = await User.findOne({email})
 
-        if(user === null){
+        if(!user){
             return res.json({
                 success: false,
             })
@@ -243,24 +243,51 @@ export const recoverPassword = async (req,res)=>{
             req.t('email.recover.tittle'),
         )
 
-        // const template = getTemplate(
-        //     user.name, 
-        //     code, 
-        //     "recover"
-        //     )
-
-        // await sendEmail(
-        //     email, 
-        //     'Verification', 
-        //     template, 
-        //     "Verification code")
-
         return res.json({
             success: true,
             token
         })
 
     } catch (error) {
+        console.log(error)
+        return res.json({
+            success: false,
+            msg: 'Error de recuperacion de contraseña'
+        })   
+    }
+}
+
+export const recoverSms = async (req, res) =>{
+    try {
+        const {cellPhone} = req.body
+        const user = await User.findOne({cellPhone})
+        if(!user){
+            return res.json({
+                success: false,
+                msg : 'usuario no encontrado'
+            })
+        }
+        const code = generateRandomCode()
+        user.code=code
+        await user.save()
+        const email =  user.email
+        const {token, expiresIn} = getToken({email})
+
+        const data = await sendSms(code, user.lade, cellPhone)
+        if(data.error === true){
+            return res.json({
+                success : false,
+                msg : data.mensaje_error
+            })
+        }
+        console.log(data)
+        return res.json({
+            success: true,
+            token   
+        })
+
+    } catch (error) {
+        console.log("Error al enviar el mensaje")
         console.log(error)
         return res.json({
             success: false,
@@ -424,7 +451,7 @@ export const changePassword= async (req,res)=>{
 export const login = async (req, res) => {
     console.log(req.body)
     try {
-        const { email, password, rol } = req.body;
+        const { email, password } = req.body;
         let user = await User.findOne({ email });
 
         if (!user){
@@ -496,19 +523,6 @@ export const login = async (req, res) => {
                     req.t('email.reactivated.tittle'),
                 )
 
-                // const template = getTemplate(
-                //     user.name, 
-                //     token, 
-                //     'reactivated' )
-                // await sendEmail(
-                //     email, 
-                //     'Reactiated your acount', 
-                //     template, 
-                //     "Reactivated your acount"
-                //     )
-
-
-
                 await user.save()
             }
             await user.save()
@@ -522,10 +536,11 @@ export const login = async (req, res) => {
             user.userStatus = "ENABLED"
             await user.save()
         }
-
+        const id = user.id
+        const userRol = user.rol
         //generar el jwt token
-        const {token, expiresIn} = getToken(user.id);  
-        generateRefreshToken(user.id, res)
+        const {token, expiresIn} = getToken({id, userRol});  
+        generateRefreshToken({id, userRol}, res)
         console.log('login')
         console.log({
             token, 
@@ -617,7 +632,7 @@ export const refreshToken  = async (req, res) => {
         const {token, expiresIn} = getToken(req.uid);  
         const {uid} = getTokenData (token)
 
-        const user = await User.findById(uid)
+        const user = await User.findById(uid.id)
 
         return res.json({
             token, 
@@ -640,7 +655,7 @@ export const refreshToken  = async (req, res) => {
 
 export const infoUser = async (req, res) => {
     try {
-        const user = await User.findById(req.uid).lean()
+        const user = await User.findById(req.uid.id).lean()
 
         return res.json({
             _id: user._id, 
@@ -735,7 +750,7 @@ export const updateUser = async (req, res) => {
     try {
         const updateData = req.body;
         const updatedUser = await User.findByIdAndUpdate(
-            req.uid,
+            req.uid.id,
             updateData,
             { new: true, runValidators: true }
         );          

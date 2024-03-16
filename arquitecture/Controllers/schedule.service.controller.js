@@ -64,7 +64,7 @@ export const bookService = async (req, res) => {
 
         const template = getTemplate(titleOne, titleTwo, prOne, prTwo, name, code, action, textAction)
         // se manda a llamar el template del admin
-        const adminTemplate = getAdminTemplate(existUser.name, existSevice.name, scheduledTime)
+        const adminTemplate = getAdminTemplate(existUser.name, existSevice.name, scheduledTime, 'agendado')
 
         await sendEmail(
             existUser.email, 
@@ -210,29 +210,26 @@ export const payService = async (req, res) => {
 
 export const getSchedulesServicesByUser = async (req, res) => {
     try {
-        const {token} = req.params;
-        // console.log("El token")
-        // console.log(token)
+        const { token } = req.params;
         const data = getTokenData(token);
         const id = data.uid;
-        // console.log(id);
 
         const existUser = await User.findById(id);
 
         if (!existUser) {
             return res.json({
                 success: false,
-                msg: "No existe el usuario",
+                msg: "User does not exist",
             });
         }
 
-        // Asumiendo que el campo que relaciona el servicio con el usuario se llama 'user'
-        const services = await ScheduleService.find({ user: id });
+        // Assuming the field that relates the service to the user is called 'user'
+        // Adding a condition to filter services with status not equal to 'canceled'
+        const services = await ScheduleService.find({ user: id, status: { $ne: 'canceled' } });
 
-        // Devuelve los servicios encontrados
         return res.json({
             success: true,
-            services, // Esto devolverá el arreglo de servicios asociados al usuario
+            services,
         });
 
     } catch (error) {
@@ -240,10 +237,11 @@ export const getSchedulesServicesByUser = async (req, res) => {
         console.log(error);
         return res.json({
             success: false,
-            msg: 'Error al obtener los servicios',
+            msg: 'Error fetching services',
         });
     }
 };
+
 
 export const getScheduleService = async (req, res) => {
     try {
@@ -322,3 +320,146 @@ export const getScheduleService = async (req, res) => {
         })
     }
 }
+
+export const cancelService = async (req, res) => {
+    try {
+        const { serviceId } = req.params
+        console.log(serviceId)
+        // Verifica si el servicio existe
+        const existingService = await ScheduleService.findById(serviceId);
+        if (!existingService) {
+            return res.json({
+                success: false,
+                msg: "Service does not exist",
+            });
+        }
+
+        // Actualiza el estado del servicio a 'canceled'
+        existingService.status = 'canceled';
+        await existingService.save();
+        const user = await User.findById(existingService.user)
+        if(!user){
+            return res.json({
+                success: false,
+                msg: "no se encontro al usuario",
+            });
+        }
+
+        const service = await Service.findById(existingService.service)
+        if(!service){
+            return res.json({
+                success: false,
+                msg: "no se encontro el servicio"
+            });
+        }
+
+        // mandar el email de la reagenda
+        const template = getAdminTemplate(user.userName, service.name, new Date(existingService.dates.scheduledTime), 'cancelado')
+        await sendEmail(
+            process.env.USER, 
+            'Servicio cancelado', 
+            template, 
+            'Servicio cancelado'
+            )
+
+
+        // mandar el email de cancelacion
+        return res.json({
+            success: true,
+            msg: "Service canceled successfully",
+        });
+
+    } catch (error) {
+        console.log("Error");
+        console.log(error);
+        return res.json({
+            success: false,
+            msg: 'Error canceling service',
+        });
+    }
+};
+
+
+export const rescheduleService = async (req, res) => {
+    try {
+        const { serviceId } = req.params;
+        const { newDate } = req.body;
+
+        // Verifica si el servicio existe
+        const existingService = await ScheduleService.findById(serviceId);
+        if (!existingService) {
+            return res.json({
+                success: false,
+                msg: "Service does not exist",
+            });
+        }
+
+        // Verifica si la fecha proporcionada es mayor que la fecha actual + 4 días
+        const currentDate = new Date();
+        
+        // Calcula la diferencia en milisegundos entre la fecha actual y la fecha programada del servicio
+        const differenceInMs = existingService.dates.scheduledTime - currentDate;
+
+        // Convierte la diferencia de milisegundos a días
+        const differenceInDays = differenceInMs / (1000 * 60 * 60 * 24);
+
+        // Si la diferencia es igual o menor a 4 días, entonces se permite reprogramar el servicio
+        if (differenceInDays <= 4) {
+            return res.json({
+                success: false,
+                msg: "Cannot reschedule service more than 4 days before the scheduled date",
+            });
+        }
+
+        // Verifica si la fecha proporcionada es mayor que la fecha actual del servicio
+        if (new Date(newDate) <= existingService.dates.scheduledTime) {
+            return res.json({
+                success: false,
+                msg: "Cannot reschedule service to a date before the scheduled date",
+            });
+        }
+        
+        // Actualiza la fecha programada del servicio
+        existingService.dates.scheduledTime = new Date(newDate);
+        await existingService.save();
+
+        const user = await User.findById(existingService.user)
+        if(!user){
+            return res.json({
+                success: false,
+                msg: "no se encontro al usuario",
+            });
+        }
+
+        const service = await Service.findById(existingService.service)
+        if(!service){
+            return res.json({
+                success: false,
+                msg: "no se encontro el servicio"
+            });
+        }
+
+        // mandar el email de la reagenda
+        const template = getAdminTemplate(user.userName, service.name, newDate, 'reagendado')
+        await sendEmail(
+            process.env.USER, 
+            'Servicio reagendado', 
+            template, 
+            'Servicio reagendado'
+            )
+
+
+        return res.json({
+            success: true,
+            msg: "Service rescheduled successfully",
+        });
+
+    } catch (error) {
+        console.log("Error");
+        console.log(error);
+        return res.json({
+            success: false,
+            msg: 'Error rescheduling service',
+        });
+    }
+};

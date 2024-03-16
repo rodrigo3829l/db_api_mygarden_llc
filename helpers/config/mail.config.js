@@ -133,9 +133,21 @@ export const getTemplate = (titleOne, titleTwo, prOne, prTwo, name, code, action
     `
 }
 
-export const getAdminTemplate  = (userName, servicio, fecha) =>{
+export const getAdminTemplate  = (userName, servicio, fecha, action) =>{
+    let content;
+    if(action === 'agendado' || action === 'reagendado'){
+        content = `
+            <p>El usuario: <strong>${userName}</strong>, ha ${action} el servicio: <strong>${servicio}</strong> para la siguiente fecha: <strong>${fecha}</strong>.</p>
+            <p>Por favor confirmar que se hará la visita al cliente. En caso contrario, reagendarla.</p>
+        `
+    } else if(action == 'cancelado'){
+        content =  `
+            <p>El usuario: <strong>${userName}</strong>, ha ${action} el servicio: <strong>${servicio}</strong> con fecha del: <strong>${fecha}</strong>.</p>
+            <p>Por favor tomar medidas necesarias con los datos.</p>
+        `
+    }
+
     return `
-    
     <html lang="en">
 <head>
     <title>Notificación de Servicio Agendado</title>
@@ -194,20 +206,13 @@ export const getAdminTemplate  = (userName, servicio, fecha) =>{
 </head>
 <body>
     <div class="container">
-        <!-- Logo -->
+        
         <img class="logo" src="https://res.cloudinary.com/dui4i9f4e/image/upload/v1705842820/logos/aoi6pnl5zuzhwsbalygr.jpg" alt="My Garden LLC Logo">
-        
-        <!-- Título -->
-        <div class="title">My Garden LLC</div>
-        
-        <!-- Mensaje -->
+        <div class="title">My Garden LLC</div> 
         <div class="message">
             <p>Hola Admin,</p>
-            <p>El usuario: <strong>${userName}</strong>, ha reservado el servicio: <strong>${servicio}</strong> para la siguiente fecha: <strong>${fecha}</strong>.</p>
-            <p>Por favor confirmar que se hará la visita al cliente. En caso contrario, reagendarla.</p>
+            ${content}
         </div>
-        
-        <!-- Pie de página -->
         <div class="footer">Este es un mensaje automático. Por favor no responder.</div>
     </div>
 </body>
