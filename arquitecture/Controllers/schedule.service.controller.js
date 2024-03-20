@@ -19,7 +19,7 @@ export const bookService = async (req, res) => {
         // const scheduledTime = new Date()
 
         const data = getTokenData(user)
-        const id = data.uid
+        const id = data.uid.id
         // console.log(id)
 
         const existUser = await User.findById(id)
@@ -150,8 +150,8 @@ export const quoteService = async (req, res) => {
         service.employeds = employeds
 
         // al total anterior se le suuman los costos adicionales
-        totalGeneral = totalGeneral + additionalCosts.labor + additionalCosts.machinery
-
+        const total = totalGeneral + additionalCosts.labor + additionalCosts.machinery
+        totalGeneral =  parseFloat(total.toFixed(2));
         // se tiene que actualizar la el valor de quote por el total
         service.quote = totalGeneral
         service.pending = totalGeneral
@@ -212,7 +212,7 @@ export const getSchedulesServicesByUser = async (req, res) => {
     try {
         const { token } = req.params;
         const data = getTokenData(token);
-        const id = data.uid;
+        const id = data.uid.id;
 
         const existUser = await User.findById(id);
 
@@ -222,9 +222,6 @@ export const getSchedulesServicesByUser = async (req, res) => {
                 msg: "User does not exist",
             });
         }
-
-        // Assuming the field that relates the service to the user is called 'user'
-        // Adding a condition to filter services with status not equal to 'canceled'
         const services = await ScheduleService.find({ user: id, status: { $ne: 'canceled' } });
 
         return res.json({
@@ -241,6 +238,50 @@ export const getSchedulesServicesByUser = async (req, res) => {
         });
     }
 };
+
+export const getScheduleServices = async (req, res) => {
+    try {
+        const services = await ScheduleService.find();
+
+        // Crear un array para almacenar los servicios actualizados
+        let updatedServices = [];
+
+        // Recorrer cada servicio y realizar las operaciones requeridas
+        for (let i = 0; i < services.length; i++) {
+            const service = services[i];
+
+            // Buscar el usuario por su ID
+            const user = await User.findById(service.user);
+            const userName = `${user.name} ${user.apellidoP} ${user.apellidoM}`;
+
+            // Buscar el servicio por su ID
+            const serviceInfo = await Service.findById(service.service);
+            const serviceName = serviceInfo.name;
+
+            // Crear un nuevo objeto de servicio con la información actualizada
+            const updatedService = {
+                ...service.toObject(), // Convertir el documento Mongoose a un objeto plano
+                user: userName,
+                service: serviceName
+            };
+
+            // Agregar el servicio actualizado al array
+            updatedServices.push(updatedService);
+        }
+
+        return res.json({
+            success: true,
+            services: updatedServices
+        });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            success: false,
+            message: 'Error al obtener los servicios de agenda.'
+        });
+    }
+};
+
 
 
 export const getScheduleService = async (req, res) => {

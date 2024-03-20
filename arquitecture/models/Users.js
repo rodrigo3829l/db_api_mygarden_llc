@@ -28,7 +28,7 @@ const userSchema = new Schema({
     status: {type: String, required: true, default: 'DISBLOCKED',},
     userStatus: {type: String, required: true, default: 'ENABLED'},
     code: {type: String,},
-    rol: {type: String, required: true, enum : ['admin', 'client', 'employed']},
+    rol: {type: String, required: true, enum : ['admin', 'client', 'employed', 'finance']},
     verified: {type: String, required: true, default: 'UNVERIFIED'},
     intentos: {type: Number, default : 0},
     lastIntent: {type: Number, default: null},

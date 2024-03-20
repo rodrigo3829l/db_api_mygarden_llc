@@ -5,7 +5,15 @@ import "./helpers/DataBase/conectdb.js";
 import userRoutes from './routes/user.route.js';
 import TypeServiceRouter from './routes/type.service.route.js'
 import ServicesRouter from './routes/services.route.js'
+
+
+
 import ScheduleServiceRouter from './routes/schedule.service.route.js'
+import EmployedRouter from './routes/employed.router.js'
+
+
+
+
 import DatesRouter from './routes/dates.router.js'
 import TypePayRouter from './routes/type.pay.router.js'
 import ProductsRouter from './routes/products.route.js'
@@ -64,7 +72,15 @@ app.use(express.urlencoded(
 app.use('/api/user', userRoutes);
 app.use('/api/typeservice', TypeServiceRouter);
 app.use('/api/services', ServicesRouter);
+
+
+
 app.use('/api/schedule', ScheduleServiceRouter);
+app.use('/api/employed', EmployedRouter);
+
+
+
+
 app.use('/api/dates', DatesRouter);
 app.use('/api/typepay', TypePayRouter);
 app.use('/api/products', ProductsRouter);

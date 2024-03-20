@@ -1,4 +1,5 @@
 import jwt from "jsonwebtoken"
+import { newLog } from "../config/log.config.js";
 
 export const getToken = (uid) =>{
     const expiresIn = 60 * 60;
@@ -48,18 +49,25 @@ export const generateRefreshToken = (uid, res) => {
     }
 } 
 
-
-export const requireToken = (req, res, next) => {
+export const requireToken = async (req, res, next) => {
     try {
         let token = req.headers?.authorization ;
         let rol = req.headers?.rol ;
         if(!token) 
             throw new Error('No Bearer');
         token = token.split(" ")[1];
+
+        
         // Extrae la informacion del token, en este caso el id
         const {uid} = jwt.verify(token, process.env.JWT_SECRET)
         if(rol !== uid.userRol){
-            return res.status(403).json({error: 'Credenciales incorrectas'})
+            const description = `Intento no autorizado al departamento de: ${rol}`
+            await newLog(
+                description, 
+                req.ip,
+                uid.id,
+            )
+            return res.status(403).json({error: `Intento no autorizado al departamento de: ${rol}`})
         }
         req.uid = uid;
 
@@ -74,8 +82,10 @@ export const requireToken = (req, res, next) => {
 
 export const requireRefreshToken = (req, res, next) => {
     try {
-        const cookieString = req.headers.cookie;
+        
 
+        // const cookieString = req.headers.cookie;
+        const cookieString = req.headers.cookie;
         // Buscar y extraer la parte después de "refreshToken="
         const match = cookieString.match(/refreshToken=([^;]*)/);
 
@@ -84,7 +94,6 @@ export const requireRefreshToken = (req, res, next) => {
         }
 
         const refreshTokenCookie = match[1];
-
         const { uid } = jwt.verify(refreshTokenCookie, process.env.JWT_REFRESH);
         // console.log("Req.iud de require refresh token")
         // console.log(uid)

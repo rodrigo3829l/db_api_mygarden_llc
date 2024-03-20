@@ -1,12 +1,11 @@
-import { Logs } from "../../arquitecture/models/Logs";
+import { Logs } from "../../arquitecture/models/Logs.js";
 
-export const newLog = async (description, ipDirection, date, user) =>{
+export const newLog = async (description, ipDirection, user) =>{
     try {
         const log = new Logs({
-            description, ipDirection, date, user
+            description, ipDirection, user
         })
         await log.save()
-        return log
     } catch (error) {
         console.log(error)
     }

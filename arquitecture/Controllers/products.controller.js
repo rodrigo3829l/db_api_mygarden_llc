@@ -104,3 +104,22 @@ export const setProductUsability = async (req, res) => {
         });
     }
 };
+
+
+export const getAllUsableProducts = async (req, res) => {
+    try {
+        const usableProducts = await Products.find({ isUsable: true });
+        
+        return res.json({
+            success: true,
+            usableProducts
+        });
+
+    } catch (error) {
+        console.log("Error al obtener los productos utilizables", error);
+        return res.json({
+            success: false,
+            msg: 'Error al obtener los productos utilizables'
+        });
+    }
+};

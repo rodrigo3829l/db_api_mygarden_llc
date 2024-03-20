@@ -3,9 +3,12 @@ import mongoose from "mongoose";
 const {Schema, model} = mongoose;
 
 const logs = new Schema ({
-    description : stringify,
+    description : String,
     ipDirection : String,
-    date : {type: Date, default : new Date()},
+    date : {
+        type : Date,
+        default: new Date()
+    },
     user: {
         type: Schema.Types.ObjectId, 
         ref: 'users',

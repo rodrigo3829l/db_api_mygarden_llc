@@ -1,4 +1,5 @@
 import { User } from "../models/Users.js"
+import { newLog } from "../../helpers/config/log.config.js";
 import { v4 as uuidv4 } from "uuid";
 import fs from 'fs-extra';
 import {getToken, getTokenData, generateRefreshToken} from "../../helpers/middlewares/JWT.config.js"
@@ -274,6 +275,7 @@ export const recoverSms = async (req, res) =>{
         const {token, expiresIn} = getToken({email})
 
         const data = await sendSms(code, user.lade, cellPhone)
+        
         if(data.error === true){
             return res.json({
                 success : false,
@@ -449,12 +451,21 @@ export const changePassword= async (req,res)=>{
 }
 
 export const login = async (req, res) => {
-    console.log(req.body)
     try {
-        const { email, password } = req.body;
+        const { email, password, department } = req.body;
+        
         let user = await User.findOne({ email });
 
         if (!user){
+            if(department === 'finance') {
+                console.log("Entro a lo del departament")
+                const description = 'Intento de acceso fallido, no hay usuario el nombre de usuario, telefono o email'
+                await newLog(
+                    description, 
+                    req.ip,
+                    user = null, 
+                )
+            }
             return res.status(403).json({error: req.t('user.login.invalid_email')})
         }
 
@@ -476,6 +487,15 @@ export const login = async (req, res) => {
 
         const respuestaPassword  = await user.comparePassword(password);
         if(!respuestaPassword) {
+            if(department === 'finance') {
+                console.log("Entro a lo del departament")
+                const description = 'Intento de acceso fallido al departamento de finanzas'
+                await newLog(
+                    description, 
+                    req.ip,
+                    user._id, 
+                )
+            }
             user.intentos ++
             user.intentsFailBlocked ++
             if(user.intentos >= 3){
@@ -541,6 +561,16 @@ export const login = async (req, res) => {
         //generar el jwt token
         const {token, expiresIn} = getToken({id, userRol});  
         generateRefreshToken({id, userRol}, res)
+        if(department === 'finance') {
+            console.log('Error en el require token de finanzas')
+            const description = 'Intento de acceso correcto de finanzas'
+            await newLog(
+                description, 
+                req.ip,
+                user._id, 
+            )
+        }
+
         console.log('login')
         console.log({
             token, 
@@ -549,6 +579,7 @@ export const login = async (req, res) => {
             email : user.email,
             rol : user.rol
         })
+
         user.intentos = 0
         user.intentsFailBlocked = 0
         user.lastIntent = null
@@ -558,7 +589,7 @@ export const login = async (req, res) => {
             token, 
             expiresIn, 
             name : `${user.name} ${user.apellidoP} ${user.apellidoM}` ,
-            email : `${user.email}` ,
+            email : user.email ,
             rol : user.rol
         })
 
@@ -691,7 +722,9 @@ export const addEmpolyed = async  (req, res) =>{
             email,
             password,
             direccion,
-            userName
+            userName,
+            rol,
+            lade
         } = req.body
         console.log(req.body)
 
@@ -725,7 +758,8 @@ export const addEmpolyed = async  (req, res) =>{
             email,
             userName,
             password,
-            rol : "employed",
+            rol,
+            lade,
             verified : 'VERIFIED'
         })
 
