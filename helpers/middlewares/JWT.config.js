@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken"
-import { newLog } from "../config/log.config.js";
+import { newLog } from "../config/log.config.JS";
 
 export const getToken = (uid) =>{
     const expiresIn = 60 * 60;
