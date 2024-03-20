@@ -5,6 +5,7 @@ export const newLog = async (description, ipDirection, user) =>{
         const log = new Logs({
             description, ipDirection, user
         })
+        console.log('prueba')
         await log.save()
     } catch (error) {
         console.log(error)
