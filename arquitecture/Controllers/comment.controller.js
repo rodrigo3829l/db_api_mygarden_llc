@@ -30,7 +30,7 @@ export const addComment = async (req, res) =>{
 
         await existeService.save()
         
-        existeService.Calificacion.total = parseFloat((existeService.Calificacion.cantidad / existeService.Calificacion.totales).toFixed(2))
+        existeService.Calificacion.total = parseFloat((existeService.Calificacion.cantidad / existeService.Calificacion.totales).toFixed(1))
         
         await existeService.save()
 
