@@ -9,13 +9,15 @@ import {getToken, getTokenData, generateRefreshToken} from "../../helpers/middle
 export const payScheduledService = async (req, res) => {
     try {
         const { user, mount, scheduleService, type } = req.body;
-        const amount = (mount).toFixed(2)
+        // const amount = (mount).toFixed(2)
+        const amount = parseFloat(mount.toFixed(2));
+
         const data = getTokenData(user);
         const userId = data.uid.id;
 
         const existUser = await User.findById(userId);
         if (!existUser) {
-            return res.status(404).json({
+            return res.json({
                 success: false,
                 msg: req.t('pays.payService.notUser')
             });
@@ -23,15 +25,15 @@ export const payScheduledService = async (req, res) => {
 
         const existService = await ScheduleService.findById(scheduleService);
         if (!existService) {
-            return res.status(404).json({
+            return res.json({
                 success: false,
                 msg:req.t('pays.payService.notService')
             });
         }
 
-        const halfQuote = (existService.pending / 2).toFixed(2);
+        const halfQuote = parseFloat((existService.pending / 2).toFixed(2));
         if (amount < halfQuote || (amount > halfQuote && amount < existService.pending)) {
-            return res.status(400).json({
+            return res.json({
                 success: false,
                 msg: req.t('pays.payService.onlyPorcentaje')
             });
@@ -68,7 +70,7 @@ export const payScheduledService = async (req, res) => {
 
     } catch (error) {
         console.log("Error al pagar el servicio", error);
-        return res.status(500).json({
+        return res.json({
             success: false,
             msg: 'Error al procesar el pago del servicio',
         });
