@@ -7,11 +7,8 @@ import TypeServiceRouter from './routes/type.service.route.js'
 import ServicesRouter from './routes/services.route.js'
 
 
-
 import ScheduleServiceRouter from './routes/schedule.service.route.js'
 import EmployedRouter from './routes/employed.router.js'
-
-
 
 
 import DatesRouter from './routes/dates.router.js'
@@ -46,6 +43,8 @@ i18next
 
 
 const app = express();
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({limit: '50mb', extended: true, parameterLimit: 50000}));
 app.use(express.json())
 app.use(middleware.handle(i18next));//se configuro
 
@@ -61,7 +60,7 @@ app.use(
             }
             return callback("Error de corse origin: " + origin + " no autorizado")
         },
-        credentials: true,  
+        credentials: true,
     })
 )
 
@@ -72,7 +71,6 @@ app.use(express.urlencoded(
 app.use('/api/user', userRoutes);
 app.use('/api/typeservice', TypeServiceRouter);
 app.use('/api/services', ServicesRouter);
-
 
 
 app.use('/api/schedule', ScheduleServiceRouter);
@@ -90,8 +88,6 @@ app.use('/api/comment', CommentRouter);
 
 app.use(cookieParser());
 
-app.use(bodyParser.json({ limit: '100mb' }));
-app.use(bodyParser.urlencoded({ limit: '100mb', extended: true }));
 app.set('trust proxy', true);
 app.use(helmet());
 

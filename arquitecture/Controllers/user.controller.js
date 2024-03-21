@@ -9,6 +9,7 @@ import {generateRandomCode} from "../../helpers/config/code.confi.js"
 import { sendSms } from "../../helpers/config/sms.config.js";
 
 export const signUp = async  (req, res) =>{
+    
     try {
         const {
             name,
@@ -23,10 +24,10 @@ export const signUp = async  (req, res) =>{
             password,
             imagen
         } = req.body
-                // esperar encontrar un usuario con el siguiente email
+
         let user = await User.findOne({ email});
 
-        if(user){
+        if(user !== null){
             return res.json({
                 success: false,
                 msg: req.t('user.signUp.email_already_rooted')
@@ -36,7 +37,7 @@ export const signUp = async  (req, res) =>{
 
         user = await User.findOne({userName});
         
-        if(user){
+        if(user !== null){
             return res.json({
                 success: false,
                 msg: req.t('user.signUp.user_name_already_use')
@@ -451,6 +452,7 @@ export const changePassword= async (req,res)=>{
 }
 
 export const login = async (req, res) => {
+    
     try {
         const { email, password, department } = req.body;
         
@@ -726,7 +728,7 @@ export const addEmpolyed = async  (req, res) =>{
             rol,
             lade
         } = req.body
-        console.log(req.body)
+        
 
         let user = await User.findOne({ email});
           

@@ -20,7 +20,12 @@ import {
 
 const router = express.Router();
 
-router.post('/signup', fileUpload({useTempFiles: true, tempFileDir: './uploads'}), signUp);
+router.post('/signup', fileUpload({
+    useTempFiles: true, 
+    tempFileDir: './uploads',
+    limits: { fileSize: 50 * 1024 * 1024 }, // Ejemplo: límite de 50MB
+}), signUp);
+
 router.get('/confirm/:token', [], confirm)
 
 router.post('/recover',[],recoverPassword)
