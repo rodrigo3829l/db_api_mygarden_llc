@@ -48,7 +48,7 @@ app.use(bodyParser.urlencoded({limit: '50mb', extended: true, parameterLimit: 50
 app.use(express.json())
 app.use(middleware.handle(i18next));//se configuro
 
-console.log("Ultimo commit 20/03/2024 a las 08:20")
+console.log("Ultimo commit 21/03/2024 a las 09:54")
 
 const whiteList = [process.env.ORIGIN1, process.env.ORIGIN2 , process.env.ORIGIN3, process.env.ORIGIN4, process.env.ORIGIN5]
 
