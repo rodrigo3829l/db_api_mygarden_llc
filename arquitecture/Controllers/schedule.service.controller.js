@@ -144,13 +144,14 @@ export const quoteService = async (req, res) => {
         const existUser = await User.findById(service.user)
 
         service.products = productsTotals
-
+        additionalCosts.labor = parseFloat(additionalCosts.labor)
+        additionalCosts.machinery = parseFloat(additionalCosts.machinery)
         service.additionalCosts = additionalCosts
 
         service.employeds = employeds
 
         // al total anterior se le suuman los costos adicionales
-        const total = totalGeneral + additionalCosts.labor + additionalCosts.machinery
+        const total = totalGeneral + additionalCosts.labor + additionalCosts.machinery 
         totalGeneral =  parseFloat(total.toFixed(2));
         // se tiene que actualizar la el valor de quote por el total
         service.quote = totalGeneral
