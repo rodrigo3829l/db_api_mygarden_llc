@@ -41,7 +41,7 @@ export const payScheduledService = async (req, res) => {
 
         let isTotally = amount >= existService.pending;
         let porcentage = isTotally ? 100 : 50;
-        existService.pending = existService.pending - amount
+        existService.pending = parseFloat((parseFloat(existService.pending) - amount).toFixed(2));
         existService.pay = { 
             porcentage,
             totalPay: isTotally,
