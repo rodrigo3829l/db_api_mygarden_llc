@@ -37,8 +37,7 @@ jobs:
           echo "No vulnerabilities found."
         else
           echo "Vulnerabilities found. Reverting to previous version..."
-          git config --global user.email "20210658@uthh.edu.mx"
-          git config --global user.name "rodrigo3829l"
+          
           git reset --hard HEAD^
-          git push https://github.com/rodrigo3829l/db_api_mygarden_llc.git --force
+          git push -f
         fi
