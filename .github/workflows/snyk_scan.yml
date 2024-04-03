@@ -22,13 +22,11 @@ jobs:
     - name: Run Snyk security scan
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-      run: snyk test --all-projects
+      run: snyk test --all-projects --json > snyk_results.json
 
-    # Añadimos un paso adicional para verificar si hay vulnerabilidades
     - name: Check Snyk results
       run: |
-        snyk_results=$(snyk test --all-projects --json)
-        if [[ $snyk_results == *"No known vulnerabilities found"* ]]; then
+        if grep -q "No known vulnerabilities found" snyk_results.json; then
           echo "Las pruebas de Snyk pasaron. Puedes subir tus cambios."
         else
           echo "Se encontraron vulnerabilidades en el código. No se permitirá la subida."
