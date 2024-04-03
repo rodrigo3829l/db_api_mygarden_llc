@@ -10,7 +10,7 @@ const scheduleService = new Schema ({
     },
     service: {
         type: Schema.Types.ObjectId, 
-        ref: 'services',
+        ref: 'Service',
         require : true
     },
     description : {

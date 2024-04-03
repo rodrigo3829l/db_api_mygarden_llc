@@ -8,7 +8,8 @@ import { bookService,
     rescheduleService,
 
 
-    getScheduleServices
+    getScheduleServices,
+    changeStatus
  } from '../arquitecture/Controllers/schedule.service.controller.js';
 import { requireToken } from '../helpers/middlewares/JWT.config.js';
 
@@ -29,7 +30,12 @@ router.post('/quote/:id', requireToken, quoteService)
 
 router.get('/scheduleservice/:id', [], getScheduleService)
 
-router.get('/userservices/:token', [], getSchedulesServicesByUser)
+
+router.put('/change/:id', requireToken, changeStatus)
+
+
+
+router.get('/userservices', requireToken, getSchedulesServicesByUser)
 
 
 router.put('/cancel/:serviceId', [], cancelService)

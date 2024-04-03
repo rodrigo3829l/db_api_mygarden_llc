@@ -211,9 +211,8 @@ export const payService = async (req, res) => {
 
 export const getSchedulesServicesByUser = async (req, res) => {
     try {
-        const { token } = req.params;
-        const data = getTokenData(token);
-        const id = data.uid.id;
+
+        const id = req.uid.id;
 
         const existUser = await User.findById(id);
 
@@ -283,12 +282,36 @@ export const getScheduleServices = async (req, res) => {
     }
 };
 
+export const changeStatus = async (req, res) =>{
+    try {
+        const {id} = req.params
+        const updateData = req.body;
+        console.log(updateData)
 
+        const service = await ScheduleService.findByIdAndUpdate(id, updateData, { new: true })
+
+        if(!service){
+            return res.json({
+                success : true,
+                msg : 'No se actualizo el status del servicio'
+            })
+        }
+        return res.json({
+            success: true,
+            msg: 'Se actualizo el status'
+        });
+    } catch (error) {
+        console.log('Error al cambiar el status')
+        return res.json({
+            success : true,
+            msg : 'No se actualizo el status del servicio'
+        })
+    }
+}
 
 export const getScheduleService = async (req, res) => {
     try {
         const {id} = req.params
-
         const scheduledService = await ScheduleService.findById(id)
 
         if (!scheduledService) {
@@ -424,6 +447,7 @@ export const cancelService = async (req, res) => {
 
 export const rescheduleService = async (req, res) => {
     try {
+        
         const { serviceId } = req.params;
         const { newDate } = req.body;
 
@@ -444,7 +468,6 @@ export const rescheduleService = async (req, res) => {
 
         // Convierte la diferencia de milisegundos a días
         const differenceInDays = differenceInMs / (1000 * 60 * 60 * 24);
-
         // Si la diferencia es igual o menor a 4 días, entonces se permite reprogramar el servicio
         if (differenceInDays <= 4) {
             return res.json({

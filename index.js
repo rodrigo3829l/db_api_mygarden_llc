@@ -10,6 +10,8 @@ import ServicesRouter from './routes/services.route.js'
 import ScheduleServiceRouter from './routes/schedule.service.route.js'
 import EmployedRouter from './routes/employed.router.js'
 
+import AnswerRouter from './routes/asnwer.router.js'
+
 
 import DatesRouter from './routes/dates.router.js'
 import TypePayRouter from './routes/type.pay.router.js'
@@ -75,7 +77,7 @@ app.use('/api/services', ServicesRouter);
 
 app.use('/api/schedule', ScheduleServiceRouter);
 app.use('/api/employed', EmployedRouter);
-
+app.use('/api/answer', AnswerRouter)
 
 
 

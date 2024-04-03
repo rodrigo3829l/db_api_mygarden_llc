@@ -18,6 +18,8 @@ import {
     recoverSms,
  } from '../arquitecture/Controllers/user.controller.js';
 
+ import { contact } from '../arquitecture/Controllers/contact.controller.js';
+
 const router = express.Router();
 
 router.post('/signup', fileUpload({
@@ -47,5 +49,6 @@ router.put('/update', requireToken, updateUser)
 router.get("/refresh", requireRefreshToken ,refreshToken, )
 router.post('/addemployed', [], addEmpolyed)
 
+router.post('/contact', [], contact)
 
 export default router;

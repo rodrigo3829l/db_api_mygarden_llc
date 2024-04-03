@@ -221,3 +221,82 @@ export const getAdminTemplate  = (userName, servicio, fecha, action) =>{
     
     `
 }
+
+export const getContactTemplate = (name, email, message) =>{
+    return `
+        
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contacto - My Garden LLC</title>
+<style>
+    body {
+margin: 0;
+padding: 0;
+font-family: Arial, sans-serif;
+background-color: #f0f0f0;
+}
+
+.container {
+width: 80%;
+margin: 50px auto;
+background-color: #fff;
+border-radius: 20px;
+overflow: hidden;
+box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+.logo-container {
+text-align: center;
+padding: 20px 0;
+}
+
+.logo {
+width: 150px;
+height: 150px;
+border-radius: 50%;
+}
+
+.message-container {
+padding: 20px;
+}
+
+h1 {
+color: #008000; /* Verde */
+}
+
+.message {
+background-color: #f0f8ff; /* Azul claro */
+padding: 10px;
+border-radius: 10px;
+margin-bottom: 20px;
+}
+
+p {
+line-height: 1.5;
+color: #333;
+}
+
+</style>
+</head>
+<body>
+<div class="container">
+    <div class="logo-container">
+        <img class="logo" src="https://res.cloudinary.com/dui4i9f4e/image/upload/v1705842820/logos/aoi6pnl5zuzhwsbalygr.jpg" alt="My Garden LLC Logo">
+    </div>
+    <div class="message-container">
+        <h1>¡Hola amante de las plantas!</h1>
+        <p>El usuario: ${name}, con correo: ${email} interesado en el cuidado de las plantas se ha puesto en contacto contigo. Aquí está su mensaje:</p>
+        <div class="message">
+            <!-- Aquí va el mensaje del usuario -->
+            <p>${message}</p>
+        </div>
+        <p>¡Gracias por tu atención y espero tu pronta respuesta!</p>
+        <p>Atentamente,<br>El equipo de My Garden LLC</p>
+    </div>
+</div>
+</body>
+
+    
+    `
+}

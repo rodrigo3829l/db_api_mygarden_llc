@@ -92,3 +92,23 @@ export const getCommentByScheduledId = async (req, res) => {
         });
     }
 };
+
+export const getAllComments = async (req, res) =>{
+    try{
+        const comments = await Comment.find().populate('user', {
+            name : 1,
+            apellidoP : 1,
+            apellidoM : 1,
+            _id : 0,
+        }).populate('service', {
+            name : 1,
+            _id : 0
+        })
+        return res.json({
+            success: true,
+            comments
+        })
+    }catch(error){
+        console.log(error)
+    }
+}
