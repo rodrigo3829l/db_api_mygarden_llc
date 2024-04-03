@@ -14,7 +14,7 @@ jobs:
     
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       
     - name: Install Snyk CLI
       run: npm install -g snyk
@@ -23,3 +23,14 @@ jobs:
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       run: snyk test --all-projects
+
+    # Añadimos un paso adicional para verificar si hay vulnerabilidades
+    - name: Check Snyk results
+      run: |
+        snyk_results=$(snyk test --all-projects --json)
+        if [[ $snyk_results == *"No known vulnerabilities found"* ]]; then
+          echo "Las pruebas de Snyk pasaron. Puedes subir tus cambios."
+        else
+          echo "Se encontraron vulnerabilidades en el código. No se permitirá la subida."
+          exit 1
+        fi
