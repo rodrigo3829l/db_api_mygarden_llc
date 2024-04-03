@@ -25,6 +25,7 @@ jobs:
       run: |
         snyk monitor --all-projects --org=6ce58cdd-2e65-4c0c-bbe5-705980cee5fe
         snyk test --all-projects --org=6ce58cdd-2e65-4c0c-bbe5-705980cee5fe
+        echo "$?"
         if [ $? == 0 ]; then
           echo "No vulnerabilities found."
         else
