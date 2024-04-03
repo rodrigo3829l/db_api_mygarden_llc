@@ -7,9 +7,7 @@ on:
       - main
   workflow_dispatch:
 
-permissions:
-  contents: write
-  workflows: write
+permissions: write-all
 
 jobs:
   snyk_scan:
