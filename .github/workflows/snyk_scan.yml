@@ -36,5 +36,5 @@ jobs:
         else
           echo "Vulnerabilities found. Reverting to previous version..."
           git reset --hard HEAD^
-          git push -f
+          
         fi
