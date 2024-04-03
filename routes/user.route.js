@@ -1,5 +1,5 @@
 import express from 'express';
-import fileUpload from "express-fileupload";
+
 import { requireRefreshToken,  requireToken} from '../helpers/middlewares/JWT.config.js';
 import { 
     signUp, 
@@ -22,11 +22,7 @@ import {
 
 const router = express.Router();
 
-router.post('/signup', fileUpload({
-    useTempFiles: true, 
-    tempFileDir: './uploads',
-    limits: { fileSize: 50 * 1024 * 1024 }, // Ejemplo: límite de 50MB
-}), signUp);
+router.post('/signup', [], signUp);
 
 router.get('/confirm/:token', [], confirm)
 
