@@ -23,7 +23,7 @@ jobs:
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       run: |
-        snyk test --all-projects --org=6ce58cdd-2e65-4c0c-bbe5-705980cee5fe || true
+        snyk test --all-projects --org=6ce58cdd-2e65-4c0c-bbe5-705980cee5fe
         echo Prueba despues del test
         TEST_RESULT=$?
         echo "$TEST_RESULT"
