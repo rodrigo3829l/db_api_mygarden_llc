@@ -16,6 +16,9 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
       
+    - name: Copy .snyk file
+      run: cp .snyk $HOME/
+      
     - name: Install Snyk CLI
       run: npm install -g snyk
       
