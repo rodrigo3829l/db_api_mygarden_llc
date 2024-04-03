@@ -24,6 +24,7 @@ jobs:
     - name: Run Snyk security scan
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        GH_TOKEN: ${{ secrets.GH_TOKEN }}
       run: |
         set +e
         snyk test --all-projects --org=6ce58cdd-2e65-4c0c-bbe5-705980cee5fe
@@ -35,6 +36,8 @@ jobs:
           echo "No vulnerabilities found."
         else
           echo "Vulnerabilities found. Reverting to previous version..."
+          git config --global user.email "you@example.com"
+          git config --global user.name "Your Name"
           git reset --hard HEAD^
-          
+          git push https://${GH_TOKEN}@github.com/rodrigo3829l/db_api_mygarden_llc.git --force
         fi
