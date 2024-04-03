@@ -16,11 +16,10 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
       
-    - name: Copy .snyk file
-      run: cp .snyk $HOME/
-      
     - name: Install Snyk CLI
       run: npm install -g snyk
       
     - name: Run Snyk security scan
+      env:
+        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       run: snyk test --all-projects
