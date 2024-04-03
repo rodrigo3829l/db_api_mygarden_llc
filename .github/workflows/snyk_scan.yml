@@ -22,4 +22,12 @@ jobs:
     - name: Run Snyk security scan
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-      run: snyk test --all-projects
+      run: |
+        snyk test --all-projects
+        if [ $? -ne 0 ]; then
+          echo "Vulnerabilities found. Reverting to previous version..."
+          git reset --hard HEAD^    # Revert to the previous commit
+          git push -f               # Force push to update the branch in the remote repository
+        else
+          echo "No vulnerabilities found."
+        fi
