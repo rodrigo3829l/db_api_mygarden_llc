@@ -7,6 +7,10 @@ on:
       - main
   workflow_dispatch:
 
+permissions:
+  contents: write
+  workflows: write
+
 jobs:
   snyk_scan:
     name: Snyk Security Scan
@@ -24,7 +28,6 @@ jobs:
     - name: Run Snyk security scan
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        GH_TOKEN: ${{ secrets.GH_TOKEN }}
       run: |
         set +e
         snyk test --all-projects --org=6ce58cdd-2e65-4c0c-bbe5-705980cee5fe
@@ -39,5 +42,5 @@ jobs:
           git config --global user.email "20210658@uthh.edu.mx"
           git config --global user.name "rodrigo3829l"
           git reset --hard HEAD^
-          git push https://${GH_TOKEN}@github.com/rodrigo3829l/db_api_mygarden_llc.git --force
+          git push https://github.com/rodrigo3829l/db_api_mygarden_llc.git --force
         fi
