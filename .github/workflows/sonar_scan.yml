@@ -23,8 +23,8 @@ jobs:
 
       - name: Check SonarCloud Quality Gate
         run: |
-          QUALITY_GATE_STATUS=$(curl -s -u ${{ secrets.SONAR_TOKEN }}: "https://sonarcloud.io/api/qualitygates/project_status?projectKey=rodrigo3829l_db_api_mygarden_llc")
-          if [[ $(echo $QUALITY_GATE_STATUS | jq -r '.projectStatus.status') == "ERROR" ]]; then
+          QUALITY_GATE_STATUS=$(curl -s -u ${{ secrets.SONAR_TOKEN }}: "https://sonarcloud.io/api/qualitygates/project_status?projectKey=rodrigo3829l_db_api_mygarden_llc" | jq -r '.projectStatus.status')
+          if [[ $QUALITY_GATE_STATUS == "ERROR" ]]; then
             echo "SonarCloud Quality Gate failed. Reverting to previous version..."
             git config --global user.email "20210658@uthh.edu.mx"
             git config --global user.name "rodrigo3829l"
