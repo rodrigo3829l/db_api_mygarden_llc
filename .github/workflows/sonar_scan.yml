@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  sonarcloud:
+  sonarcloud_security_scan:
     name: SonarCloud
     runs-on: ubuntu-latest
     steps:
