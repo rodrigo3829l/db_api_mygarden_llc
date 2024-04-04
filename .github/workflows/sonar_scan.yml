@@ -20,7 +20,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      - name: Revert if vulnerabilities found
+      - name: Check vulnerabilities
         run: |
           if [ $? -ne 0 ]; then
             echo "Vulnerabilities found. Reverting to previous version..."
@@ -28,5 +28,8 @@ jobs:
             git config --global user.name "rodrigo3829l"
             git reset --hard HEAD^
             git push https://github.com/rodrigo3829l/db_api_mygarden_llc.git --force
+          else
+            echo "No vulnerabilities found. Proceeding with the current version..."
           fi
+
 
