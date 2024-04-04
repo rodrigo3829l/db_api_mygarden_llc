@@ -7,7 +7,7 @@ const logs = new Schema ({
     ipDirection : String,
     date : {
         type : Date,
-        default: new Date()
+        default: new Date() //fecha actual
     },
     user: {
         type: Schema.Types.ObjectId, 

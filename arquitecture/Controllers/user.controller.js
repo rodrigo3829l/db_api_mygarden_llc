@@ -1,5 +1,7 @@
 import { User } from "../models/Users.js"
+
 import { newLog } from "../../helpers/config/log.config.js";
+
 import { v4 as uuidv4 } from "uuid";
 import fs from 'fs-extra';
 import {getToken, getTokenData, generateRefreshToken} from "../../helpers/middlewares/JWT.config.js"
@@ -563,6 +565,9 @@ export const login = async (req, res) => {
         //generar el jwt token
         const {token, expiresIn} = getToken({id, userRol});  
         generateRefreshToken({id, userRol}, res)
+
+
+        // ya hize login
         if(department === 'finance') {
             console.log('Error en el require token de finanzas')
             const description = 'Intento de acceso correcto de finanzas'

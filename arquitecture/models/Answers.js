@@ -6,11 +6,12 @@ const answerSchema = new Schema({
     // question es la prergunta
     question: {
         type : String, 
-        require : true},
+        require : true,
+    },
     // anwer es la resopuesta
     answer: {
         type : String, 
         require : true},
 })
 
- export const Answer = model('Answer', answerSchema) 
+export const Answer = model('Answer', answerSchema) 

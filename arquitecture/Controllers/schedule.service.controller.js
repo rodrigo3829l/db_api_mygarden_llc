@@ -2,9 +2,11 @@ import { ScheduleService } from "../models/ScheduledService.js";
 import { Service } from "../models/Services.js";
 import { User } from "../models/Users.js";
 import { Products } from "../models/Products.js";
+import { addDate } from "../../helpers/config/date.config.js";
 import {getToken, getTokenData, generateRefreshToken} from "../../helpers/middlewares/JWT.config.js"
 
 import { getAdminTemplate, getTemplate, sendEmail } from "../../helpers/config/mail.config.js";
+import { Dates } from "../models/Dates.js";
 
 export const bookService = async (req, res) => {
     try {
@@ -37,6 +39,17 @@ export const bookService = async (req, res) => {
             return res.json ({
                 success : false,
                 msg : req.t('schedule.bookService.notService')
+            })
+        }
+
+        const existServices = await ScheduleService.find({ "date.scheduledTime": scheduledTime });
+        if(existServices && existServices.length <= 3){
+            await newDate(scheduledTime)
+        }
+        if(existServices && existServices.length >= 4){
+            return res.json({
+                success :  false,
+                msg : 'Esta fecha no esta disponible, por favor seleccione otra'
             })
         }
 

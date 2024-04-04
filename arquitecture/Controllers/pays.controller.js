@@ -3,7 +3,9 @@ import { User } from "../models/Users.js";
 import { ScheduleService } from "../models/ScheduledService.js";
 import { Service } from "../models/Services.js";
 import { TypePay } from "../models/TypePay.js";
+
 import { newLog } from "../../helpers/config/log.config.js";
+
 import {getToken, getTokenData, generateRefreshToken} from "../../helpers/middlewares/JWT.config.js"
 
 export const payScheduledService = async (req, res) => {
@@ -100,6 +102,7 @@ export const updatePay = async (req, res) => {
                 msg: req.t('pays.updateService.notFound')
             });
         }
+        
         const description = 'Actualizacion de datos en el departamento de finanzas'
         await newLog(
             description, 
@@ -134,6 +137,7 @@ export const deletePay = async (req, res) => {
                 msg: req.t('pays.deleteService.notFound')
             });
         }
+
         const description = 'Eliminacion de datos sensibles en el departamento de finanzas'
         await newLog(
             description, 

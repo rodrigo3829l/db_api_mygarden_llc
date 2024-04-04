@@ -1,4 +1,8 @@
-import { addAnwer, removeAnswer, updateAnswer, getAnswers } from '../arquitecture/Controllers/answer.controller.js';
+import { 
+    addAnwer, 
+    removeAnswer, 
+    updateAnswer, 
+    getAnswers } from '../arquitecture/Controllers/answer.controller.js';
 import express from 'express';
 const router = express.Router();
 
