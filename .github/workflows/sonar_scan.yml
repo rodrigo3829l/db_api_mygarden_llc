@@ -1,21 +1,38 @@
-name: SonarQube Securty Scan
+name: SonarCloud Security Scan
+
 on:
   push:
     branches:
       - main
   pull_request:
   workflow_dispatch:
-    
+
 jobs:
-  sonarcloud:
-    name: SonarCloud
+  sonarcloud_security_scan:
+    name: SonarCloud Security Scan
     runs-on: ubuntu-latest
+    
     steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
-      - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    - name: Checkout repository
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+
+    - name: SonarCloud Scan
+      uses: SonarSource/sonarcloud-github-action@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+    - name: Check SonarCloud Quality Gate
+      run: |
+        QUALITY_GATE_STATUS=$(curl -s -u ${{ secrets.SONAR_TOKEN }}: "https://sonarcloud.io/api/qualitygates/project_status?projectKey=<tu_proyecto_en_sonarcloud>")
+        if [[ $(echo $QUALITY_GATE_STATUS | jq -r '.projectStatus.status') == "ERROR" ]]; then
+          echo "SonarCloud Quality Gate failed. Reverting to previous version..."
+          git config --global user.email "20210658@uthh.edu.mx"
+          git config --global user.name "rodrigo3829l"
+          git reset --hard HEAD^
+          git push https://github.com/rodrigo3829l/db_api_mygarden_llc.git --force
+        else
+          echo "SonarCloud Quality Gate passed. No vulnerabilities found."
+        fi
