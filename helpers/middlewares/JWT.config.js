@@ -83,7 +83,11 @@ export const requireToken = async (req, res, next) => {
 export const requireRefreshToken = (req, res, next) => {
     try {
         console.log("Entro al refresh")
+        console.log("Se imprime req.cookie.refresh")
         console.log(req.cookies.refreshToken)
+        console.log("Se imprime req.headers.cookie")
+        console.log(req.headers.cookie)
+
         const cookieString = req.headers.cookie;
         // Buscar y extraer la parte después de "refreshToken="
         const match = cookieString.match(/refreshToken=([^;]*)/);
