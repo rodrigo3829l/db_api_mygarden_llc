@@ -84,6 +84,7 @@ export const requireRefreshToken = (req, res, next) => {
     try {
         console.log("Entro al refresh")
         const cookieString = req.headers.cookie;
+        console.log(req.headers)
         // Buscar y extraer la parte después de "refreshToken="
         const match = cookieString.match(/refreshToken=([^;]*)/);
 
