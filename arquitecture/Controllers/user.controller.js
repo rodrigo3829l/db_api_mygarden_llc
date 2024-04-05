@@ -1,9 +1,8 @@
-import { User } from "../models/Users.js"
+import { User } from "..imagen/models/Users.js"
 
 import { newLog } from "../../helpers/config/log.config.js";
 
 import { v4 as uuidv4 } from "uuid";
-import fs from 'fs-extra';
 import {getToken, getTokenData, generateRefreshToken} from "../../helpers/middlewares/JWT.config.js"
 import {sendEmail, getTemplate } from "../../helpers/config/mail.config.js"
 // import {uploadImage} from "../../helpers/utils/cloudinary.js"
@@ -24,7 +23,6 @@ export const signUp = async  (req, res) =>{
             userName,
             email,
             password,
-            imagen
         } = req.body
 
         let user = await User.findOne({ email});
@@ -539,7 +537,7 @@ export const login = async (req, res) => {
         }
 
         if(user.verified === "UNVERIFIED") return res.status(403).json({error: req.t('user.login.not_verified')})
-        // if (rol !== user.rol) return res.status(403).json({error: req.t('user.login.dont_client')})
+        
         
         if(user.userStatus === "DISABLED") {
             user.userStatus = "ENABLED"

@@ -2,7 +2,6 @@ import { Comment } from "../models/Comment.js";
 import { ScheduleService } from "../models/ScheduledService.js";
 import { Service } from "../models/Services.js";
 import { User } from "../models/Users.js";
-import { login } from "./user.controller.js";
 
 export const addComment = async (req, res) =>{
     try {
