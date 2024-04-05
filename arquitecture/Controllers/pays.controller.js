@@ -6,7 +6,7 @@ import { TypePay } from "../models/TypePay.js";
 
 import { newLog } from "../../helpers/config/log.config.js";
 
-import {getToken, getTokenData, generateRefreshToken} from "../../helpers/middlewares/JWT.config.js"
+import { getTokenData} from "../../helpers/middlewares/JWT.config.js"
 
 export const payScheduledService = async (req, res) => {
     try {

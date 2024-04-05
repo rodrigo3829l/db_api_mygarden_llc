@@ -71,23 +71,8 @@ export const signUp = async  (req, res) =>{
             code,
             rol : "client",
             lade : 52
-        })
-
-
-        // if(imagen){
-        //     let img = new Image()
-        //     img.src = imagen
-
-        //     const {public_id, secure_url} = await uploadImage(img.tempFilePath)
-        //     console.log("Se subio la imagen")
-        //     user.imagen ={
-        //         public_id,
-        //         secure_url  
-        //     }
-        //     fs.unlink(req.files.imagen.tempFilePath)
-        // }
-
-        const {token, expiresIn} = getToken({email, code})
+        })  
+        const {token} = getToken({email, code})
 
         const template = getTemplate(
             req.t('email.confirm.titleOne'), 
@@ -151,7 +136,7 @@ export const confirm = async (req, res) =>{
         console.log(diffInMinutes)
         if(diffInMinutes > 9){
             const code = uuidv4()
-            const {token, expiresIn} = getToken({email, code})
+            const {token} = getToken({email, code})
 
             const template = getTemplate(
                 req.t('email.confirm.titleOne'), 
@@ -225,7 +210,7 @@ export const recoverPassword = async (req,res)=>{
         const code=generateRandomCode()
         user.code=code
 
-        const {token, expiresIn} = getToken({email})
+        const {token} = getToken({email})
 
         await user.save()
 
@@ -275,7 +260,7 @@ export const recoverSms = async (req, res) =>{
         user.code=code
         await user.save()
         const email =  user.email
-        const {token, expiresIn} = getToken({email})
+        const {token} = getToken({email})
 
         const data = await sendSms(code, user.lade, cellPhone)
         
@@ -467,7 +452,7 @@ export const login = async (req, res) => {
                 await newLog(
                     description, 
                     req.ip,
-                    user = null, 
+                    null, 
                 )
             }
             return res.status(403).json({error: req.t('user.login.invalid_email')})
@@ -555,7 +540,7 @@ export const login = async (req, res) => {
 
         if(user.verified === "UNVERIFIED") return res.status(403).json({error: req.t('user.login.not_verified')})
         // if (rol !== user.rol) return res.status(403).json({error: req.t('user.login.dont_client')})
-        // if(user.rol !== "client") return res.status(403).json({error: req.t('user.login.dont_client')})
+        
         if(user.userStatus === "DISABLED") {
             user.userStatus = "ENABLED"
             await user.save()

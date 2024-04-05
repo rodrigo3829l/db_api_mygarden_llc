@@ -53,7 +53,7 @@ userSchema.pre("save", async function( next ){
         throw new Error('Fallo el hash de contraseña');
     }
 })
-4
+
 userSchema.methods.comparePassword = async function (candidatePassword){
     return await bcryptjs.compare( candidatePassword, this.password)
 }

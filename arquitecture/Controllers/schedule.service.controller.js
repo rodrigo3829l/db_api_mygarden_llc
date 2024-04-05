@@ -3,10 +3,9 @@ import { Service } from "../models/Services.js";
 import { User } from "../models/Users.js";
 import { Products } from "../models/Products.js";
 import { addDate } from "../../helpers/config/date.config.js";
-import {getToken, getTokenData, generateRefreshToken} from "../../helpers/middlewares/JWT.config.js"
+import {getTokenData} from "../../helpers/middlewares/JWT.config.js"
 
 import { getAdminTemplate, getTemplate, sendEmail } from "../../helpers/config/mail.config.js";
-import { Dates } from "../models/Dates.js";
 
 export const bookService = async (req, res) => {
     try {
@@ -44,7 +43,7 @@ export const bookService = async (req, res) => {
 
         const existServices = await ScheduleService.find({ "date.scheduledTime": scheduledTime });
         if(existServices && existServices.length <= 3){
-            await newDate(scheduledTime)
+            await addDate(scheduledTime)
         }
         if(existServices && existServices.length >= 4){
             return res.json({
@@ -208,19 +207,6 @@ export const quoteService = async (req, res) => {
     }
 }
 
-export const payService = async (req, res) => {
-    try {
-        
-        
-    } catch (error) {
-        console.log("Error")
-        console.log(error)
-        return res.json({
-            success: false,
-            msg : ''
-        })
-    }
-}
 
 export const getSchedulesServicesByUser = async (req, res) => {
     try {
