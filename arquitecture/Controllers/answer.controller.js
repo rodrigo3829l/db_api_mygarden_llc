@@ -8,19 +8,23 @@ export const getAnswers = async (request, response) => {
         if(!asnwers){
             return response.json({
                 success : false,
-                msg : 'No se pudo obtener las preguntas'
+                msg : req.t('answer.getAnswers.dontGet')
             })
         }
 
         return response.json({
             success : true,
-            msg : 'Preguntas obtenidas',
+            msg : req.t('answer.getAnswers.get'),
             asnwers
         })
 
     } catch (error) {
         console.log('error asl obteber las preguntas')
         console.log(error)
+        return response.json({
+            success : false,
+            msg : req.t('answer.getAnswers.error')
+        })
     }
 }
 
@@ -40,11 +44,15 @@ export const addAnwer = async (request, response) => {
 
         return response.json({
             success :  true,
-            msg : 'Pregunta agregada'
+            msg : req.t('answer.addAnwer.add')
         })
     } catch (error) {
         console.log('error asl agregar una pregunta')
         console.log(error)
+        return response.json({
+            success : false,
+            msg : req.t('answer.addAnwer.error')
+        })
     }
 }
 
@@ -57,18 +65,22 @@ export const removeAnswer = async (request, response) => {
         if(!deleteAnswer){
             return response.json({
                 success : false,
-                msg : 'No se pudo eliminar'
+                msg : req.t('answer.removeAnswer.dontRemove')
             })
         }
 
         return response.json({
             success : true,
-            msg : 'Pregunta elimnada con exito'
+            msg : req.t('answer.removeAnswer.remove')
         })
 
     } catch (error) {
         console.log('error asl eliminar una pregunta')
         console.log(error)
+        return response.json({
+            success : false,
+            msg : req.t('answer.removeAnswer.error')
+        })
     }
 }
 
@@ -82,16 +94,20 @@ export const updateAnswer = async (request, response) => {
         if(!answer){
             return response.json({
                 success : false,
-                msg : 'No se pudo editar'
+                msg : req.t('answer.updateAnswer.dontUpdate')
             })
         }
 
         return response.json({
             success : true,
-            msg : 'Pregunta editada con exito'
+            msg : req.t('answer.updateAnswer.update')
         })
     } catch (error) {
         console.log('error asl editar una pregunta')
         console.log(error)
+        return response.json({
+            success : false,
+            msg : req.t('answer.updateAnswer.error')
+        })
     }
 }

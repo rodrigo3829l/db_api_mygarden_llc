@@ -394,7 +394,7 @@ export const cancelService = async (req, res) => {
         if (!existingService) {
             return res.json({
                 success: false,
-                msg: "Service does not exist",
+                msg: req.t('schedule.cancelService.dontExist'),
             });
         }
 
@@ -405,7 +405,7 @@ export const cancelService = async (req, res) => {
         if(!user){
             return res.json({
                 success: false,
-                msg: "no se encontro al usuario",
+                msg: req.t('schedule.cancelService.notUser'),
             });
         }
 
@@ -413,7 +413,7 @@ export const cancelService = async (req, res) => {
         if(!service){
             return res.json({
                 success: false,
-                msg: "no se encontro el servicio"
+                msg: req.t('schedule.cancelService.dontService'),
             });
         }
 
@@ -430,7 +430,7 @@ export const cancelService = async (req, res) => {
         // mandar el email de cancelacion
         return res.json({
             success: true,
-            msg: "Service canceled successfully",
+            msg: req.t('schedule.cancelService.candeled')
         });
 
     } catch (error) {
@@ -438,7 +438,7 @@ export const cancelService = async (req, res) => {
         console.log(error);
         return res.json({
             success: false,
-            msg: 'Error canceling service',
+            msg: req.t('schedule.cancelService.error'),
         });
     }
 };
@@ -455,7 +455,7 @@ export const rescheduleService = async (req, res) => {
         if (!existingService) {
             return res.json({
                 success: false,
-                msg: "Service does not exist",
+                msg: req.t('schedule.rescheduleService.dontService'),
             });
         }
 
@@ -471,7 +471,7 @@ export const rescheduleService = async (req, res) => {
         if (differenceInDays <= 4) {
             return res.json({
                 success: false,
-                msg: "Cannot reschedule service more than 4 days before the scheduled date",
+                msg:  req.t('schedule.rescheduleService.day')
             });
         }
 
@@ -479,7 +479,7 @@ export const rescheduleService = async (req, res) => {
         if (new Date(newDate) <= existingService.dates.scheduledTime) {
             return res.json({
                 success: false,
-                msg: "Cannot reschedule service to a date before the scheduled date",
+                msg:  req.t('schedule.rescheduleService.date')
             });
         }
         
@@ -491,7 +491,7 @@ export const rescheduleService = async (req, res) => {
         if(!user){
             return res.json({
                 success: false,
-                msg: "no se encontro al usuario",
+                msg:  req.t('schedule.rescheduleService.dontUser')
             });
         }
 
@@ -499,7 +499,7 @@ export const rescheduleService = async (req, res) => {
         if(!service){
             return res.json({
                 success: false,
-                msg: "no se encontro el servicio"
+                msg:  req.t('schedule.rescheduleService.dontService')
             });
         }
 
@@ -515,7 +515,7 @@ export const rescheduleService = async (req, res) => {
 
         return res.json({
             success: true,
-            msg: "Service rescheduled successfully",
+            msg:  req.t('schedule.rescheduleService.success')
         });
 
     } catch (error) {
@@ -523,7 +523,7 @@ export const rescheduleService = async (req, res) => {
         console.log(error);
         return res.json({
             success: false,
-            msg: 'Error rescheduling service',
+            msg:  req.t('schedule.rescheduleService.error')
         });
     }
 };

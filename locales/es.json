@@ -115,6 +115,21 @@
                 "prOne": "Tu servicio ha sido cotizado, revisalo desde la seccion de 'mis servicios' en la pagina",
                 "tittle": "Servicio cotizado"
             }
+        },
+        "cancelService" : {
+            "dontExist" : "El servicio no exite",
+            "notUser" : "No existe el usuario",
+            "dontService" : "no se encontro el servicio",
+            "canceled" : "El service se cancelo con exito",
+            "error" : "Error canceling service"
+        },
+        "rescheduleService" : {
+            "dontService" : "El servicio no existe",
+            "days" : "No se puede reprogramar el servicio más de 4 días antes de la fecha programada",
+            "date" : "No se puede reprogramar el servicio a una fecha anterior a la fecha programada",
+            "dontUser" : "No se encontro al usuario",
+            "success" : "Servicio reagendado con exito",
+            "error" : "Error al reagendar el servicio"
         }
     },
     "services": {
@@ -147,6 +162,27 @@
         "setServiceSuspendStatus": {
             "existService": "Tipo de servicio no encontrado",
             "success": "El estado de suspensión del tipo de servicio ha sido actualizado"
+        }
+    },
+    "answer" : {
+        "getAnswers" : {
+            "dontGet" : "No se pudo obtener las preguntas",
+            "get" : "Pregnutas obtenidas",
+            "error" : "No se pudo obtener"
+        },
+        "addAnwer" : {
+            "add" : "Pregunta agregada",
+            "error" : "No se pudo agregar"
+        },
+        "removeAnswer" : {
+            "dontRemove" : "No se pudo eliminar la pregunta",
+            "remove" : "Pregunta eliminada con exito",
+            "error" : "No se pudo eliminar"
+        },
+        "updateAnswer" : {
+            "dontUpdate" : "No se pudo editar",
+            "update" : "Pregunta editada con exito",
+            "error" : "No se pudo actualizar"
         }
     }
 }

@@ -370,17 +370,6 @@ export const resendcode = async (req,res)=>{
             req.t('email.recover.tittle'),
         )
 
-        // const template = getTemplate(
-        //     user.name, 
-        //     code, 
-        //     "recover")
-        // await sendEmail(
-        //     email, 
-        //     'Verification', 
-        //     template, 
-        //     "Verification code"
-        //     )
-        
         return res.json({
             success: true,
             msg: 'Codigo enviado correctamente'

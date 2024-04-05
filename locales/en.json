@@ -115,6 +115,21 @@
                 "prOne": "Your service has been quoted, check it out from the 'my services' section on the page",
                 "tittle": "Quoted Service"
             }
+        },
+        "cancelService": {
+            "dontExist": "Service does not exist",
+            "notUser": "User does not exist",
+            "dontService": "Service not found",
+            "canceled": "Service successfully canceled",
+            "error": "Error canceling service"
+        },
+        "rescheduleService": {
+            "dontService": "Service does not exist",
+            "days": "Service cannot be rescheduled more than 4 days before the scheduled date",
+            "date": "Service cannot be rescheduled to a date before the scheduled date",
+            "dontUser": "User not found",
+            "success": "Service successfully rescheduled",
+            "error": "Error rescheduling service"
         }
     },
     "services": {
@@ -147,6 +162,27 @@
         "setServiceSuspendStatus": {
             "existService": "Service type not found",
             "success": "The suspension status of the service type has been updated"
+        }
+    },
+    "answer": {
+        "getAnswers": {
+            "dontGet": "Failed to get questions",
+            "get": "Questions obtained",
+            "error": "Failed to get"
+        },
+        "addAnwer": {
+            "add": "Question added",
+            "error": "Failed to add"
+        },
+        "removeAnswer": {
+            "dontRemove": "Failed to remove question",
+            "remove": "Question successfully removed",
+            "error": "Failed to remove"
+        },
+        "updateAnswer": {
+            "dontUpdate": "Failed to edit",
+            "update": "Question successfully edited",
+            "error": "Failed to update"
         }
     }
 }
