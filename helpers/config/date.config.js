@@ -17,16 +17,8 @@ export const addDate = async (fecha) =>{
 
         await newDate.save()
 
-        return res.json({
-            success: true,
-            msg: req.t('dates.addDate.success')
-        }); 
-
     } catch (error) {
         console.log(error)
-        return res.json({
-            success: false,
-            msg: req.t('dates.addDate.false')
-        }); 
+        
     }
 }

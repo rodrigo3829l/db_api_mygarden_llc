@@ -1,4 +1,4 @@
-import { User } from "..imagen/models/Users.js"
+import { User } from "../models/Users.js"
 
 import { newLog } from "../../helpers/config/log.config.js";
 
@@ -434,7 +434,6 @@ export const login = async (req, res) => {
 
         if (!user){
             if(department === 'finance') {
-                console.log("Entro a lo del departament")
                 const description = 'Intento de acceso fallido, no hay usuario el nombre de usuario, telefono o email'
                 await newLog(
                     description, 
@@ -464,7 +463,7 @@ export const login = async (req, res) => {
         const respuestaPassword  = await user.comparePassword(password);
         if(!respuestaPassword) {
             if(department === 'finance') {
-                console.log("Entro a lo del departament")
+                
                 const description = 'Intento de acceso fallido al departamento de finanzas'
                 await newLog(
                     description, 
@@ -541,7 +540,7 @@ export const login = async (req, res) => {
 
         // ya hize login
         if(department === 'finance') {
-            console.log('Error en el require token de finanzas')
+           
             const description = 'Intento de acceso correcto de finanzas'
             await newLog(
                 description, 
@@ -549,15 +548,6 @@ export const login = async (req, res) => {
                 user._id, 
             )
         }
-
-        console.log('login')
-        console.log({
-            token, 
-            expiresIn, 
-            name : `${user.name} ${user.apellidoP} ${user.apellidoM}` ,
-            email : user.email,
-            rol : user.rol
-        })
 
         user.intentos = 0
         user.intentsFailBlocked = 0
@@ -640,10 +630,11 @@ export const logout = (req, res) => {
 export const refreshToken  = async (req, res) => {
     try {
         const {token, expiresIn} = getToken(req.uid);  
+        console.log("Funcion de user refresh")
         const {uid} = getTokenData (token)
-
+        console.log("uid: ", uid)
         const user = await User.findById(uid.id)
-
+        console.log("user: ", user)
         return res.json({
             token, 
             expiresIn,

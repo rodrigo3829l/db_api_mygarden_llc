@@ -82,9 +82,7 @@ export const requireToken = async (req, res, next) => {
 
 export const requireRefreshToken = (req, res, next) => {
     try {
-        
-
-        
+        console.log("Entro al refresh")
         const cookieString = req.headers.cookie;
         // Buscar y extraer la parte después de "refreshToken="
         const match = cookieString.match(/refreshToken=([^;]*)/);
@@ -94,9 +92,10 @@ export const requireRefreshToken = (req, res, next) => {
         }
 
         const refreshTokenCookie = match[1];
+        console.log("Refresh token", refreshTokenCookie)
         const { uid } = jwt.verify(refreshTokenCookie, process.env.JWT_REFRESH);
-        // console.log("Req.iud de require refresh token")
-        // console.log(uid)
+        console.log("Req.iud de require refresh token")
+        console.log(uid)
         req.uid = uid;
         next();
     } catch (error) {

@@ -17,7 +17,18 @@ export const bookService = async (req, res) => {
             typeReserve,
             scheduledTime
         } = req.body    
-        // const scheduledTime = new Date()
+        
+        // Comprueba si la fecha programada es al menos 5 días después de la fecha actual
+        const today = new Date();
+        const scheduledDate = new Date(scheduledTime);
+        const difference = scheduledDate - today;
+        const differenceInDays = difference / (1000 * 60 * 60 * 24);
+        if (differenceInDays < 5) {
+            return res.json({
+                success: false,
+                msg: 'La fecha programada debe ser al menos 5 días después de la fecha actual.'
+            });
+        }
 
         const data = getTokenData(user)
         const id = data.uid.id
@@ -41,15 +52,39 @@ export const bookService = async (req, res) => {
             })
         }
 
-        const existServices = await ScheduleService.find({ "date.scheduledTime": scheduledTime });
-        if(existServices && existServices.length <= 3){
-            await addDate(scheduledTime)
-        }
-        if(existServices && existServices.length >= 4){
-            return res.json({
-                success :  false,
-                msg : 'Esta fecha no esta disponible, por favor seleccione otra'
-            })
+        const existServices = await ScheduleService.find({ "dates.scheduledTime": scheduledTime });
+        console.log("Servicios que existen")
+        console.log(existServices)
+        
+        if(existServices && existServices.length > 0){
+            const userServices = existServices.filter(service => service.user.toString() === id);
+            console.log("Servicios del usuario")
+            console.log(userServices)
+            if (userServices.length >= 2) {
+                return res.json({
+                    success: false,
+                    msg: 'Lo siento pero  ya haz alcanzado el limite de servicios agendados por fecha.'
+                });
+            }
+    
+            if(userServices.length === 1){
+                if(userServices[0].service.toString() === existSevice._id.toString()){
+                    return res.json({
+                        success: false,
+                        msg: 'No puedes agendar el mismo servicio para el mismo dia'
+                    });
+                }
+            }
+    
+            if(existServices.length === 3){
+                await addDate(scheduledTime)
+            }
+            if(existServices.length >= 4){
+                return res.json({
+                    success :  false,
+                    msg : 'Esta fecha no esta disponible, por favor seleccione otra'
+                })
+            }
         }
 
         const newBookService = new ScheduleService({
