@@ -633,7 +633,6 @@ export const refreshToken  = async (req, res) => {
     try {
         const {token, expiresIn} = getToken(req.uid);  
         const {uid} = getTokenData (token)
-        console.log(uid)
         const user = await User.findById(uid.id)
         return res.json({
             token, 
@@ -648,11 +647,6 @@ export const refreshToken  = async (req, res) => {
         return res.status(500).json({error: 'Error de servidor'})
     }
 };
-
-
-
-
-
 
 export const infoUser = async (req, res) => {
     try {

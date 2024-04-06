@@ -14,7 +14,7 @@ export const getAnswers = async (request, response) => {
 
         return response.json({
             success : true,
-            msg : req.t('answer.getAnswers.get'),
+            // msg : req.t('answer.getAnswers.get'),
             asnwers
         })
 
@@ -44,7 +44,8 @@ export const addAnwer = async (request, response) => {
 
         return response.json({
             success :  true,
-            msg : req.t('answer.addAnwer.add')
+            msg : "Pregunta añadida con exito"
+            // msg : req.t('answer.addAnwer.add')
         })
     } catch (error) {
         console.log('error asl agregar una pregunta')
@@ -71,7 +72,7 @@ export const removeAnswer = async (request, response) => {
 
         return response.json({
             success : true,
-            msg : req.t('answer.removeAnswer.remove')
+            
         })
 
     } catch (error) {
@@ -100,7 +101,7 @@ export const updateAnswer = async (request, response) => {
 
         return response.json({
             success : true,
-            msg : req.t('answer.updateAnswer.update')
+            
         })
     } catch (error) {
         console.log('error asl editar una pregunta')

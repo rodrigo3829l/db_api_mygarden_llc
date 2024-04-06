@@ -53,15 +53,14 @@ export const generateRefreshToken = (uid, res) => {
 export const requireToken = async (req, res, next) => {
     try {
         let token = req.headers?.authorization ;
-        let rol = req.headers?.rol ;
+        let rol = req.headers?.rol;
         if(!token) 
             throw new Error('No Bearer');
-        token = token.split(" ")[1];
-
-        
+        token = token.split(" ")[1];  
         // Extrae la informacion del token, en este caso el id
         const {uid} = jwt.verify(token, process.env.JWT_SECRET)
         if(rol !== uid.userRol){
+            
             const description = `Intento no autorizado al departamento de: ${rol}`
             await newLog(
                 description, 
@@ -71,7 +70,6 @@ export const requireToken = async (req, res, next) => {
             return res.status(403).json({error: `Intento no autorizado al departamento de: ${rol}`})
         }
         req.uid = uid;
-
         next();
     } catch (error) {
         console.log(error);
