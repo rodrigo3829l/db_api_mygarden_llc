@@ -42,7 +42,7 @@ router.get('/protected', requireToken, infoUser)
 router.put('/update', requireToken, updateUser)
 
 //refresca el token, pues este se cadica cada 15 min
-router.get("/refresh", requireRefreshToken ,refreshToken, )
+router.get("/refresh", requireToken ,refreshToken )
 router.post('/addemployed', [], addEmpolyed)
 
 router.post('/contact', [], contact)

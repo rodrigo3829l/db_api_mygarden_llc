@@ -617,9 +617,8 @@ export const recoverCount = async (req, res) =>{
 export const logout = (req, res) => {    
     res.clearCookie('refreshToken', {        
                 path: '/',        
-                // httpOnly: true,        
-                secure: true,        
-                sameSite: 'none'    
+                httpOnly: process.env.MODO === "developer",        
+                secure: process.env.MODO !== "developer", 
             })    
             res.json({ok: 'logout'})
     try {
@@ -633,9 +632,8 @@ export const logout = (req, res) => {
 export const refreshToken  = async (req, res) => {
     try {
         const {token, expiresIn} = getToken(req.uid);  
-        console.log("Funcion de user refresh")
         const {uid} = getTokenData (token)
-        console.log("uid: ", uid)
+        console.log(uid)
         const user = await User.findById(uid.id)
         return res.json({
             token, 
