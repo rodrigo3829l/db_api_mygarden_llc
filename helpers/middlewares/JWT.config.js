@@ -39,11 +39,12 @@ export const generateRefreshToken = (uid, res) => {
     try {
         const refreshToken = jwt.sign({uid}, process.env.JWT_REFRESH, {expiresIn})
         res.cookie("refreshToken", refreshToken, {
-            httpOnly: true,
+            // httpOnly: true,
             secure: process.env.MODO !== "developer",
             expires: new Date(Date.now() + expiresIn * 1000),
-            // sameSite : 'none'
+            sameSite : process.env.MODO !== "developer" ? 'lax' : 'none'
         })
+        // res.cookie("refreshToken", refreshToken)
     } catch (error) {
         console.log(error)
     }
@@ -83,20 +84,7 @@ export const requireToken = async (req, res, next) => {
 export const requireRefreshToken = (req, res, next) => {
     try {
         console.log("Entro al refresh")
-        console.log("Se imprime req.cookie.refresh")
-        console.log(req.cookies.refreshToken)
-        console.log("Se imprime req.headers.cookie")
-        console.log(req.headers.cookie)
-
-        const cookieString = req.headers.cookie;
-        // Buscar y extraer la parte después de "refreshToken="
-        const match = cookieString.match(/refreshToken=([^;]*)/);
-
-        if (!match || match.length < 2) {
-            throw new Error("No se encontró refreshToken en las cookies");
-        }
-
-        const refreshTokenCookie = match[1];
+        const refreshTokenCookie = req.cookies.refreshToken
         console.log("Refresh token", refreshTokenCookie)
         const { uid } = jwt.verify(refreshTokenCookie, process.env.JWT_REFRESH);
         console.log("Req.iud de require refresh token")

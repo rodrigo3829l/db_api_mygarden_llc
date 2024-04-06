@@ -534,13 +534,11 @@ export const login = async (req, res) => {
         const id = user.id
         const userRol = user.rol
         //generar el jwt token
-        const {token, expiresIn} = getToken({id, userRol});  
+        const {token, expiresIn} = getToken({id, userRol}); 
+
         generateRefreshToken({id, userRol}, res)
-
-
         // ya hize login
         if(department === 'finance') {
-           
             const description = 'Intento de acceso correcto de finanzas'
             await newLog(
                 description, 
@@ -619,11 +617,16 @@ export const recoverCount = async (req, res) =>{
 export const logout = (req, res) => {    
     res.clearCookie('refreshToken', {        
                 path: '/',        
-                httpOnly: true,        
+                // httpOnly: true,        
                 secure: true,        
-                // // sameSite: 'none'    
+                sameSite: 'none'    
             })    
             res.json({ok: 'logout'})
+    try {
+        // res.clearCookie('refreshToken')
+    } catch (error) {
+        console.log(error)
+    }
 }
 
 
@@ -634,7 +637,6 @@ export const refreshToken  = async (req, res) => {
         const {uid} = getTokenData (token)
         console.log("uid: ", uid)
         const user = await User.findById(uid.id)
-        console.log("user: ", user)
         return res.json({
             token, 
             expiresIn,
