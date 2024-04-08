@@ -1,0 +1,41 @@
+name: Run Tests
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run tests
+        env:
+          URI_MONGO: ${{ secrets.URI_MONGO }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          JWT_REFRESH: ${{ secrets.JWT_REFRESH }}
+          CLOUD_NAME: ${{ secrets.CLOUD_NAME }}
+          API_KEY: ${{ secrets.API_KEY }}
+          API_SECRET: ${{ secrets.API_SECRET }}
+          USER: ${{ secrets.USER }}
+          PASSWORD: ${{ secrets.PASSWORD }}
+          PLANTILLA: ${{ secrets.PLANTILLA }}
+          SMS_TOKEN: ${{ secrets.SMS_TOKEN }}
+        run: |
+          set NODE_OPTIONS=--experimental-vm-modules
+          npx jest
+          echo $LASTEXITCODE

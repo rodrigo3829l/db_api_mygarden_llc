@@ -18,13 +18,6 @@ const router = express.Router()
 
 router.get('/getServices', [], getScheduleServices)
 
-
-
-
-
-
-
-
 router.post('/schedule', [], bookService)
 router.post('/quote/:id', requireToken, quoteService)
 

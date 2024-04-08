@@ -232,7 +232,8 @@ export const recoverPassword = async (req,res)=>{
 
         return res.json({
             success: true,
-            token
+            token,
+            code
         })
 
     } catch (error) {
