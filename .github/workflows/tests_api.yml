@@ -7,13 +7,19 @@ on:
       - main
   workflow_dispatch:
 
+permissions: write-all
+
 jobs:
   test:
+    name: Run Tests
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.MY_GH_TOKEN }}
 
       - name: Set up Node.js
         uses: actions/setup-node@v2
@@ -36,4 +42,16 @@ jobs:
           PLANTILLA: ${{ secrets.PLANTILLA }}
           SMS_TOKEN: ${{ secrets.SMS_TOKEN }}
         run: |
-          set NODE_OPTIONS=--experimental-vm-modules && npx jest; echo $LASTEXITCODE
+          set +e
+          set NODE_OPTIONS=--experimental-vm-modules && npx jest
+          TEST_RESULT=$?
+          set -e
+          if [ $TEST_RESULT -ne 0 ]; then
+            echo "Tests failed. Reverting to previous version..."
+            git config --global user.email "20210658@uthh.edu.mx"
+            git config --global user.name "rodrigo3829l"
+            git reset --hard HEAD^
+            git push https://github.com/rodrigo3829l/db_api_mygarden_llc.git --force
+          else
+            echo "Tests passed."
+          fi
