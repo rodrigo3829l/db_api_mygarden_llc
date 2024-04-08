@@ -31,6 +31,7 @@ jobs:
 
       - name: Run tests
         env:
+        # trae las variabes del .env
           URI_MONGO: ${{ secrets.URI_MONGO }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
           JWT_REFRESH: ${{ secrets.JWT_REFRESH }}
@@ -43,13 +44,17 @@ jobs:
           SMS_TOKEN: ${{ secrets.SMS_TOKEN }}
         run: |
           set +e
+          # ejecuta las pruebas
           set NODE_OPTIONS=--experimental-vm-modules && npx jest
+          # guarda el valor de las pruebas que pude ser 0 o 1
           TEST_RESULT=$?
           set -e
+          # si el resultado es diferente de 0
           if [ $TEST_RESULT -ne 0 ]; then
             echo "Tests failed. Reverting to previous version..."
             git config --global user.email "20210658@uthh.edu.mx"
             git config --global user.name "rodrigo3829l"
+            # regresa al commit anterior
             git reset --hard HEAD^
             git push https://github.com/rodrigo3829l/db_api_mygarden_llc.git --force
           else

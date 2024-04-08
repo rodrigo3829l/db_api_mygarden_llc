@@ -22,9 +22,8 @@ describe('Protected Endpoint', () => {
         const res = await request(app)
             .get('/api/user/protected')
             .set('Authorization', `Bearer ${authToken}`)
-            .set('rol', rol); // Ajustar el rol según sea necesario
-        expect(res.statusCode).toEqual(200);
-        // Verificar la respuesta según lo esperado
+            .set('rol', rol); 
+        expect(res.statusCode).toEqual(200);S
         expect(res.body).toHaveProperty('_id');
         expect(res.body).toHaveProperty('fullName');
         expect(res.body).toHaveProperty('name');

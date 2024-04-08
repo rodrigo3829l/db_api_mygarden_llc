@@ -30,17 +30,23 @@ jobs:
       run: |
         set +e
         snyk monitor --all-projects --org=6ce58cdd-2e65-4c0c-bbe5-705980cee5fe
+        # ejecuta la prueba con snyk
         snyk test --all-projects --org=6ce58cdd-2e65-4c0c-bbe5-705980cee5fe
+        # en esta variable guarda el resultado de la prueba puede ser 1 o 0
         TEST_RESULT=$?
         set -e
         echo Prueba despues del test
         echo "$TEST_RESULT"
+        # si el resultado es igual a 0
         if [ $TEST_RESULT == 0 ]; then
+          # solo imprime que no hay vulnerabilidades
           echo "No vulnerabilities found."
         else
+          # imprime que hay vulnerabilidades
           echo "Vulnerabilities found. Reverting to previous version..."
           git config --global user.email "20210658@uthh.edu.mx"
           git config --global user.name "rodrigo3829l"
+          # aqui regresa el commit
           git reset --hard HEAD^
           git push https://github.com/rodrigo3829l/db_api_mygarden_llc.git --force
         fi
