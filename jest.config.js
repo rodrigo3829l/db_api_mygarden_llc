@@ -10,7 +10,7 @@ export default {
       "node"
     ],
     "transform": {
-      "^.+\\.jsx?$": "babel-jest"
-    }
+      "^.+\\.js$": "babel-jest"
+    }    
   };
   
