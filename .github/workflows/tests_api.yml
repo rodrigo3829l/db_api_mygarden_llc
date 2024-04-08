@@ -36,6 +36,4 @@ jobs:
           PLANTILLA: ${{ secrets.PLANTILLA }}
           SMS_TOKEN: ${{ secrets.SMS_TOKEN }}
         run: |
-          set NODE_OPTIONS=--experimental-vm-modules
-          npx jest
-          echo $LASTEXITCODE
+          set NODE_OPTIONS=--experimental-vm-modules && npx jest; echo $LASTEXITCODE
