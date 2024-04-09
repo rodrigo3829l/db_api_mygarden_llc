@@ -8,13 +8,14 @@ export const getAnswers = async (request, response) => {
         if(!asnwers){
             return response.json({
                 success : false,
-                msg : req.t('answer.getAnswers.dontGet')
+                msg : request.t('answer.getAnswers.dontGet')
             })
         }
+        
 
         return response.json({
             success : true,
-            // msg : req.t('answer.getAnswers.get'),
+            msg : request.t('answer.getAnswers.get'),
             asnwers
         })
 
@@ -23,7 +24,7 @@ export const getAnswers = async (request, response) => {
         console.log(error)
         return response.json({
             success : false,
-            msg : req.t('answer.getAnswers.error')
+            msg : request.t('answer.getAnswers.error')
         })
     }
 }
@@ -45,14 +46,14 @@ export const addAnwer = async (request, response) => {
         return response.json({
             success :  true,
             msg : "Pregunta añadida con exito"
-            // msg : req.t('answer.addAnwer.add')
+            // msg : request.t('answer.addAnwer.add')
         })
     } catch (error) {
         console.log('error asl agregar una pregunta')
         console.log(error)
         return response.json({
             success : false,
-            msg : req.t('answer.addAnwer.error')
+            msg : request.t('answer.addAnwer.error')
         })
     }
 }
@@ -66,7 +67,7 @@ export const removeAnswer = async (request, response) => {
         if(!deleteAnswer){
             return response.json({
                 success : false,
-                msg : req.t('answer.removeAnswer.dontRemove')
+                msg : request.t('answer.removeAnswer.dontRemove')
             })
         }
 
@@ -80,7 +81,7 @@ export const removeAnswer = async (request, response) => {
         console.log(error)
         return response.json({
             success : false,
-            msg : req.t('answer.removeAnswer.error')
+            msg : request.t('answer.removeAnswer.error')
         })
     }
 }
@@ -95,7 +96,7 @@ export const updateAnswer = async (request, response) => {
         if(!answer){
             return response.json({
                 success : false,
-                msg : req.t('answer.updateAnswer.dontUpdate')
+                msg : request.t('answer.updateAnswer.dontUpdate')
             })
         }
 
@@ -108,7 +109,7 @@ export const updateAnswer = async (request, response) => {
         console.log(error)
         return response.json({
             success : false,
-            msg : req.t('answer.updateAnswer.error')
+            msg : request.t('answer.updateAnswer.error')
         })
     }
 }
