@@ -465,15 +465,7 @@ export const cancelService = async (req, res) => {
         await sendEmail(
             process.env.USER, 
             'Servicio cancelado', 
-       catch (error) {
-        console.log("Error");
-        console.log(error);
-        return res.json({
-            success: false,
-            msg: req.t('schedule.cancelService.error'),
-        });
-    }
-};      template, 
+            template, 
             'Servicio cancelado'
             )
 
@@ -484,7 +476,15 @@ export const cancelService = async (req, res) => {
             msg: req.t('schedule.cancelService.candeled')
         });
 
+    } catch (error) {
+        console.log("Error");
+        console.log(error);
+        return res.json({
+            success: false,
+            msg: req.t('schedule.cancelService.error'),
+        });
     }
+};
 
 
 export const rescheduleService = async (req, res) => {
