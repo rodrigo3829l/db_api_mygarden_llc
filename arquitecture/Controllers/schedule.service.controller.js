@@ -433,6 +433,14 @@ export const cancelService = async (req, res) => {
             });
         }
 
+        if(existingService.quote !== 0){
+            if(existingService.pending !== 0){
+                return res.json({
+                    success: false,
+                    msg : 'No puedes cancelar tu servicio sin antes haber pagado su totalidad esto de acuerdo a las politicas'
+                })
+            }
+        }
         // Actualiza el estado del servicio a 'canceled'
         existingService.status = 'canceled';
         await existingService.save();
@@ -457,7 +465,15 @@ export const cancelService = async (req, res) => {
         await sendEmail(
             process.env.USER, 
             'Servicio cancelado', 
-            template, 
+       catch (error) {
+        console.log("Error");
+        console.log(error);
+        return res.json({
+            success: false,
+            msg: req.t('schedule.cancelService.error'),
+        });
+    }
+};      template, 
             'Servicio cancelado'
             )
 
@@ -468,15 +484,7 @@ export const cancelService = async (req, res) => {
             msg: req.t('schedule.cancelService.candeled')
         });
 
-    } catch (error) {
-        console.log("Error");
-        console.log(error);
-        return res.json({
-            success: false,
-            msg: req.t('schedule.cancelService.error'),
-        });
     }
-};
 
 
 export const rescheduleService = async (req, res) => {
