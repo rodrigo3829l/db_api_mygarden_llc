@@ -1591,7 +1591,7 @@
   "resolved" "https://registry.npmjs.org/buffer-from/-/buffer-from-1.1.2.tgz"
   "version" "1.1.2"
 
-"busboy@^1.0.0":
+"busboy@^1.0.0", "busboy@^1.6.0":
   "integrity" "sha512-8SFQbg/0hQ9xy3UNTB0YEnsNBbWfhf7RtnzpL7TkBiTBRfrQ9Fxcnz7VJsleJpyp6rVLvXiuORqjlHi5q+PYuA=="
   "resolved" "https://registry.npmjs.org/busboy/-/busboy-1.6.0.tgz"
   "version" "1.6.0"
@@ -2066,6 +2066,13 @@
     "jest-matcher-utils" "^29.7.0"
     "jest-message-util" "^29.7.0"
     "jest-util" "^29.7.0"
+
+"express-fileupload@^1.5.0":
+  "integrity" "sha512-jSW3w9evqM37VWkEPkL2Ck5wUo2a8qa03MH+Ou/0ZSTpNlQFBvSLjU12k2nYcHhaMPv4JVvv6+Ac1OuLgUZb7w=="
+  "resolved" "https://registry.npmjs.org/express-fileupload/-/express-fileupload-1.5.0.tgz"
+  "version" "1.5.0"
+  dependencies:
+    "busboy" "^1.6.0"
 
 "express-validator@^7.0.1":
   "integrity" "sha512-oB+z9QOzQIE8FnlINqyIFA8eIckahC6qc8KtqLdLJcU3/phVyuhXH3bA4qzcrhme+1RYaCSwrq+TlZ/kAKIARA=="
