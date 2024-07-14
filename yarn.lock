@@ -1693,10 +1693,10 @@
   "resolved" "https://registry.npmjs.org/cloudinary-core/-/cloudinary-core-2.13.0.tgz"
   "version" "2.13.0"
 
-"cloudinary@^1.41.2":
-  "integrity" "sha512-9gH6ofz+N8AzfjqtmTgB9lVxwWcroHFfMOOM6iiX/g1H+KYz+sArClXWtd0prRE6m/IoBBBbbaJ12yRdJNnMxA=="
-  "resolved" "https://registry.npmjs.org/cloudinary/-/cloudinary-1.41.2.tgz"
-  "version" "1.41.2"
+"cloudinary@^1.41.3":
+  "integrity" "sha512-4o84y+E7dbif3lMns+p3UW6w6hLHEifbX/7zBJvaih1E9QNMZITENQ14GPYJC4JmhygYXsuuBb9bRA3xWEoOfg=="
+  "resolved" "https://registry.npmjs.org/cloudinary/-/cloudinary-1.41.3.tgz"
+  "version" "1.41.3"
   dependencies:
     "cloudinary-core" "^2.13.0"
     "core-js" "^3.30.1"
@@ -1957,10 +1957,10 @@
   "resolved" "https://registry.npmjs.org/diff-sequences/-/diff-sequences-29.6.3.tgz"
   "version" "29.6.3"
 
-"dotenv@^16.3.2":
-  "integrity" "sha512-HTlk5nmhkm8F6JcdXvHIzaorzCoziNQT9mGxLPVXW8wJF1TiGSL60ZGB4gHWabHOaMmWmhvk2/lPHfnBiT78AQ=="
-  "resolved" "https://registry.npmjs.org/dotenv/-/dotenv-16.3.2.tgz"
-  "version" "16.3.2"
+"dotenv@^16.4.5":
+  "integrity" "sha512-ZmdL2rui+eB2YwhsWzjInR8LldtZHGDoQ1ugH85ppHKwpUHL7j7rN0Ti9NCnGiQbhaZ11FpR+7ao1dNsmduNUg=="
+  "resolved" "https://registry.npmjs.org/dotenv/-/dotenv-16.4.5.tgz"
+  "version" "16.4.5"
 
 "ecdsa-sig-formatter@1.0.11":
   "integrity" "sha512-nagl3RYrbNv6kQkeJIpt6NJZy8twLB/2vtz6yN9Z4vRKHN4/QZJIEbqohALSgwKdnksuY3k5Addp5lg8sVoVcQ=="

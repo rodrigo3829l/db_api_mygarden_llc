@@ -25,11 +25,14 @@ const userSchema = new Schema({
     userName: {type: String, required : true, unique: true, index : {unique : true},},
     email: {type: String, required: true, unique: true, index : {unique : true},},
     password: {type: String, required: true},
+
+    
     status: {type: String, required: true, default: 'DISBLOCKED',},
     userStatus: {type: String, required: true, default: 'ENABLED'},
     code: {type: String,},
     rol: {type: String, required: true, enum : ['admin', 'client', 'employed', 'finance']},
-    verified: {type: String, required: true, default: 'UNVERIFIED'},
+    verified: {type: String, required: true, default: 'VERIFIED'},
+    // verified: {type: String, required: true, default: 'UNVERIFIED'},
     intentos: {type: Number, default : 0},
     lastIntent: {type: Number, default: null},
     creation: {type: Date, default: new Date()},

@@ -12,6 +12,9 @@ import TypePayRouter from './routes/type.pay.router.js'
 import ProductsRouter from './routes/products.route.js'
 import PaysRouter from './routes/pays.router.js'
 import CommentRouter from './routes/comment.router.js'
+import FeatureRouter from './routes/feature.router.js'
+import UnitRouter from './routes/unit.route.js'
+import ProviderRouter from './routes/provider.router.js'
 import cors from 'cors'
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
@@ -71,5 +74,8 @@ app.use('/api/typepay', TypePayRouter);
 app.use('/api/products', ProductsRouter);
 app.use('/api/pays', PaysRouter);
 app.use('/api/comment', CommentRouter);
+app.use('/api/feature', FeatureRouter);
+app.use('/api/unit', UnitRouter);
+app.use('/api/provider', ProviderRouter);
 
 export default app

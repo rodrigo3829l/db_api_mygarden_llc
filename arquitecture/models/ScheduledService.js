@@ -5,7 +5,7 @@ const {Schema, model} = mongoose;
 const scheduleService = new Schema ({
     user: {
         type: Schema.Types.ObjectId, 
-        ref: 'users',
+        ref: 'User',
         require : true
     },
     service: {
@@ -47,7 +47,7 @@ const scheduleService = new Schema ({
     products: [{
         product: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'products',
+            ref: 'Products',
         },
         quantity: {
             type: Number,
@@ -78,7 +78,7 @@ const scheduleService = new Schema ({
     // De momento no se ocupa pero esta pendiente la tabla de empleados
     employeds : [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'users',
+        ref: 'User',
     }],
     dates : {
         reserved : {
@@ -93,7 +93,7 @@ const scheduleService = new Schema ({
     // De momento no se ocupa peor queda pendiente hacer la tabla
     typePay : {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'typepays',
+        ref: 'TypePay',
     }
 })
 

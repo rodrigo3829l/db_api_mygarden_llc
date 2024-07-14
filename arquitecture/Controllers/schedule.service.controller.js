@@ -245,67 +245,68 @@ export const quoteService = async (req, res) => {
 
 export const getSchedulesServicesByUser = async (req, res) => {
     try {
-
         const id = req.uid.id;
-
         const existUser = await User.findById(id);
 
         if (!existUser) {
             return res.json({
                 success: false,
-                msg: "User does not exist",
+                msg: "El usuario no existe"
             });
         }
-        const services = await ScheduleService.find({ user: id, status: { $ne: 'canceled' } });
+
+        let services = await ScheduleService.find({ user: id })
+            .populate('service', 'name description')
+            .populate({
+                path: 'products.product',
+                select: 'product price unit provider',
+                populate: [
+                    { path: 'unit', select: 'name' },
+                    { path: 'provider', select: 'providerName contact' }
+                ]
+            })
+            .populate('employeds', 'name apellidoP apellidoM')
+            .populate('typePay', 'type')
+            .exec();
+
+        services = services.reverse(); // Revertir si es necesario según tu lógica
 
         return res.json({
             success: true,
-            services,
+            services
         });
 
     } catch (error) {
-        console.log("Error");
-        console.log(error);
-        return res.json({
+        console.error("Error al obtener los servicios agendados del usuario:", error);
+        return res.status(500).json({
             success: false,
-            msg: 'Error fetching services',
+            msg: 'Error al obtener los servicios agendados del usuario'
         });
     }
 };
 
+
 export const getScheduleServices = async (req, res) => {
     try {
-        const services = await ScheduleService.find();
+        const services = await ScheduleService.find()
+        .populate('user', 'name apellidoP apellidoM direccion') 
+        .populate('service', 'name description')
+        .populate({
+            path: 'products.product',
+            select: 'product price unit provider',
+            populate: [
+            { path: 'unit', select: 'name' }, 
+            { path: 'provider', select: 'providerName contact' } 
+            ]
+        })
+        .populate('employeds', 'name apellidoP apellidoM')
+        .populate('typePay', 'type') // 
+        .exec();
 
-        // Crear un array para almacenar los servicios actualizados
-        let updatedServices = [];
-
-        // Recorrer cada servicio y realizar las operaciones requeridas
-        for (let i = 0; i < services.length; i++) {
-            const service = services[i];
-
-            // Buscar el usuario por su ID
-            const user = await User.findById(service.user);
-            const userName = `${user.name} ${user.apellidoP} ${user.apellidoM}`;
-
-            // Buscar el servicio por su ID
-            const serviceInfo = await Service.findById(service.service);
-            const serviceName = serviceInfo.name;
-
-            // Crear un nuevo objeto de servicio con la información actualizada
-            const updatedService = {
-                ...service.toObject(), // Convertir el documento Mongoose a un objeto plano
-                user: userName,
-                service: serviceName
-            };
-
-            // Agregar el servicio actualizado al array
-            updatedServices.push(updatedService);
-        }
 
         return res.json({
             success: true,
-            services: updatedServices
+            services: services
         });
     } catch (error) {
         console.log(error);
@@ -319,7 +320,10 @@ export const getScheduleServices = async (req, res) => {
 export const changeStatus = async (req, res) =>{
     try {
         const {id} = req.params
+        const userId = req.uid.id
         const updateData = req.body;
+
+
         console.log(updateData)
 
         const service = await ScheduleService.findByIdAndUpdate(id, updateData, { new: true })
@@ -330,6 +334,8 @@ export const changeStatus = async (req, res) =>{
                 msg : 'No se actualizo el status del servicio'
             })
         }
+        const user = await User.findById(userId)
+        
         return res.json({
             success: true,
             msg: 'Se actualizo el status'
@@ -345,80 +351,43 @@ export const changeStatus = async (req, res) =>{
 
 export const getScheduleService = async (req, res) => {
     try {
-        const {id} = req.params
+        const { id } = req.params;
         const scheduledService = await ScheduleService.findById(id)
+            .populate('user', 'name apellidoP apellidoM direccion')
+            .populate('service', 'name description')
+            .populate({
+                path: 'products.product',
+                select: 'product price unit provider',
+                populate: [
+                    { path: 'unit', select: 'name' },
+                    { path: 'provider', select: 'providerName contact' }
+                ]
+            })
+            .populate('employeds', 'name apellidoP apellidoM')
+            .populate('typePay', 'type')
+            .exec();
 
         if (!scheduledService) {
             return res.json({
                 success: false,
-                msg: 'No se encontro el servicio'
-            })
-        }
-
-        const service = await Service.findById(scheduledService.service)
-
-        const newService = {
-            id: scheduledService._id,
-            // user : scheduledService.user,
-            service : service.name,
-            description : scheduledService.description,
-            img : scheduledService.img.secure_url,
-            status : scheduledService.status,
-            quote : scheduledService.quote,
-            pay : scheduledService.pay,
-            // aqui van los productos
-            typeReserve : scheduledService.typeReserve,
-            dates : scheduledService.dates,
-            pending : scheduledService.pending
-        }
-
-        // Obtener y agregar los nombres de los empleados asignados
-        if (scheduledService.employeds && scheduledService.employeds.length > 0) {
-            const employedsNames = await Promise.all(scheduledService.employeds.map(async (employeeId) => {
-                const { name, apellidoP, apellidoM } = await User.findById(employeeId); // Usa el modelo User adecuado
-                return `${name} ${apellidoP} ${apellidoM}`; // Concatena los nombres
-            }));
-
-            newService.employeds = employedsNames; // Agrega los nombres al nuevo servicio
-        }
-
-        const productsNames = [];
-
-        for (const { product, quantity, total } of scheduledService.products) {
-            const productExist = await Products.findById(product);
-
-            if (!productExist) {
-                // Manejar el caso en que el producto no se encuentra
-                console.log(`Producto con ID ${product} no encontrado`);
-                continue; // Salta a la siguiente iteración del ciclo
-            }
-
-            productsNames.push({
-                product: productExist.product,
-                quantity,
-                total
+                msg: 'No se encontró el servicio'
             });
         }
-        if(scheduledService.status !== 'quoting'){
-            newService.products = productsNames
-            newService.typePay = scheduledService.typePay
-            newService.additionalCosts = scheduledService.additionalCosts
 
-        }
 
         return res.json({
             success: true,
-            newService
-        })
+            scheduledService
+        });
     } catch (error) {
-        console.log("Error aln buscar un servicio agendado")
-        console.log(error)
-        return res.json({
+        console.error("Error al buscar un servicio agendado:", error);
+        return res.status(500).json({
             success: false,
-            msg: 'No se encontro el servicio agendado'
-        })
+            msg: 'Error al buscar un servicio agendado'
+        });
     }
-}
+};
+
 
 export const cancelService = async (req, res) => {
     try {

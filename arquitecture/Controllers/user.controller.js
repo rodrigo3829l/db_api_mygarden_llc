@@ -23,6 +23,7 @@ export const signUp = async  (req, res) =>{
             userName,
             email,
             password,
+            img
         } = req.body
 
         let user = await User.findOne({ email});
@@ -67,6 +68,7 @@ export const signUp = async  (req, res) =>{
             email,
             password,
             code,
+            img,
             rol : "client",
             lade : 52
         })  
@@ -82,12 +84,12 @@ export const signUp = async  (req, res) =>{
             "confirm", 
             req.t('email.confirm.textAction'))
 
-        await sendEmail(
-            email, 
-            req.t('email.confirm.tittle'), 
-            template, 
-            req.t('email.confirm.tittle'),
-            )
+        // await sendEmail(
+        //     email, 
+        //     req.t('email.confirm.tittle'), 
+        //     template, 
+        //     req.t('email.confirm.tittle'),
+        //     )
 
         await user.save();
 

@@ -7,7 +7,7 @@ const serviceSchema = new Schema({
     description : {type: String, required: true},
     tipoDeServicio: {
         type: Schema.Types.ObjectId, // Indica que el campo es un ObjectId
-        ref: 'typeservices', // La colección a la que se refiere
+        ref: 'TypeService', // La colección a la que se refiere
         require: true
     },
     img:{
