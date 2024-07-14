@@ -7,16 +7,18 @@ import {
     updateServiceById,
     setServiceUsability,
     editService,
- } from '../arquitecture/Controllers/services.controller.js';
+} from '../arquitecture/Controllers/services.controller.js';
 
- const router = express.Router();
+import { handleImageUpload } from '../helpers/middlewares/images.config.js';
 
- router.post('/add', requireToken, addService)
+const router = express.Router();
+
+router.post('/add', requireToken, handleImageUpload, addService)
+router.put('/update/:id', requireToken, handleImageUpload, updateServiceById)
 
 router.get('/get', [], getServices)
 router.get('/getService/:id', [], getServiceById)
 
-router.put('/update/:id', requireToken, updateServiceById)
 router.put('/usuable/:id', requireToken, setServiceUsability)
 // router.put('/update/:id', requireToken, editService)
 

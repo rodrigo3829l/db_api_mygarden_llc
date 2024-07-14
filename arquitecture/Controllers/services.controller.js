@@ -6,11 +6,11 @@ export const addService = async (req, res) => {
         const {
             name,
             description,
-            typeService,
+            tipoDeServicio,
             img,
         } = req.body;
 
-        const existingType = await TypeService.findOne({ tipo: typeService });
+        const existingType = await TypeService.findOne({ tipo: tipoDeServicio });
 
         if (!existingType) {
             return res.json({
@@ -94,10 +94,23 @@ export const getServiceById = async (req, res) => {
 
 export const updateServiceById = async (req, res) => {
     try {
-        const { id } = req.params; // Asume que el ID del producto se pasa como parámetro en la URL
-        const updateData = req.body;
+        const { id } = req.params; // Asume que el ID del servicio se pasa como parámetro en la URL
+        let updateData = req.body;
+        const { tipoDeServicio } = updateData; // Asegúrate de que el tipo de servicio se incluye en el cuerpo de la solicitud
+        // Verifica si el tipo de servicio existe
+        const existingType = await TypeService.findOne({ tipo: tipoDeServicio });
+        if (!existingType) {
+            return res.json({
+                success: false,
+                msg: req.t('services.addService.notTypeService')
+            });
+        }
 
-        const updateService = await Service.findByIdAndUpdate(id, updateData, { new: true, runValidators: true })
+        // Sustituye tipoDeServicio con existingType._id
+        updateData.tipoDeServicio = existingType._id;
+
+        // Actualiza el servicio
+        const updateService = await Service.findByIdAndUpdate(id, updateData, { new: true, runValidators: true });
 
         if (!updateService) {
             return res.json({
@@ -112,15 +125,14 @@ export const updateServiceById = async (req, res) => {
             data: updateService
         });
     } catch (error) {
-        console.log("Error al obtener el servicio")
+        console.log("Error al actualizar el servicio");
         console.log(error);
         return res.json({
             success: false,
-            msg: 'Error al obtener el servicio'
+            msg: 'Error al actualizar el servicio'
         });
     }
 }
-
 export const setServiceUsability = async (req, res) => {
     try {
         const { id } = req.params;
