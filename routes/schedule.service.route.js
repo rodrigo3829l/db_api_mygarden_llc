@@ -6,10 +6,9 @@ import { bookService,
     getScheduleService, 
     cancelService, 
     rescheduleService,
-
-
     getScheduleServices,
-    changeStatus
+    changeStatus,
+    getScheduleServicesByStatus
  } from '../arquitecture/Controllers/schedule.service.controller.js';
 import { requireToken } from '../helpers/middlewares/JWT.config.js';
 
@@ -17,7 +16,7 @@ const router = express.Router()
 
 
 router.get('/getServices', [], getScheduleServices)
-
+router.get('/getServicesByStatus/:status', getScheduleServicesByStatus);
 router.post('/schedule', [], bookService)
 router.post('/quote/:id', requireToken, quoteService)
 

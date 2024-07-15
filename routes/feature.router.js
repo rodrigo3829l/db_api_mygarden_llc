@@ -2,17 +2,19 @@ import {
     getAllFeaturedProjects,
     getFeaturedProjectById,
     updateFeaturedProject,
-    deleteFeaturedProject
- } from '../arquitecture/Controllers/feature.controller.js';
+    deleteFeaturedProject,
+    addFeaturedProject
+} from '../arquitecture/Controllers/feature.controller.js';
+import { handleImagesUpload } from '../helpers/middlewares/images.array.congif.js';
 import express from 'express';
 
-import { requireToken } from '../helpers/middlewares/JWT.config.js';
+import { requireToken } from '../helpers/middlewares/JWT.config.js';    
 
 const router = express.Router();
-
+router.post('/add', requireToken, handleImagesUpload, addFeaturedProject)
 router.get('/get', [], getAllFeaturedProjects)
-router.get('/get/:Id', [], getFeaturedProjectById)
-router.put('update/:id', requireToken, updateFeaturedProject)
-router.delete('delete/:id', requireToken, deleteFeaturedProject)
+router.get('/get/:id', [], getFeaturedProjectById)
+router.put('/update/:id', requireToken, handleImagesUpload ,updateFeaturedProject)
+router.delete('/delete/:id', requireToken, deleteFeaturedProject)
 
 export default router

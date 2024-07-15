@@ -32,3 +32,15 @@ export const updateImage = async (base64Image, public_id) => {
         throw new Error('Image update failed');
     }
 };
+
+export const deleteImage = async (public_id) => {
+    try {
+        const result = await cloudinary.uploader.destroy(public_id);
+        return {
+            result: result.result // Should return 'ok' if successful
+        };
+    } catch (error) {
+        console.error('Error deleting image from Cloudinary', error);
+        throw new Error('Image delete failed');
+    }
+};

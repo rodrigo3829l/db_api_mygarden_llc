@@ -317,6 +317,40 @@ export const getScheduleServices = async (req, res) => {
     }
 };
 
+export const getScheduleServicesByStatus = async (req, res) => {
+    try {
+        const { status } = req.params; // Obtener el status desde los parámetros de la ruta
+
+        // Buscar servicios de agenda por status
+        const services = await ScheduleService.find({ status })
+            .populate('user', 'name apellidoP apellidoM direccion')
+            .populate('service', 'name description')
+            .populate({
+                path: 'products.product',
+                select: 'product price unit provider',
+                populate: [
+                    { path: 'unit', select: 'name' },
+                    { path: 'provider', select: 'providerName contact' }
+                ]
+            })
+            .populate('employeds', 'name apellidoP apellidoM')
+            .populate('typePay', 'type')
+            .exec();
+
+        return res.json({
+            success: true,
+            services: services
+        });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            success: false,
+            message: 'Error al obtener los servicios de agenda.'
+        });
+    }
+};
+
+
 export const changeStatus = async (req, res) =>{
     try {
         const {id} = req.params
