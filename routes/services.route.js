@@ -7,6 +7,7 @@ import {
     updateServiceById,
     setServiceUsability,
     editService,
+    getServicesByType,
 } from '../arquitecture/Controllers/services.controller.js';
 
 import { handleImageUpload } from '../helpers/middlewares/images.config.js';
@@ -17,6 +18,7 @@ router.post('/add', requireToken, handleImageUpload, addService)
 router.put('/update/:id', requireToken, handleImageUpload, updateServiceById)
 
 router.get('/get', [], getServices)
+router.get('/getByType/:tipoDeServicio', [], getServicesByType)
 router.get('/getService/:id', [], getServiceById)
 
 router.put('/usuable/:id', requireToken, setServiceUsability)

@@ -3,37 +3,37 @@ import mongoose from "mongoose";
 const {Schema, model} = mongoose;
 
 const scheduleService = new Schema ({
-    user: {
+    user: { // id del usuario
         type: Schema.Types.ObjectId, 
         ref: 'User',
         require : true
     },
-    service: {
+    service: { //id del servicio que agendo
         type: Schema.Types.ObjectId, 
         ref: 'Service',
         require : true
     },
-    description : {
+    description : { //la descripcion que dejo el usuario
         type :  String,
         require : true,
     },
-    img:{
+    img:{ // la imagen del servicio
         public_id: String,
         secure_url: String
     },
-    status : {
+    status : { //el estatus de su servicio agendado
         type :  String,
         default : 'quoting',
     },
-    quote : {
+    quote : { //la cotizacion del servicio agendado
         type : Number,
         default : 0
     },
-    pending  : {
+    pending  : { // el pago pendiente del servicio agendado
         type : Number,
         default : 0
     },
-    pay : {
+    pay : { // si ya pago el servicio agendado y el porcentaje de pagi
         porcentage : {
             type : Number,
             default : 0
@@ -44,22 +44,22 @@ const scheduleService = new Schema ({
         }
     },
     // Esto se usa cuando se hace la cotizacion
-    products: [{
-        product: {
+    products: [{ // los productos usados en el servicio agendado
+        product: { // los productos usados en el servicio agendado
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Products',
         },
-        quantity: {
+        quantity: { // la cantiddad del producto
             type: Number,
             required: true
         },
-        total: {
+        total: { // el total
             type: Number,
             required: true
         }
     }],
 
-    additionalCosts : {
+    additionalCosts : { // costos adicionales del producto agendado
         labor: { // Mano de obra
             type: Number,
             
@@ -70,12 +70,11 @@ const scheduleService = new Schema ({
         }
     },
     // De momento todas seran en linea 
-    typeReserve : {
+    typeReserve : { // tipo de reserva
         type : String,
         enum : ['online', 'offline'],
         require : true
     },
-    // De momento no se ocupa pero esta pendiente la tabla de empleados
     employeds : [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
@@ -90,11 +89,15 @@ const scheduleService = new Schema ({
         start : Date,
         finish : Date
     },
-    // De momento no se ocupa peor queda pendiente hacer la tabla
     typePay : {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'TypePay',
-    }
+    },
+    visitor: {
+        type: Schema.Types.ObjectId, 
+        ref: 'User',
+        require : true
+    },
 })
 
 export const ScheduleService = model ('ScheduleService', scheduleService)

@@ -11,7 +11,7 @@ import { bookService,
     getScheduleServicesByStatus
  } from '../arquitecture/Controllers/schedule.service.controller.js';
 import { requireToken } from '../helpers/middlewares/JWT.config.js';
-
+import { registerOffline } from '../arquitecture/Controllers/user.controller.js';
 const router = express.Router()
 
 
@@ -21,6 +21,8 @@ router.post('/schedule', [], bookService)
 router.post('/quote/:id', requireToken, quoteService)
 
 router.get('/scheduleservice/:id', [], getScheduleService)
+
+router.post('/scheduleOfline', requireToken, registerOffline, bookService)
 
 
 router.put('/change/:id', requireToken, changeStatus)

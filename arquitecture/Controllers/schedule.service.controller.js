@@ -10,6 +10,7 @@ import { getAdminTemplate, getTemplate, sendEmail } from "../../helpers/config/m
 export const bookService = async (req, res) => {
     try {
         const {
+            userId,
             user,
             service,
             description,
@@ -17,7 +18,7 @@ export const bookService = async (req, res) => {
             typeReserve,
             scheduledTime
         } = req.body    
-        
+        // console.log(req.body)
         // Comprueba si la fecha programada es al menos 5 días después de la fecha actual
         const today = new Date();
         const scheduledDate = new Date(scheduledTime);
@@ -30,8 +31,15 @@ export const bookService = async (req, res) => {
             });
         }
 
-        const data = getTokenData(user)
-        const id = data.uid.id
+        // Recuerda descomentar lo anterior eh, para que no se te olvide, es lo siguientek
+        // console.log(user)
+        let id
+        if(!userId){
+            const data = getTokenData(user)
+            id = data.uid.id
+        }else{
+            id = userId
+        }
         // console.log(id)
 
         const existUser = await User.findById(id)
@@ -53,13 +61,9 @@ export const bookService = async (req, res) => {
         }
 
         const existServices = await ScheduleService.find({ "dates.scheduledTime": scheduledTime });
-        console.log("Servicios que existen")
-        console.log(existServices)
-        
+
         if(existServices && existServices.length > 0){
-            const userServices = existServices.filter(service => service.user.toString() === id);
-            console.log("Servicios del usuario")
-            console.log(userServices)
+            const userServices = existServices.filter(service => service.user.toString() === existUser._id);
             if (userServices.length >= 2) {
                 return res.json({
                     success: false,
@@ -86,16 +90,38 @@ export const bookService = async (req, res) => {
                 })
             }
         }
+        let visitor_id;
+
+        // Buscar usuarios con rol 'visitor'
+        const visitorUsers = await User.find({ rol: 'visitor' });
+
+        if (visitorUsers && visitorUsers.length > 0) {
+            // Si hay varios usuarios 'visitor', seleccionar uno aleatoriamente
+            const randomIndex = Math.floor(Math.random() * visitorUsers.length);
+            visitor_id = visitorUsers[randomIndex]._id;
+        } else {
+            // Si no hay usuario 'visitor', buscar uno con rol 'admin'
+            const adminUser = await User.findOne({ rol: 'admin' });
+            if (adminUser) {
+                visitor_id = adminUser._id;
+            } else {
+                return res.json({
+                    success: false,
+                    msg: 'No se encontró un usuario con rol de administrador o visitante.'
+                });
+            }
+        }
 
         const newBookService = new ScheduleService({
-            user: id,
+            user: existUser._id,
             service: existSevice._id,
             description,
             img,
             typeReserve,
             dates: {
                 scheduledTime: scheduledTime
-            }
+            },
+            visitor : visitor_id
         });
         
         await newBookService.save(); 
@@ -113,20 +139,20 @@ export const bookService = async (req, res) => {
         // se manda a llamar el template del admin
         const adminTemplate = getAdminTemplate(existUser.name, existSevice.name, scheduledTime, 'agendado')
 
-        await sendEmail(
-            existUser.email, 
-            req.t('schedule.bookService.email.tittle'), 
-            template, 
-            req.t('schedule.bookService.email.tittle')
-            )
+        // await sendEmail(
+        //     existUser.email, 
+        //     req.t('schedule.bookService.email.tittle'), 
+        //     template, 
+        //     req.t('schedule.bookService.email.tittle')
+        //     )
 
-        //Se mando un email al user
-        await sendEmail(
-            process.env.USER, 
-            req.t('schedule.bookService.email.tittleAdmin'), 
-            adminTemplate, 
-            req.t('schedule.bookService.email.tittleAdmin')
-            )
+        // //Se mando un email al user
+        // await sendEmail(
+        //     process.env.USER, 
+        //     req.t('schedule.bookService.email.tittleAdmin'), 
+        //     adminTemplate, 
+        //     req.t('schedule.bookService.email.tittleAdmin')
+        //     )
 
         return res.json({
             success: true,
@@ -289,8 +315,13 @@ export const getSchedulesServicesByUser = async (req, res) => {
 export const getScheduleServices = async (req, res) => {
     try {
         const services = await ScheduleService.find()
-        .populate('user', 'name apellidoP apellidoM direccion') 
-        .populate('service', 'name description')
+        .populate('user', 'name apellidoP apellidoM direccion genero') 
+        .populate({
+            path : 'service',
+            populate:[
+                { path: 'tipoDeServicio'}, 
+            ]
+        })
         .populate({
             path: 'products.product',
             select: 'product price unit provider',
@@ -303,10 +334,10 @@ export const getScheduleServices = async (req, res) => {
         .populate('typePay', 'type') // 
         .exec();
 
-
+        const reversedServices = services.reverse();
         return res.json({
             success: true,
-            services: services
+            services: reversedServices
         });
     } catch (error) {
         console.log(error);

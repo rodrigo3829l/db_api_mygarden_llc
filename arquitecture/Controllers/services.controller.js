@@ -41,11 +41,42 @@ export const addService = async (req, res) => {
     }
 }
 
+export const getServicesByType = async (req, res) => {
+    try {
+        const { tipoDeServicio } = req.params;
+
+        const services = await Service.find({ tipoDeServicio }).populate('tipoDeServicio', {
+            tipo: 1,
+            _id: 0
+        });
+
+        if (!services.length) {
+            return res.json({
+                success: false,
+                msg: req.t('services.getServicesByType.notService')
+            });
+        }
+
+        return res.json({
+            success: true,
+            msg: req.t('services.getServicesByType.success'),
+            services
+        });
+    } catch (error) {
+        console.log("Error al obtener los servicios por tipo");
+        console.log(error);
+        return res.json({
+            success: false,
+            msg: 'Error al obtener los servicios por tipo'
+        });
+    }
+};
+
 export const getServices = async (req, res) => {
     try {
         const services = await Service.find().populate('tipoDeServicio', {
             tipo: 1,
-            _id: 0
+            _id: 1
         });
         return res.json({
             success: true,

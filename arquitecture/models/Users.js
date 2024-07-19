@@ -22,23 +22,24 @@ const userSchema = new Schema({
         ciudad: String,
         calle: String
     },
-    userName: {type: String, required : true, unique: true, index : {unique : true},},
-    email: {type: String, required: true, unique: true, index : {unique : true},},
-    password: {type: String, required: true},
+    userName: {type: String, /*required : true,*/ unique: true, index : {unique : true},},
+    email: {type: String, /*required: true,*/ unique: true, index : {unique : true},},
+    password: {type: String,/* required: true*/},
 
     
     status: {type: String, required: true, default: 'DISBLOCKED',},
     userStatus: {type: String, required: true, default: 'ENABLED'},
     code: {type: String,},
     rol: {type: String, required: true, enum : ['admin', 'client', 'employed', 'finance']},
-    verified: {type: String, required: true, default: 'VERIFIED'},
-    // verified: {type: String, required: true, default: 'UNVERIFIED'},
+    // verified: {type: String, required: true, default: 'VERIFIED'},
+    verified: {type: String, required: true, default: 'UNVERIFIED'},
     intentos: {type: Number, default : 0},
     lastIntent: {type: Number, default: null},
     creation: {type: Date, default: new Date()},
     lastLogin: Date,
     intentsFailBlocked: {type: Number, default : 0},
     lastPassword: {type: Date, default: new Date()},
+    register: {type: String, default: 'online'}
 });
 
 
@@ -63,4 +64,4 @@ userSchema.methods.comparePassword = async function (candidatePassword){
 
 
 
-export const User = model('User', userSchema);
+export const User = model('User', userSchema)

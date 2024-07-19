@@ -9,6 +9,123 @@ import {sendEmail, getTemplate } from "../../helpers/config/mail.config.js"
 import {generateRandomCode} from "../../helpers/config/code.confi.js"
 import { sendSms } from "../../helpers/config/sms.config.js";
 
+export const registerOffline = async (req, res, next) => {
+    try {
+        const {
+            userId,
+            name,
+            apellidoP,
+            apellidoM,
+            cellPhone,
+            direccion,
+            email
+        } = req.body;
+        console.log(req.body)
+        
+        if(userId){
+            return next()
+        }
+        // console.log(req.body)
+        let user = await User.findOne({ email });
+
+        if (user !== null) {
+            return res.json({
+                success: false,
+                msg: 'El correo electrónico ya está registrado.'
+            });
+        }
+
+        user = await User.findOne({ cellPhone });
+
+        if (user !== null) {
+            return res.json({
+                success: false,
+                msg: 'El número de teléfono ya está registrado.'
+            });
+        }
+        user = new User({
+            name,
+            apellidoP,
+            apellidoM,
+            cellPhone,
+            direccion,
+            email,
+            register: 'offline',
+            rol: 'client',
+        });
+
+        const newUser = await user.save();
+        // console.log("nuevo usuario")
+        // console.log(newUser)
+        // Generar token
+        const {token} = getToken({ id: newUser._id,});
+
+        req.body.user = token;
+
+        next();
+    } catch (error) {
+        console.log("Error en el registro offline");
+        console.log(error);
+        return res.json({
+            success: false,
+            msg: 'Error al registrar usuario offline'
+        });
+    }
+};
+
+export const getUsersByRole = async (req, res) => {
+    try {
+        const users = await User.find({ rol: 'client' })
+
+        if (!users || users.length === 0) {
+            return res.json({
+                success: false,
+                msg: 'No se encontraron usuarios con el rol especificado'
+            });
+        }
+
+        return res.json({
+            success: true,
+            users
+        });
+
+    } catch (error) {
+        console.log("Error al obtener usuarios por rol 'client'");
+        console.log(error);
+        return res.json({
+            success: false,
+            msg: 'Error al obtener usuarios por rol'
+        });
+    }
+};
+
+
+export const getUsersOffline = async (req, res) => {
+    try {
+        const users = await User.find({ register: 'offline' }).lean();
+
+        if (!users || users.length === 0) {
+            return res.json({
+                success: false,
+                msg: 'No se encontraron usuarios con el rol especificado'
+            });
+        }
+
+        return res.json({
+            success: true,
+            users: users
+        });
+
+    } catch (error) {
+        console.log("Error al obtener usuarios por rol 'client'");
+        console.log(error);
+        return res.json({
+            success: false,
+            msg: 'Error al obtener usuarios por rol'
+        });
+    }
+};
+
 export const signUp = async  (req, res) =>{
     
     try {
@@ -25,7 +142,7 @@ export const signUp = async  (req, res) =>{
             password,
             img
         } = req.body
-
+        
         let user = await User.findOne({ email});
 
         if(user !== null){

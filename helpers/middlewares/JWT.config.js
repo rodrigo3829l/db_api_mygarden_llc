@@ -54,6 +54,7 @@ export const requireToken = async (req, res, next) => {
     try {
         let token = req.headers?.authorization ;
         let rol = req.headers?.rol;
+        // console.log(req.body)
         if(!token) 
             throw new Error('No Bearer');
         token = token.split(" ")[1];  

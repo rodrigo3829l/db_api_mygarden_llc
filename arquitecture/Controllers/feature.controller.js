@@ -229,3 +229,38 @@ export const deleteFeaturedProject = async (req, res) => {
         });
     }
 };
+
+export const getFeaturedProjectsByServiceId = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        // Buscar proyectos destacados que tengan el id de servicio especificado
+        const projects = await FeaturedProject.find({ service: id })
+            .populate({
+                path: 'scheduleService',
+                populate: { path: 'user' } // Poblar el usuario dentro de scheduleService
+            })
+            .populate({
+                path: 'service',
+                populate: { path: 'tipoDeServicio' }
+            });
+
+        if (!projects || projects.length === 0) {
+            return res.json({
+                success: false,
+                msg: 'No se encontraron proyectos destacados con el ID de servicio proporcionado'
+            });
+        }
+
+        return res.json({
+            success: true,
+            projects
+        });
+    } catch (error) {
+        console.log("Error al obtener los proyectos destacados por ID de servicio:", error);
+        return res.json({
+            success: false,
+            msg: 'Error al obtener los proyectos destacados'
+        });
+    }
+};

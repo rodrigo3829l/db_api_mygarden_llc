@@ -16,6 +16,8 @@ import {
     addEmpolyed,
     updateUser,
     recoverSms,
+    getUsersByRole,
+    getUsersOffline
  } from '../arquitecture/Controllers/user.controller.js';
 
  import { contact } from '../arquitecture/Controllers/contact.controller.js';
@@ -25,6 +27,8 @@ const router = express.Router();
 router.post('/signup', [], signUp);
 
 router.get('/confirm/:token', [], confirm)
+router.get('/get', [], getUsersByRole)
+router.get('/getOffline', [], getUsersOffline)
 
 router.post('/recover',[],recoverPassword)
 router.post('/recoversms',[],recoverSms)

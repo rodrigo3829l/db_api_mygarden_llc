@@ -3,7 +3,8 @@ import {
     getFeaturedProjectById,
     updateFeaturedProject,
     deleteFeaturedProject,
-    addFeaturedProject
+    addFeaturedProject,
+    getFeaturedProjectsByServiceId
 } from '../arquitecture/Controllers/feature.controller.js';
 import { handleImagesUpload } from '../helpers/middlewares/images.array.congif.js';
 import express from 'express';
@@ -14,6 +15,7 @@ const router = express.Router();
 router.post('/add', requireToken, handleImagesUpload, addFeaturedProject)
 router.get('/get', [], getAllFeaturedProjects)
 router.get('/get/:id', [], getFeaturedProjectById)
+router.get('/getByService/:id', [], getFeaturedProjectsByServiceId)
 router.put('/update/:id', requireToken, handleImagesUpload ,updateFeaturedProject)
 router.delete('/delete/:id', requireToken, deleteFeaturedProject)
 
