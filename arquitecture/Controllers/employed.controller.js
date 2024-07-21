@@ -48,3 +48,39 @@ export const getServicesByEmployee = async (req, res) => {
         });
     }
 };
+
+export const toggleEmployeeStatus = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const employee = await User.findById(id);
+
+        if (!employee) {
+            return res.status(404).json({
+                success: false,
+                message: 'Empleado no encontrado'
+            });
+        }
+
+        if (employee.status !== 'fired' && employee.status !== 'hired') {
+            employee.status = 'hired';
+        } else if (employee.status === 'hired') {
+            employee.status = 'fired';
+        } else if (employee.status === 'fired') {
+            employee.status = 'hired';
+        }
+
+        await employee.save();
+
+        return res.json({
+            success: true,
+            message: 'Estado del empleado actualizado',
+            status: employee.status
+        });
+    } catch (error) {
+        console.error(error); // Es importante manejar correctamente los errores
+        return res.status(500).json({
+            success: false,
+            message: 'Error al actualizar el estado del empleado'
+        });
+    }
+};

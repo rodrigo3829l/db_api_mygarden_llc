@@ -1,9 +1,10 @@
 import express from 'express';
-import { getEmployeds, getServicesByEmployee } from '../arquitecture/Controllers/employed.controller.js';
+import { getEmployeds, getServicesByEmployee, toggleEmployeeStatus } from '../arquitecture/Controllers/employed.controller.js';
 import { requireToken } from '../helpers/middlewares/JWT.config.js';
 const router = express.Router();
 
-router.get('/get', requireToken, getEmployeds)
+router.get('/get', getEmployeds)
+router.put('/change/:id', requireToken, toggleEmployeeStatus)
 
 router.get('/services', requireToken, getServicesByEmployee)
 

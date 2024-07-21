@@ -17,7 +17,8 @@ import {
     updateUser,
     recoverSms,
     getUsersByRole,
-    getUsersOffline
+    getUsersOffline,
+    getId
  } from '../arquitecture/Controllers/user.controller.js';
 
  import { contact } from '../arquitecture/Controllers/contact.controller.js';
@@ -27,6 +28,7 @@ const router = express.Router();
 router.post('/signup', [], signUp);
 
 router.get('/confirm/:token', [], confirm)
+router.get('/getId', requireToken, getId)
 router.get('/get', [], getUsersByRole)
 router.get('/getOffline', [], getUsersOffline)
 

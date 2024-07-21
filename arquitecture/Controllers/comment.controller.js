@@ -5,7 +5,7 @@ import { User } from "../models/Users.js";
 
 export const addComment = async (req, res) =>{
     try {
-        const {comment, rating, scheduleservice} = req.body
+        const {comment, rating, scheduleservice, category} = req.body
 
         const existScheduleService = await ScheduleService.findById(scheduleservice)
 
@@ -38,7 +38,8 @@ export const addComment = async (req, res) =>{
             scheduleservice,
             service: existScheduleService.service,
             comment,
-            rating
+            rating,
+            category
         })
 
         await newComment.save()
@@ -92,29 +93,39 @@ export const getCommentByScheduledId = async (req, res) => {
     }
 };
 
-export const getAllComments = async (req, res) =>{
-    try{
+export const getAllComments = async (req, res) => {
+    try {
         const comments = await Comment.find().populate('user', {
-            name : 1,
-            apellidoP : 1,
-            apellidoM : 1,
-            _id : 0,
+            name: 1,
+            apellidoP: 1,
+            apellidoM: 1,
+            _id: 0,
         }).populate('service', {
-            name : 1,
-            _id : 0
-        })
+            name: 1,
+            _id: 0
+        });
+
+        // // Procesar los comentarios para formatear la fecha
+        // const formattedComments = comments.map(comment => {
+        //     const formattedDate = new Date(comment.date).toLocaleDateString('es-MX');
+        //     return {
+        //         ...comment.toObject(),
+        //         date: formattedDate
+        //     };
+        // });
+
         return res.json({
             success: true,
-            comments
-        })
-    }catch(error){
-        console.log(error)
+            comments//: formattedComments
+        });
+    } catch (error) {
+        console.log(error);
         return res.json({
-            success : false,
-            msg : 'Error alobtener los comentarios'
-        })
+            success: false,
+            msg: 'Error al obtener los comentarios'
+        });
     }
-}
+};
 
 export const getCommentsRating = async (req, res) => {
     try {

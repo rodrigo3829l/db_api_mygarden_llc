@@ -225,6 +225,28 @@ export const signUp = async  (req, res) =>{
     }
 }
 
+export const getId = async (req, res) =>{
+    try {
+        const user = await User.findById(req.uid.id).lean()
+
+        if(!user){
+            return res.json({
+                success: false,
+            })
+        }
+
+        return res.json({
+            success : true,
+            user
+        })
+    } catch (error) {
+        console.log(error)
+        return res.json({
+            success: false,
+            msg: 'Error al confirmar usuario'
+        })
+    }
+}
 
 export const confirm = async (req, res) =>{
     try {

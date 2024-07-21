@@ -29,7 +29,15 @@ const commentSchema = new Schema({
     isVisible : {
         type : Boolean,
         default : true
-    }
+    },
+    category : {
+        type: Number,
+        require: true
+    },
+    date : {
+        type : Date,
+        default : new Date()
+    },
 })
 
 
