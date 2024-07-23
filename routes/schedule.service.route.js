@@ -29,7 +29,7 @@ router.put('/change/:id', requireToken, changeStatus)
 
 
 
-router.get('/userservices', requireToken, getSchedulesServicesByUser)
+router.get('/userservices',  getSchedulesServicesByUser)
 
 
 router.put('/cancel/:serviceId', [], cancelService)

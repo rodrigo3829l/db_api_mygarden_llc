@@ -30,7 +30,7 @@ const userSchema = new Schema({
     status: {type: String, required: true, default: 'DISBLOCKED',},
     userStatus: {type: String, required: true, default: 'ENABLED'},
     code: {type: String,},
-    rol: {type: String, required: true, enum : ['admin', 'client', 'employed', 'finance']},
+    rol: {type: String, required: true, enum : ['admin', 'client', 'employed', 'finance', 'visitor']},
     // verified: {type: String, required: true, default: 'VERIFIED'},
     verified: {type: String, required: true, default: 'UNVERIFIED'},
     intentos: {type: Number, default : 0},

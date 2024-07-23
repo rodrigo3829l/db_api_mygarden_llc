@@ -586,7 +586,7 @@ export const login = async (req, res) => {
             return res.status(403).json({error: req.t('user.login.invalid_email')})
         }
 
-        if(user.status !== 'DISBLOCKED')return res.status(403).json({ error: req.t('user.login.blocked_account') });
+        if(user.intentsFailBlocked === 5)return res.status(403).json({ error: req.t('user.login.blocked_account') });
 
         if (user.lastIntent) {
             const difference = new Date() - user.lastIntent;

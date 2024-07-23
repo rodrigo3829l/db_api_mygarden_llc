@@ -271,7 +271,8 @@ export const quoteService = async (req, res) => {
 
 export const getSchedulesServicesByUser = async (req, res) => {
     try {
-        const id = req.uid.id;
+        const id = '65cf3d58d95c1f0df904c588' //req.uid.id;
+        console.log(id)
         const existUser = await User.findById(id);
 
         if (!existUser) {
