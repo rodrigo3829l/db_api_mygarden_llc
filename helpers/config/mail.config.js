@@ -33,12 +33,12 @@ export const getTemplate = (titleOne, titleTwo, prOne, prTwo, name, code, action
     let accion = ''
     
     if (action === "confirm"){
-        accion = `<a href="https://db-api-mygarden.onrender.com/api/user/confirm/${code}" target="_blank">${textAction}</a>`
-        // accion = `<a href="http://localhost:5000/api/user/confirm/${code}" target="_blank">${textAction}</a>`
+        // accion = `<a href="https://db-api-mygarden.onrender.com/api/user/confirm/${code}" target="_blank">${textAction}</a>`
+        accion = `<a href="http://localhost:5000/api/user/confirm/${code}" target="_blank">${textAction}</a>`
     }
     else if (action === 'reactivated'){
-        accion = `<a href="https://db-api-mygarden.onrender.com/api/user/reactivate/${code}" target="_blank">${textAction}</a>`
-        // accion = `<a href="http://localhost:5000/api/user/reactivate/${code}" target="_blank">${textAction}</a>`
+        // accion = `<a href="https://db-api-mygarden.onrender.com/api/user/reactivate/${code}" target="_blank">${textAction}</a>`
+        accion = `<a href="http://localhost:5000/api/user/reactivate/${code}" target="_blank">${textAction}</a>`
     }
     else if(action === 'recover'){
         accion = `<div class="verification-code">${code}</div>`

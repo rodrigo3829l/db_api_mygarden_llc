@@ -10,9 +10,9 @@ import { getTokenData} from "../../helpers/middlewares/JWT.config.js"
 
 export const payScheduledService = async (req, res) => {
     try {
-        const { user, mount, scheduleService, type } = req.body;
+        const { user, mount, scheduleService, type, paypalOrderId, paypalPayerId } = req.body;
         // const amount = (mount).toFixed(2)
-        const amount = parseFloat(mount.toFixed(2));
+        const amount = parseFloat(mount);
 
         const data = getTokenData(user);
         const userId = data.uid.id;
@@ -50,7 +50,6 @@ export const payScheduledService = async (req, res) => {
             totalPay: isTotally,
         };
         existService.typePay = type;
-        if(isTotally) existService.status = 'pay'
 
         await existService.save();
 
@@ -60,6 +59,8 @@ export const payScheduledService = async (req, res) => {
             scheduleService,
             isTotally,
             type,
+            paypalOrderId,
+            paypalPayerId
         });
 
         

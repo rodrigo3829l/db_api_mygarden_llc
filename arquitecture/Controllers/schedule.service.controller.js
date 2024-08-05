@@ -139,20 +139,20 @@ export const bookService = async (req, res) => {
         // se manda a llamar el template del admin
         const adminTemplate = getAdminTemplate(existUser.name, existSevice.name, scheduledTime, 'agendado')
 
-        // await sendEmail(
-        //     existUser.email, 
-        //     req.t('schedule.bookService.email.tittle'), 
-        //     template, 
-        //     req.t('schedule.bookService.email.tittle')
-        //     )
+        await sendEmail(
+            existUser.email, 
+            req.t('schedule.bookService.email.tittle'), 
+            template, 
+            req.t('schedule.bookService.email.tittle')
+            )
 
-        // //Se mando un email al user
-        // await sendEmail(
-        //     process.env.USER, 
-        //     req.t('schedule.bookService.email.tittleAdmin'), 
-        //     adminTemplate, 
-        //     req.t('schedule.bookService.email.tittleAdmin')
-        //     )
+        //Se mando un email al user
+        await sendEmail(
+            process.env.USER, 
+            req.t('schedule.bookService.email.tittleAdmin'), 
+            adminTemplate, 
+            req.t('schedule.bookService.email.tittleAdmin')
+            )
 
         return res.json({
             success: true,
@@ -268,11 +268,9 @@ export const quoteService = async (req, res) => {
     }
 }
 
-
 export const getSchedulesServicesByUser = async (req, res) => {
     try {
-        const id = '65cf3d58d95c1f0df904c588' //req.uid.id;
-        console.log(id)
+        const id = req.uid.id;
         const existUser = await User.findById(id);
 
         if (!existUser) {
@@ -296,7 +294,7 @@ export const getSchedulesServicesByUser = async (req, res) => {
             .populate('typePay', 'type')
             .exec();
 
-        services = services.reverse(); // Revertir si es necesario según tu lógica
+        services = services.reverse();
 
         return res.json({
             success: true,
@@ -429,7 +427,7 @@ export const getScheduleService = async (req, res) => {
                     { path: 'provider', select: 'providerName contact' }
                 ]
             })
-            .populate('employeds', 'name apellidoP apellidoM')
+            .populate('employeds', 'name apellidoP apellidoM img')
             .populate('typePay', 'type')
             .exec();
 

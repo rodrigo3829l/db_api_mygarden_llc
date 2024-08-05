@@ -7,6 +7,12 @@ const pays = new Schema({
         type : Date,
         default: new Date()
     },
+    paypalOrderId : {
+        type : String
+    },
+    paypalPayerId : {
+        type : String
+    },
     user: {
         type: Schema.Types.ObjectId, 
         ref: 'User',

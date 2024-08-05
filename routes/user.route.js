@@ -20,12 +20,12 @@ import {
     getUsersOffline,
     getId
  } from '../arquitecture/Controllers/user.controller.js';
-
+ import { handleImageUpload } from '../helpers/middlewares/images.config.js';
  import { contact } from '../arquitecture/Controllers/contact.controller.js';
 
 const router = express.Router();
 
-router.post('/signup', [], signUp);
+router.post('/signup', handleImageUpload, signUp);
 
 router.get('/confirm/:token', [], confirm)
 router.get('/getId', requireToken, getId)
@@ -45,7 +45,7 @@ router.get('/reactivate/:token', [], recoverCount)
 
 //Muestra la informacion de un usuario en especifico pero le pide un token
 router.get('/protected', requireToken, infoUser)
-router.put('/update', requireToken, updateUser)
+router.put('/update', requireToken, handleImageUpload, updateUser)
 
 //refresca el token, pues este se cadica cada 15 min
 router.get("/refresh", requireToken ,refreshToken )

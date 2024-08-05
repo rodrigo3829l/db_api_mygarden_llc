@@ -201,12 +201,12 @@ export const signUp = async  (req, res) =>{
             "confirm", 
             req.t('email.confirm.textAction'))
 
-        // await sendEmail(
-        //     email, 
-        //     req.t('email.confirm.tittle'), 
-        //     template, 
-        //     req.t('email.confirm.tittle'),
-        //     )
+        await sendEmail(
+            email, 
+            req.t('email.confirm.tittle'), 
+            template, 
+            req.t('email.confirm.tittle'),
+            )
 
         await user.save();
 
@@ -699,7 +699,8 @@ export const login = async (req, res) => {
             expiresIn, 
             name : `${user.name} ${user.apellidoP} ${user.apellidoM}` ,
             email : user.email ,
-            rol : user.rol
+            rol : user.rol,
+            image : (user.img) ? user.img.secure_url : 'https://cdn-icons-png.flaticon.com/128/5024/5024561.png'
         })
 
     } catch (error) {
@@ -781,7 +782,8 @@ export const refreshToken  = async (req, res) => {
             expiresIn,
             name : `${user.name} ${user.apellidoP} ${user.apellidoM}` ,
             email : user.email,
-            rol : user.rol
+            rol : user.rol,
+            image : (user.img) ? user.img.secure_url : 'https://cdn-icons-png.flaticon.com/128/5024/5024561.png'
         })
     } catch (error) {
         console.log('error en la funcion refresh token')
@@ -795,17 +797,7 @@ export const infoUser = async (req, res) => {
         const user = await User.findById(req.uid.id).lean()
 
         return res.json({
-            _id: user._id, 
-            fullName : `${user.name} ${user.apellidoP} ${user.apellidoM}` , 
-            name : user.name,
-            apellidoP: user.apellidoP,
-            apellidoM : user.apellidoM,
-            email: user.email, 
-            phone: user.cellPhone,
-            username : user.userName,
-            fechaNacimiento : user.fechaNacimiento,
-            genero : user.genero,
-            cellPhone :  user.cellPhone
+            user
         })
 
     } catch (error) {
@@ -903,19 +895,6 @@ export const updateUser = async (req, res) => {
         return res.json({
             success : true,
             msg : 'Usuario Actualizado',
-            updatedUser : {
-                _id: updatedUser._id, 
-                fullName : `${updatedUser.name} ${updatedUser.apellidoP} ${updatedUser.apellidoM}` , 
-                name : updatedUser.name,
-                apellidoP: updatedUser.apellidoP,
-                apellidoM : updatedUser.apellidoM,
-                email: updatedUser.email, 
-                phone: updatedUser.cellPhone,
-                username : updatedUser.userName,
-                fechaNacimiento : updatedUser.fechaNacimiento,
-                genero : updatedUser.genero,
-                cellPhone :  updatedUser.cellPhone
-            }
         })
     } catch (error) {
         console.log('Error al actualizar el usuario')

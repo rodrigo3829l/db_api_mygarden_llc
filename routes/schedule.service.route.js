@@ -12,25 +12,20 @@ import { bookService,
  } from '../arquitecture/Controllers/schedule.service.controller.js';
 import { requireToken } from '../helpers/middlewares/JWT.config.js';
 import { registerOffline } from '../arquitecture/Controllers/user.controller.js';
+import { handleImageUpload } from '../helpers/middlewares/images.config.js';
 const router = express.Router()
 
 
 router.get('/getServices', [], getScheduleServices)
 router.get('/getServicesByStatus/:status', getScheduleServicesByStatus);
-router.post('/schedule', [], bookService)
-router.post('/quote/:id', requireToken, quoteService)
-
 router.get('/scheduleservice/:id', [], getScheduleService)
+router.get('/userservices',  requireToken, getSchedulesServicesByUser)
 
+router.post('/schedule', handleImageUpload, bookService)
+router.post('/quote/:id', requireToken, quoteService)
 router.post('/scheduleOfline', requireToken, registerOffline, bookService)
 
-
 router.put('/change/:id', requireToken, changeStatus)
-
-
-
-router.get('/userservices',  getSchedulesServicesByUser)
-
 
 router.put('/cancel/:serviceId', [], cancelService)
 // router.put('/cancel/:id', [], cancelService)
