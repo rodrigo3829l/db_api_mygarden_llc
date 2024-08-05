@@ -881,28 +881,65 @@ export const addEmpolyed = async  (req, res) =>{
 export const updateUser = async (req, res) => {
     try {
         const updateData = req.body;
+
+        // Verificar si el celular ya existe
+        if (updateData.cellphone) {
+            const existingCellphoneUser = await User.findOne({ cellphone: updateData.cellphone });
+            if (existingCellphoneUser && existingCellphoneUser._id.toString() !== req.uid.id) {
+                return res.json({
+                    success: false,
+                    msg: 'Cellphone already exists'
+                });
+            }
+        }
+
+        // Verificar si el email ya existe
+        if (updateData.email) {
+            const existingEmailUser = await User.findOne({ email: updateData.email });
+            if (existingEmailUser && existingEmailUser._id.toString() !== req.uid.id) {
+                return res.json({
+                    success: false,
+                    msg: 'Email already exists'
+                });
+            }
+        }
+
+        // Verificar si el nombre de usuario ya existe
+        if (updateData.userName) {
+            const existingUserNameUser = await User.findOne({ userName: updateData.userName });
+            if (existingUserNameUser && existingUserNameUser._id.toString() !== req.uid.id) {
+                return res.json({
+                    success: false,
+                    msg: 'Username already exists'
+                });
+            }
+        }
+
         const updatedUser = await User.findByIdAndUpdate(
             req.uid.id,
             updateData,
             { new: true, runValidators: true }
-        );          
+        );
+
         if (!updatedUser) {
             return res.json({
-                success : false,
-                msg : 'Usuario no encontrado'
-            })
+                success: false,
+                msg: 'User not found'
+            });
         }
+
         return res.json({
-            success : true,
-            msg : 'Usuario Actualizado',
-        })
+            success: true,
+            msg: 'User updated successfully',
+            user: updatedUser
+        });
     } catch (error) {
-        console.log('Error al actualizar el usuario')
-        console.log(error);
+        console.log('Error updating user', error);
 
         return res.json({
             success: false,
-            msg: 'Error al registrar empleado'
-        })
+            msg: 'Error updating user'
+        });
     }
 };
+
