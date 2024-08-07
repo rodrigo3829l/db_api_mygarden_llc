@@ -354,7 +354,14 @@ export const getScheduleServicesByStatus = async (req, res) => {
         // Buscar servicios de agenda por status
         const services = await ScheduleService.find({ status })
             .populate('user', 'name apellidoP apellidoM direccion')
-            .populate('service', 'name description')
+            // .populate('service', 'name description')
+            .populate({
+                path : 'service',
+                select : 'name description',
+                populate : [
+                    {path: 'tipoDeServicio', select: 'tipo'}
+                ]
+            })
             .populate({
                 path: 'products.product',
                 select: 'product price unit provider',
