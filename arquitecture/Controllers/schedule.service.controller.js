@@ -311,6 +311,44 @@ export const getSchedulesServicesByUser = async (req, res) => {
 };
 
 
+export const getLimitedScheduleServices = async (req, res) => {
+    try {
+        const services = await ScheduleService.find()
+            .limit(50) // Limita los resultados a los primeros 50 registros
+            .populate('user', 'name apellidoP apellidoM direccion genero') 
+            .populate({
+                path: 'service',
+                populate: [
+                    { path: 'tipoDeServicio' }, 
+                ]
+            })
+            .populate({
+                path: 'products.product',
+                select: 'product price unit provider',
+                populate: [
+                    { path: 'unit', select: 'name' }, 
+                    { path: 'provider', select: 'providerName contact' } 
+                ]
+            })
+            .populate('employeds', 'name apellidoP apellidoM')
+            .populate('typePay', 'type') 
+            .exec();
+
+        const reversedServices = services.reverse();
+        return res.json({
+            success: true,
+            services: reversedServices
+        });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            success: false,
+            message: 'Error al obtener los servicios de agenda.'
+        });
+    }
+};
+
+
 export const getScheduleServices = async (req, res) => {
     try {
         const services = await ScheduleService.find()

@@ -8,7 +8,8 @@ import { bookService,
     rescheduleService,
     getScheduleServices,
     changeStatus,
-    getScheduleServicesByStatus
+    getScheduleServicesByStatus,
+    getLimitedScheduleServices
  } from '../arquitecture/Controllers/schedule.service.controller.js';
 import { requireToken } from '../helpers/middlewares/JWT.config.js';
 import { registerOffline } from '../arquitecture/Controllers/user.controller.js';
@@ -17,6 +18,7 @@ const router = express.Router()
 
 
 router.get('/getServices', [], getScheduleServices)
+router.get('/getServicesLimit', [], getLimitedScheduleServices)
 router.get('/getServicesByStatus/:status', getScheduleServicesByStatus);
 router.get('/scheduleservice/:id', [], getScheduleService)
 router.get('/userservices',  requireToken, getSchedulesServicesByUser)
