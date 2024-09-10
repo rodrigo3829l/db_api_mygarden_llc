@@ -385,6 +385,54 @@ export const getScheduleServices = async (req, res) => {
     }
 };
 
+export const getSchedulesServicesByUserAndStatus = async (req, res) => {
+    try {
+        const id = req.uid.id;  // ID del usuario autenticado
+        const { status } = req.params;  // Obtener el status desde los parámetros de la ruta
+
+        // Verificar si el usuario existe
+        const existUser = await User.findById(id);
+        if (!existUser) {
+            return res.json({
+                success: false,
+                msg: "El usuario no existe"
+            });
+        }
+
+        // Buscar los servicios del usuario según el status
+        let services = await ScheduleService.find({ user: id, status })
+            .populate('service', 'name description')
+            .populate({
+                path: 'products.product',
+                select: 'product price unit provider',
+                populate: [
+                    { path: 'unit', select: 'name' },
+                    { path: 'provider', select: 'providerName contact' }
+                ]
+            })
+            .populate('employeds', 'name apellidoP apellidoM')
+            .populate('typePay', 'type')
+            .exec();
+
+        // Invertir el orden de los servicios para mostrarlos del más reciente al más antiguo
+        services = services.reverse();
+
+        // Retornar los servicios encontrados
+        return res.json({
+            success: true,
+            services
+        });
+
+    } catch (error) {
+        console.error("Error al obtener los servicios agendados del usuario:", error);
+        return res.status(500).json({
+            success: false,
+            msg: 'Error al obtener los servicios agendados del usuario'
+        });
+    }
+};
+
+
 export const getScheduleServicesByStatus = async (req, res) => {
     try {
         const { status } = req.params; // Obtener el status desde los parámetros de la ruta
@@ -414,7 +462,7 @@ export const getScheduleServicesByStatus = async (req, res) => {
 
         return res.json({
             success: true,
-            services: services
+            services
         });
     } catch (error) {
         console.log(error);

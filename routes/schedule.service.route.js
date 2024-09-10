@@ -9,7 +9,8 @@ import { bookService,
     getScheduleServices,
     changeStatus,
     getScheduleServicesByStatus,
-    getLimitedScheduleServices
+    getLimitedScheduleServices,
+    getSchedulesServicesByUserAndStatus
  } from '../arquitecture/Controllers/schedule.service.controller.js';
 import { requireToken } from '../helpers/middlewares/JWT.config.js';
 import { registerOffline } from '../arquitecture/Controllers/user.controller.js';
@@ -22,6 +23,7 @@ router.get('/getServicesLimit', [], getLimitedScheduleServices)
 router.get('/getServicesByStatus/:status', getScheduleServicesByStatus);
 router.get('/scheduleservice/:id', [], getScheduleService)
 router.get('/userservices',  requireToken, getSchedulesServicesByUser)
+router.get('/userservicesbystatus/:status',  requireToken, getSchedulesServicesByUserAndStatus)
 
 router.post('/schedule', handleImageUpload, bookService)
 router.post('/quote/:id', requireToken, quoteService)
