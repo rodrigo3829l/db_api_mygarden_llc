@@ -15,6 +15,7 @@ import CommentRouter from './routes/comment.router.js'
 import FeatureRouter from './routes/feature.router.js'
 import UnitRouter from './routes/unit.route.js'
 import ProviderRouter from './routes/provider.router.js'
+import SatisfactionRouter from './routes/satisfaction.router.js'
 import cors from 'cors'
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
@@ -77,5 +78,6 @@ app.use('/api/comment', CommentRouter);
 app.use('/api/feature', FeatureRouter);
 app.use('/api/unit', UnitRouter);
 app.use('/api/provider', ProviderRouter);
+app.use('/api/satisfaction', SatisfactionRouter);
 
 export default app
