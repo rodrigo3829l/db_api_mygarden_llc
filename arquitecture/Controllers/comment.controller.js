@@ -79,8 +79,9 @@ export const getCommentByScheduledId = async (req, res) => {
             comment : {
                 comment : scheduledServiceComments[0].comment,
                 rating :  scheduledServiceComments[0].rating,
-                // img : user.img.secure_url,
-                name : `${user.name} ${user.apellidoP} ${user.apellidoM}`
+                img : user.img.secure_url,
+                name : `${user.name} ${user.apellidoP} ${user.apellidoM}`,
+                date : scheduledServiceComments[0].date
             }
         });
     } catch (error) {
