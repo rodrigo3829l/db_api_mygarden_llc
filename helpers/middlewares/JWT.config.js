@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken"
 import { newLog } from "../config/log.config.js";
 
 export const getToken = (uid) =>{
-    const expiresIn = 60 * 60;
+    const expiresIn = 60 * 60 * 60 * 60 * 60 * 60 * 60 * 60 * 60;
 
     try {
         const token = jwt.sign({uid}, process.env.JWT_SECRET,{ expiresIn} );
@@ -35,7 +35,7 @@ const TokenVerificationErrors = {
 };
 
 export const generateRefreshToken = (uid, res) => {
-    const expiresIn = 60 * 60 * 24 * 30; 
+    const expiresIn = 60 * 60 * 24 * 30 * 60 * 60 * 60 * 60; 
     try {
         const refreshToken = jwt.sign({uid}, process.env.JWT_REFRESH, {expiresIn})
         res.cookie("refreshToken", refreshToken, {
