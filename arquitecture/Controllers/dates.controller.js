@@ -1,4 +1,3 @@
-import mongoose from "mongoose";
 import { Dates } from "../models/Dates.js";
 
 // Función para agregar una fecha
