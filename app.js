@@ -40,7 +40,7 @@ i18next
 
 const app = express();
 
-const whiteList = [process.env.ORIGIN1, process.env.ORIGIN2 , process.env.ORIGIN3, process.env.ORIGIN4, process.env.ORIGIN5]
+const whiteList = [process.env.ORIGIN1, process.env.ORIGIN2 , process.env.ORIGIN3, process.env.ORIGIN4, process.env.ORIGIN5, process.env.ORIGIN6, process.env.ORIGIN7]
 
 app.use(
     cors({
