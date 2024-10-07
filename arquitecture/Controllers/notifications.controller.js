@@ -3,10 +3,19 @@ import { Notification } from "../models/NotificationsServices.js";
 // Controller to get all notifications for a specific user
 export const getNotificationsByUser = async (req, res) => {
     try {
-        // const notifications = await Notification.find({ userId: req.uid.id });
-        const notifications = await Notification.find()
-            .populate("userId", "name apellidoP apellidoM email") // Populate user information
-            .populate("serviceId", "description status quote pending");
+        const notifications = await Notification.find({ userId: req.uid.id })
+        .populate({
+            path: "userId",
+            select: "name apellidoP apellidoM email" // Información del usuario
+        })
+        .populate({
+            path: "serviceId",
+            select: "description status quote pending service", // Información del servicio agendado
+            populate: {
+                path: "service", // Aquí se hace el populate del campo `service` dentro de `ScheduleService`
+                select: "name description price category" // Campos del servicio que quieres obtener
+            }
+        });
 
         if (!notifications.length) {
             return res.json({
@@ -29,8 +38,7 @@ export const getNotificationsByUser = async (req, res) => {
 };
 
 // Controller to create a new notification
-// Controller to create a new notification
-export const createNotification = async (req, res, io) => {
+export const createNotification = async (req, res) => {
     try {
         const { userId, type, serviceId, message, tittle } = req.body;
 
@@ -48,11 +56,18 @@ export const createNotification = async (req, res, io) => {
 
         // Realizar populate de los campos necesarios
         notification = await Notification.findById(notification._id)
-            .populate("userId", "name apellidoP apellidoM email") // Populate user information
-            .populate("serviceId", "description status quote pending"); // Populate service information
-
-        // Emitir evento de nueva notificación con toda la información completa
-        io.emit("newNotification", notification);
+        .populate({
+            path: "userId",
+            select: "name apellidoP apellidoM email" // Información del usuario
+        })
+        .populate({
+            path: "serviceId",
+            select: "description status quote pending service", // Información del servicio agendado
+            populate: {
+                path: "service", // Aquí se hace el populate del campo `service` dentro de `ScheduleService`
+                select: "name description price category" // Campos del servicio que quieres obtener
+            }
+        }); // Populate service information
 
         return res.json({
             success: true,
@@ -67,6 +82,7 @@ export const createNotification = async (req, res, io) => {
         });
     }
 };
+
 
 // Controller to delete a specific notification by its ID
 export const deleteNotification = async (req, res) => {
@@ -154,7 +170,7 @@ export const markNotificationAsRead = async (req, res) => {
 
 export const markAllNotificationsAsRead = async (req, res) => {
     try {
-        const userId = req.uid;
+        const userId = req.uid.id;
 
         // Update all notifications for the given user to "read: true"
         const result = await Notification.updateMany(

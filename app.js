@@ -1,6 +1,6 @@
 import 'dotenv/config';
 import express  from "express";
-
+import jwt from 'jsonwebtoken';
 import http from 'http'; // Necesario para crear el servidor con WebSockets
 import { Server } from 'socket.io'; // Importar socket.io
 
@@ -21,7 +21,7 @@ import FeatureRouter from './routes/feature.router.js'
 import UnitRouter from './routes/unit.route.js'
 import ProviderRouter from './routes/provider.router.js'
 import SatisfactionRouter from './routes/satisfaction.router.js'
-import NotificationsRouter from './routes/notifications.router.js'
+import NotificationsRouter from './routes/notifications.router.js';
 import cors from 'cors'
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
@@ -29,6 +29,7 @@ import i18next from 'i18next' ; //Se modifico
 import middleware from 'i18next-http-middleware' ; //se modifico
 import FsBackend from 'i18next-fs-backend' ; // se modifico
 import helmet from 'helmet';
+
 
 
 
@@ -48,39 +49,7 @@ i18next
 
 const app = express();
 
-const server = http.createServer(app); // Crear el servidor HTTP con Express
-
-// Configuración de Socket.IO
-const allowedOrigins = [
-  process.env.ORIGIN1,
-  process.env.ORIGIN2,
-  process.env.ORIGIN3,
-  process.env.ORIGIN4,
-  process.env.ORIGIN5
-];
-
-// Inicializar Socket.IO
-const io = new Server(server, {
-  cors: {
-    origin: allowedOrigins,
-    methods: ["GET", "POST"]
-  }
-});
-
-// Configura la conexión WebSocket
-io.on('connection', (socket) => {
-  console.log('A user connected', socket.id);
-
-  socket.on('newNotification', (data) => {
-    io.emit('newNotification', data); // Enviar la notificación a todos los clientes
-  });
-
-  socket.on('disconnect', () => {
-    console.log('A user disconnected', socket.id);
-  });
-});
-
-const whiteList = [process.env.ORIGIN1, process.env.ORIGIN2 , process.env.ORIGIN3, process.env.ORIGIN4, process.env.ORIGIN5, process.env.ORIGIN6, process.env.ORIGIN7]
+const whiteList = [process.env.ORIGIN1, process.env.ORIGIN2 , process.env.ORIGIN3, process.env.ORIGIN4, process.env.ORIGIN5]
 
 app.use(
     cors({
@@ -119,6 +88,7 @@ app.use('/api/feature', FeatureRouter);
 app.use('/api/unit', UnitRouter);
 app.use('/api/provider', ProviderRouter);
 app.use('/api/satisfaction', SatisfactionRouter);
-app.use('/api/notifications', NotificationsRouter);
+app.use('/api/notifications', NotificationsRouter); 
+// Middleware para acceder a `io` en los controladores
 
 export default app
