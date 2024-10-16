@@ -1,0 +1,62 @@
+name: Run Tests
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions: write-all
+
+jobs:
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.MY_GH_TOKEN }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '17'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run tests
+        env:
+        # trae las variabes del .env
+          URI_MONGO: ${{ secrets.URI_MONGO }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          JWT_REFRESH: ${{ secrets.JWT_REFRESH }}
+          CLOUD_NAME: ${{ secrets.CLOUD_NAME }}
+          API_KEY: ${{ secrets.API_KEY }}
+          API_SECRET: ${{ secrets.API_SECRET }}
+          USER: ${{ secrets.USER }}
+          PASSWORD: ${{ secrets.PASSWORD }}
+          PLANTILLA: ${{ secrets.PLANTILLA }}
+          SMS_TOKEN: ${{ secrets.SMS_TOKEN }}
+        run: |
+          set +e
+          # ejecuta las pruebas
+          set NODE_OPTIONS=--experimental-vm-modules && npx jest
+          # guarda el valor de las pruebas que pude ser 0 o 1
+          TEST_RESULT=$?
+          set -e
+          # si el resultado es diferente de 0
+          if [ $TEST_RESULT -ne 0 ]; then
+            echo "Tests failed. Reverting to previous version..."
+            git config --global user.email "20210658@uthh.edu.mx"
+            git config --global user.name "rodrigo3829l"
+            # regresa al commit anterior
+            git reset --hard HEAD^
+            git push https://github.com/rodrigo3829l/db_api_mygarden_llc.git --force
+          else
+            echo "Tests passed."
+          fi
