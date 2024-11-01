@@ -1,21 +1,122 @@
 import { Notification } from "../models/NotificationsServices.js";
+import { User } from "../models/Users.js";
+import { sendNotification } from "../../helpers/config/firebaseMessagingService.js";
+
+// Controller to create a new notification
+export const createNotification = async (req, res) => {
+    try {
+        const { userId, type, serviceId, message, tittle } = req.body;
+
+        // Crear la nueva notificación
+        let notification = new Notification({
+            userId,
+            type,
+            serviceId,
+            message,
+            tittle,
+        });
+
+        // Guardar la notificación
+        await notification.save();
+
+        // Realizar populate de los campos necesarios
+        const notificationData = await Notification.findById(notification._id)
+            .populate({
+                path: "userId",
+                select: "name apellidoP apellidoM email" // Información del usuario
+            })
+            .populate({
+                path: "serviceId",
+                select: "description status quote pending service", // Información del servicio agendado
+                populate: {
+                    path: "service", // Aquí se hace el populate del campo `service` dentro de `ScheduleService`
+                    select: "name description price category" // Campos del servicio que quieres obtener
+                }
+            }); // Populate service information
+
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.json({
+                success: false,
+                msg: "User not found"
+            });
+        }
+
+        // Filtrar los tokens por plataforma (web y mobile)
+        const webTokens = user.fcmTokens
+            .filter((tokenObj) => tokenObj.platform === "web")
+            .map((tokenObj) => tokenObj.token);
+
+        const mobileTokens = user.fcmTokens
+            .filter((tokenObj) => tokenObj.platform === "mobile")
+            .map((tokenObj) => tokenObj.token);
+
+        if (webTokens.length === 0 && mobileTokens.length === 0) {
+            console.log("No se encontraron tokens FCM para ninguna plataforma.");
+            return res.status(404).json({ success: false, msg: "No FCM tokens found for any platform" });
+        }
+
+        // Configurar el payload de la notificacion
+        const payload = {
+            notification: {
+                title: tittle,
+                body: message,
+            },
+            data: {
+                type,
+                serviceId: serviceId.toString(),
+            },
+        };
+        try {
+            if (webTokens.length > 0) {
+                // console.log("Token movil")
+                // console.log(webTokens)
+                await sendNotification(webTokens, payload);
+                console.log(`Notificación enviada a ${webTokens.length} dispositivos web.`);
+            }
+
+            if (mobileTokens.length > 0) {
+                await sendNotification(mobileTokens, payload);
+                console.log(`Notificación enviada a ${mobileTokens.length} dispositivos móviles.`);
+            }
+
+            return res.json({
+                success: true,
+                msg: "Notification created successfully",
+                notificationData,
+            });
+        } catch (error) {
+            console.error('Error al enviar notificación:', error.message);
+            return res.status(500).json({
+                success: false,
+                msg: "Error sending notification",
+            });
+        }
+    } catch (error) {
+        console.log("Error creating notification", error);
+        return res.json({
+            success: false,
+            msg: "Error creating notification",
+        });
+    }
+};
 
 // Controller to get all notifications for a specific user
 export const getNotificationsByUser = async (req, res) => {
     try {
         const notifications = await Notification.find({ userId: req.uid.id })
-        .populate({
-            path: "userId",
-            select: "name apellidoP apellidoM email" // Información del usuario
-        })
-        .populate({
-            path: "serviceId",
-            select: "description status quote pending service", // Información del servicio agendado
-            populate: {
-                path: "service", // Aquí se hace el populate del campo `service` dentro de `ScheduleService`
-                select: "name description price category" // Campos del servicio que quieres obtener
-            }
-        });
+            .populate({
+                path: "userId",
+                select: "name apellidoP apellidoM email" // Información del usuario
+            })
+            .populate({
+                path: "serviceId",
+                select: "description status quote pending service", // Información del servicio agendado
+                populate: {
+                    path: "service", // Aquí se hace el populate del campo `service` dentro de `ScheduleService`
+                    select: "name description price category" // Campos del servicio que quieres obtener
+                }
+            });
 
         if (!notifications.length) {
             return res.json({
@@ -36,53 +137,6 @@ export const getNotificationsByUser = async (req, res) => {
         });
     }
 };
-
-// Controller to create a new notification
-export const createNotification = async (req, res) => {
-    try {
-        const { userId, type, serviceId, message, tittle } = req.body;
-
-        // Crear la nueva notificación
-        let notification = new Notification({
-            userId,
-            type,
-            serviceId,
-            message,
-            tittle,
-        });
-
-        // Guardar la notificación
-        await notification.save();
-
-        // Realizar populate de los campos necesarios
-        notification = await Notification.findById(notification._id)
-        .populate({
-            path: "userId",
-            select: "name apellidoP apellidoM email" // Información del usuario
-        })
-        .populate({
-            path: "serviceId",
-            select: "description status quote pending service", // Información del servicio agendado
-            populate: {
-                path: "service", // Aquí se hace el populate del campo `service` dentro de `ScheduleService`
-                select: "name description price category" // Campos del servicio que quieres obtener
-            }
-        }); // Populate service information
-
-        return res.json({
-            success: true,
-            msg: "Notification created successfully",
-            notification, // Retornar la notificación completa
-        });
-    } catch (error) {
-        console.log("Error creating notification", error);
-        return res.json({
-            success: false,
-            msg: "Error creating notification",
-        });
-    }
-};
-
 
 // Controller to delete a specific notification by its ID
 export const deleteNotification = async (req, res) => {

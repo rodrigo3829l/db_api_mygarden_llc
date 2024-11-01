@@ -15,7 +15,7 @@ const router = express.Router();
 
 router.get("/notifications", requireToken, getNotificationsByUser);
 
-router.post("/create", (req, res) => createNotification(req, res, io)); // Modificado para incluir io
+router.post("/create", createNotification) // Modificado para incluir io
 
 router.delete("/delete/:id", deleteNotification);
 

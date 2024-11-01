@@ -39,7 +39,14 @@ const userSchema = new Schema({
     lastLogin: Date,
     intentsFailBlocked: {type: Number, default : 0},
     lastPassword: {type: Date, default: new Date()},
-    register: {type: String, default: 'online'}
+    register: {type: String, default: 'online'},
+    fcmTokens: [
+        {
+          token: String,     // El token FCM en sí
+          platform: String,  // La plataforma, ej. 'web' o 'mobile'
+          lastUpdated: { type: Date, default: Date.now }, // Fecha de última actualización
+        },
+      ],
 });
 
 

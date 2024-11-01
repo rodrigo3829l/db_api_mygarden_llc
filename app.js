@@ -89,6 +89,5 @@ app.use('/api/unit', UnitRouter);
 app.use('/api/provider', ProviderRouter);
 app.use('/api/satisfaction', SatisfactionRouter);
 app.use('/api/notifications', NotificationsRouter); 
-// Middleware para acceder a `io` en los controladores
 
 export default app
