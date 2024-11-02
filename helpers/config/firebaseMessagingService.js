@@ -1,40 +1,52 @@
 // firebaseMessagingService.js
 import { GoogleAuth } from 'google-auth-library';
 import axios from 'axios';
-import serviceAccount from './notifications-32633-firebase-adminsdk-nzm2m-982158c5ff.json' assert { type: 'json' };
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 async function getAccessToken() {
-    const auth = new GoogleAuth({
-        credentials: {
-            client_email: serviceAccount.client_email,
-            private_key: serviceAccount.private_key,
-        },
-        scopes: ['https://www.googleapis.com/auth/firebase.messaging'],
-    });
-    const accessToken = await auth.getAccessToken();
-    // console.log('Access Token:', accessToken);
-    return accessToken;
+    try {
+        const auth = new GoogleAuth({
+            credentials: {
+                client_email: process.env.FIREBASE_CLIENT_EMAIL,
+                private_key: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n'), // Reemplaza '\\n' por '\n'
+            },
+            scopes: ['https://www.googleapis.com/auth/firebase.messaging'],
+        });
+
+        const accessToken = await auth.getAccessToken();
+
+        if (!accessToken) {
+            console.log("No se pudo obtener el token de acceso.");
+            throw new Error("Error al obtener el token de acceso de Google Auth.");
+        }
+
+        console.log('Access Token obtenido:', accessToken);
+        return accessToken;
+    } catch (error) {
+        console.error("Error al obtener el token de acceso:", error);
+        throw new Error("No se pudo obtener el token de acceso.");
+    }
 }
 
 export async function sendNotification(tokens, payload) {
     try {
         const accessToken = await getAccessToken();
-        const projectId = serviceAccount.project_id;
+        const projectId = process.env.FIREBASE_PROJECT_ID;
         const url = `https://fcm.googleapis.com/v1/projects/${projectId}/messages:send`;
 
         for (const token of tokens) {
-            // Crear el payload JSON para la solicitud
             const requestPayload = {
                 message: {
-                    token: token, // Ahora token es una cadena individual
+                    token: token,
                     ...payload,
                 },
             };
 
-            // Imprimir el JSON antes de enviarlo
-            // console.log('Payload JSON que se enviará a FCM:', JSON.stringify(requestPayload, null, 2));
+            console.log('Payload JSON que se enviará a FCM:', JSON.stringify(requestPayload, null, 2));
+            console.log("Enviando solicitud con accessToken:", accessToken);
 
-            // Hacer la solicitud HTTP
             const response = await axios.post(url, requestPayload, {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
@@ -42,7 +54,7 @@ export async function sendNotification(tokens, payload) {
                 },
             });
 
-            // console.log('Respuesta de Firebase:', response.data);
+            console.log('Respuesta de Firebase:', response.data);
         }
 
         return { success: true, message: 'Notificaciones enviadas a todos los tokens' };
