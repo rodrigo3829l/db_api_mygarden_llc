@@ -71,11 +71,13 @@ export const createNotification = async (req, res) => {
             if (webTokens.length > 0) {
                 // console.log("Token movil")
                 // console.log(webTokens)
+                console.log(`Intentando enciar notificacion a ${webTokens.length} dispositivos móviles.`);
                 await sendNotification(webTokens, payload);
                 console.log(`Notificación enviada a ${webTokens.length} dispositivos web.`);
             }
 
             if (mobileTokens.length > 0) {
+                console.log(`Intentando enciar notificacion a ${mobileTokens.length} dispositivos móviles.`);
                 await sendNotification(mobileTokens, payload);
                 console.log(`Notificación enviada a ${mobileTokens.length} dispositivos móviles.`);
             }

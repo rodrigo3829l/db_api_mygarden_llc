@@ -1,9 +1,6 @@
 // firebaseMessagingService.js
 import { GoogleAuth } from 'google-auth-library';
 import axios from 'axios';
-import dotenv from 'dotenv';
-
-dotenv.config();
 
 async function getAccessToken() {
     try {
@@ -22,7 +19,7 @@ async function getAccessToken() {
             throw new Error("Error al obtener el token de acceso de Google Auth.");
         }
 
-        console.log('Access Token obtenido:', accessToken);
+        // console.log('Access Token obtenido:', accessToken);
         return accessToken;
     } catch (error) {
         console.error("Error al obtener el token de acceso:", error);
@@ -36,6 +33,12 @@ export async function sendNotification(tokens, payload) {
         const projectId = process.env.FIREBASE_PROJECT_ID;
         const url = `https://fcm.googleapis.com/v1/projects/${projectId}/messages:send`;
 
+        if (!Array.isArray(tokens)) {
+            tokens = [tokens]; // Si tokens no es un arreglo, conviértelo en uno
+        }
+
+        const results = [];
+
         for (const token of tokens) {
             const requestPayload = {
                 message: {
@@ -44,22 +47,24 @@ export async function sendNotification(tokens, payload) {
                 },
             };
 
-            console.log('Payload JSON que se enviará a FCM:', JSON.stringify(requestPayload, null, 2));
-            console.log("Enviando solicitud con accessToken:", accessToken);
-
-            const response = await axios.post(url, requestPayload, {
-                headers: {
-                    Authorization: `Bearer ${accessToken}`,
-                    'Content-Type': 'application/json',
-                },
-            });
-
-            console.log('Respuesta de Firebase:', response.data);
+            try {
+                const response = await axios.post(url, requestPayload, {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                        'Content-Type': 'application/json',
+                    },
+                });
+                results.push({ success: true, token, response: response.data });
+            } catch (error) {
+                console.error(`Error enviando notificación a FCM para token ${token}:`, error.response ? error.response.data : error.message);
+                results.push({ success: false, token, error: error.response ? error.response.data : error.message });
+            }
         }
 
-        return { success: true, message: 'Notificaciones enviadas a todos los tokens' };
+        return results;
     } catch (error) {
-        console.error('Error enviando notificación a FCM:', error.response ? error.response.data : error.message);
-        throw new Error('Error al enviar la notificación');
+        console.error('Error general enviando notificación:', error.message);
+        throw new Error('Error general al enviar las notificaciones');
     }
 }
+
