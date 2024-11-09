@@ -21,7 +21,7 @@ export const saveSatisfaction = async (req, res) => {
             question1,
             question2,
             question3,
-            satisfactionLevel
+            satisfactionLevel,
             plataform
         });
 
