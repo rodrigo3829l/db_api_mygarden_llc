@@ -4,7 +4,7 @@ import { User } from "../models/Users.js";
 // Función para guardar las respuestas de satisfacción
 export const saveSatisfaction = async (req, res) => {
     try {
-        const { question1, question2, question3, satisfactionLevel } = req.body;
+        const { question1, question2, question3, satisfactionLevel, plataform } = req.body;
         const id = req.uid.id;
         // Verificar si el usuario existe
         const user = await User.findById(id);
@@ -22,6 +22,7 @@ export const saveSatisfaction = async (req, res) => {
             question2,
             question3,
             satisfactionLevel
+            plataform
         });
 
         await newSatisfaction.save();

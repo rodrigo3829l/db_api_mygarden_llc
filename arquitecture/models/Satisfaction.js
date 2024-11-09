@@ -9,7 +9,8 @@ const satisfactionSchema = new Schema({
   question2: { type: Number, required: true },  // Respuesta a la pregunta 2
   question3: { type: Number, required: true },  // Respuesta a la pregunta 3
   satisfactionLevel: { type: Number, required: true, enum: [1, 2, 3, 4, 5] },  // Nivel de satisfacción calculado
-  createdAt: { type: Date, default: Date.now }  // Fecha de creación
+  createdAt: { type: Date, default: Date.now },  // Fecha de creación
+  plataform : {type: String, required: true}
 });
 
 // Crear el modelo de Satisfacción
