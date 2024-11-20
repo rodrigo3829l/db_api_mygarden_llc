@@ -7,6 +7,8 @@ import {getTokenData} from "../../helpers/middlewares/JWT.config.js"
 
 import { getAdminTemplate, getTemplate, sendEmail } from "../../helpers/config/mail.config.js";
 
+import { createNewNotification } from "./notifications.controller.js";
+
 export const bookService = async (req, res) => {
     try {
         const {
@@ -124,7 +126,7 @@ export const bookService = async (req, res) => {
             visitor : visitor_id
         });
         
-        await newBookService.save(); 
+        const newServiceBooked =await newBookService.save(); 
         
         const titleOne = req.t('schedule.bookService.email.titleOne')
         const titleTwo = req.t('schedule.bookService.email.titleTwo')
@@ -145,7 +147,7 @@ export const bookService = async (req, res) => {
             template, 
             req.t('schedule.bookService.email.tittle')
             )
-
+       
         //Se mando un email al user
         await sendEmail(
             process.env.USER, 
@@ -153,6 +155,13 @@ export const bookService = async (req, res) => {
             adminTemplate, 
             req.t('schedule.bookService.email.tittleAdmin')
             )
+        
+        const serviceScheduled = {
+            title: "📅 Service Scheduled!",
+            message: "Your service has been successfully scheduled. We'll see you soon!"
+        }
+
+        await createNewNotification(existUser._id, 'serviceScheduled', newServiceBooked._id, serviceScheduled.title, serviceScheduled.message)
 
         return res.json({
             success: true,
@@ -249,7 +258,11 @@ export const quoteService = async (req, res) => {
         const template = getTemplate(titleOne, titleTwo, prOne, prTwo, name, code, action, textAction)
 
         await sendEmail(existUser.email, req.t('schedule.quoteService.email.tittle'), template, req.t('schedule.quoteService.email.tittle'))
-
+        const serviceQuoted = {
+            title: "💬 Service Quoted!",
+            message: "A new quote has been added to your requested service. Check it out now!"
+        }
+        await createNewNotification(existUser._id, 'serviceQuoted', service._id, serviceQuoted.title, serviceQuoted.message)
         const newService = await service.save()
 
         return res.json({
@@ -384,6 +397,88 @@ export const getScheduleServices = async (req, res) => {
         });
     }
 };
+
+export const getUpcomingScheduleServices = async (req, res) => {
+    try {
+        const today = new Date(); // Fecha actual
+        const services = await ScheduleService.find({
+            "dates.scheduledTime": { $gte: today } // Filtra servicios con fecha programada mayor o igual a hoy
+        })
+        .populate('user', 'name apellidoP apellidoM direccion genero')
+        .populate({
+            path: 'service',
+            populate: [
+                { path: 'tipoDeServicio' }
+            ]
+        })
+        .populate({
+            path: 'products.product',
+            select: 'product price unit provider',
+            populate: [
+                { path: 'unit', select: 'name' },
+                { path: 'provider', select: 'providerName contact' }
+            ]
+        })
+        .populate('employeds', 'name apellidoP apellidoM')
+        .populate('typePay', 'type')
+        .sort({ "dates.scheduledTime": 1 }) // Ordenar del más cercano al más lejano
+        .exec();
+
+        return res.json({
+            success: true,
+            services
+        });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            success: false,
+            message: 'Error al obtener los servicios de agenda.'
+        });
+    }
+};
+export const getScheduleServicesByMonth = async (req, res) => {
+    try {
+        const { month, year } = req.params;
+
+        const startDate = new Date(year, month - 1, 1); // Inicio del mes
+        const endDate = new Date(year, month, 0, 23, 59, 59, 999); // Fin del mes
+
+        const services = await ScheduleService.find({
+            "dates.scheduledTime": { $gte: startDate, $lte: endDate } // Filtra por rango de fechas
+        })
+        .populate('user', 'name apellidoP apellidoM direccion genero img')
+        .populate({
+            path: 'service',
+            populate: [
+                { path: 'tipoDeServicio' }
+            ]
+        })
+        .populate({
+            path: 'products.product',
+            select: 'product price unit provider',
+            populate: [
+                { path: 'unit', select: 'name' },
+                { path: 'provider', select: 'providerName contact' }
+            ]
+        })
+        .populate('employeds', 'name apellidoP apellidoM')
+        .populate('typePay', 'type')
+        .sort({ "dates.scheduledTime": 1 }) // Ordenar del más cercano al más lejano
+        .exec();
+
+        return res.json({
+            success: true,
+            services
+        });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            success: false,
+            message: 'Error al obtener los servicios por mes.'
+        });
+    }
+};
+
 
 export const getSchedulesServicesByUserAndStatus = async (req, res) => {
     try {
@@ -595,7 +690,11 @@ export const cancelService = async (req, res) => {
             'Servicio cancelado'
             )
 
-
+            const serviceCancelled = {
+                title: "❌ Service Cancelled!",
+                message: "Your service has been cancelled. Contact us for more details."
+            }
+            await createNewNotification(user._id, 'serviceCancelled', serviceId, serviceCancelled.title, serviceCancelled.message)
         // mandar el email de cancelacion
         return res.json({
             success: true,
@@ -681,6 +780,11 @@ export const rescheduleService = async (req, res) => {
             'Servicio reagendado'
             )
 
+        const serviceRescheduled = {
+            title: "🔄 Service Rescheduled!",
+            message: "Your service has been rescheduled. Check the new date and time!"
+        }
+        await createNewNotification(user._id, 'serviceRescheduled', existingService._id, serviceRescheduled.title, serviceRescheduled.message)
 
         return res.json({
             success: true,
